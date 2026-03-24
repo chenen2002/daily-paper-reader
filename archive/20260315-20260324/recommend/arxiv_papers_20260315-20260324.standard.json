@@ -1,0 +1,234 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-24T09:26:21.612279+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2603.20062v1",
+      "title": "The End of Rented Discovery: How AI Search Redistributes Power Between Hotels and Intermediaries",
+      "abstract": "When a traveler asks an AI search engine to recommend a hotel, which sources get cited -- and does query framing matter? We audit 1,357 grounding citations from Google Gemini across 156 hotel queries in Tokyo and document a systematic pattern we call the Intent-Source Divide. Experiential queries draw 55.9\\% of their citations from non-OTA sources, compared to 30.8\\% for transactional queries -- a 25.1 percentage-point gap ($p < 5 \\times 10^{-20}$). The effect is amplified in Japanese, where experiential queries draw 62.1\\% non-OTA citations compared to 50.0\\% in English -- consistent with a more diverse Japanese non-OTA content ecosystem. For an industry in which hotels have long paid OTAs for demand acquisition, this pattern matters because it suggests that AI search may make hotel discovery less exclusively controlled by commission-based intermediaries.",
+      "authors": [
+        "Peiying Zhu",
+        "Sidi Chang"
+      ],
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR",
+        "cs.AI"
+      ],
+      "published": "2026-03-20T15:44:00+00:00",
+      "link": "https://arxiv.org/pdf/2603.20062v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Query framing in hotel search and traveler behavior",
+      "llm_evidence_cn": "酒店搜索中的查询框架与旅行者行为",
+      "llm_evidence": "酒店搜索中的查询框架与旅行者行为",
+      "canonical_evidence": "酒店搜索中的查询框架与旅行者行为",
+      "llm_tldr_en": "Analyzes how query framing in AI search affects hotel recommendations and traveler discovery.",
+      "llm_tldr_cn": "分析了人工智能搜索中的查询框架如何影响酒店推荐和旅行者的发现过程。",
+      "llm_tldr": "分析了人工智能搜索中的查询框架如何影响酒店推荐和旅行者的发现过程。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 旅游学领域亲环境行为与框架效应相关的论文查找, especially work that connects or combines: framing effect in environmental psychology; T; pro-environmental behavior in tourism; Please help me find papers on pro environmental behavior and framing effects in the field of tourism; impact of framing effects on tourist pro environmental behavior; psychological mechanisms of framing in tourism environmental protection; effectiveness of different framing strategies for green travel.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.14373v1",
+      "title": "Trust Over Fear: How Motivation Framing in System Prompts Affects AI Agent Debugging Depth",
+      "abstract": "System prompts for AI coding agents increasingly employ motivational framing -- from neutral task descriptions to fear-driven threats -- yet no controlled study has examined whether such framing affects agent behavior. We present two studies investigating how trust-based versus fear-based motivation framing in system prompts influences AI agent debugging performance. In Study 1, we conducted a controlled manual experiment comparing a trust-framed methodology (NoPUA) against an unframed baseline across 9 debugging scenarios using Claude Sonnet 4. Trust-framed agents found 59% more hidden issues (p = 0.002, d = 2.28) while taking 83% more investigative steps, despite finding 15% fewer surface-level issues -- revealing a depth-over-breadth tradeoff in investigation strategy. In Study 2, we replicated and extended these findings with 5 independent automated runs across 3 conditions (Baseline, NoPUA trust-framed, PUA fear-framed), yielding 135 scenario-level data points. Trust-framed agents again showed significant advantages: +74% investigative steps (p = 0.008) and +25% hidden issues found (p = 0.016). Crucially, fear-framed (PUA) agents showed no significant improvement over baseline on any metric (all p > 0.3), demonstrating that fear-based motivation is ineffective for AI agents. We ground these findings in Self-Determination Theory, regulatory focus theory, and satisficing models, arguing that trust-based framing induces exploration-oriented, promotion-focused behavior while fear-based framing fails to shift agents from default satisficing strategies. Our results suggest that the motivational frame of system prompts -- not just their technical content -- causally influences AI agent investigation depth.",
+      "authors": [
+        "Wu Ji"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-03-15T13:25:52+00:00",
+      "link": "https://arxiv.org/pdf/2603.14373v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Impact of motivation framing on agent behavior",
+      "llm_evidence_cn": "动机框架对代理行为的影响",
+      "llm_evidence": "动机框架对代理行为的影响",
+      "canonical_evidence": "动机框架对代理行为的影响",
+      "llm_tldr_en": "Investigates how trust-based vs fear-based framing affects performance and depth of investigation.",
+      "llm_tldr_cn": "研究基于信任与基于恐惧的框架如何影响表现和调查深度。",
+      "llm_tldr": "研究基于信任与基于恐惧的框架如何影响表现和调查深度。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.17021v1",
+      "title": "Generative AI-assisted Participatory Modeling in Socio-Environmental Planning under Deep Uncertainty",
+      "abstract": "Socio-environmental planning under deep uncertainty requires researchers to identify and conceptualize problems before exploring policies and deploying plans. In practice and model-based planning approaches, this problem conceptualization process often relies on participatory modeling to translate stakeholders' natural-language descriptions into a quantitative model, making this process complex and time-consuming. To facilitate this process, we propose a templated workflow that uses large language models for an initial conceptualization process. During the workflow, researchers can use large language models to identify the essential model components from stakeholders' intuitive problem descriptions, explore their diverse perspectives approaching the problem, assemble these components into a unified model, and eventually implement the model in Python through iterative communication. These results will facilitate the subsequent socio-environmental planning under deep uncertainty steps. Using ChatGPT 5.2 Instant, we demonstrated this workflow on the lake problem and an electricity market problem, both of which demonstrate socio-environmental planning problems. In both cases, acceptable outputs were obtained after a few iterations with human verification and refinement. These experiments indicated that large language models can serve as an effective tool for facilitating participatory modeling in the problem conceptualization process in socio-environmental planning.",
+      "authors": [
+        "Zhihao Pei",
+        "Nir Lipovetzky",
+        "Angela M. Rojas-Arevalo",
+        "Fjalar J. de Haan",
+        "Enayat A. Moallemi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-03-17T18:04:10+00:00",
+      "link": "https://arxiv.org/pdf/2603.17021v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "socio-environmental planning and problem conceptualization",
+      "llm_evidence_cn": "社会环境规划与问题概念化",
+      "llm_evidence": "社会环境规划与问题概念化",
+      "canonical_evidence": "社会环境规划与问题概念化",
+      "llm_tldr_en": "Uses LLMs to assist in conceptualizing problems for socio-environmental planning under uncertainty.",
+      "llm_tldr_cn": "利用大语言模型辅助不确定性下的社会环境规划问题概念化。",
+      "llm_tldr": "利用大语言模型辅助不确定性下的社会环境规划问题概念化。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 旅游学领域亲环境行为与框架效应相关的论文查找, especially work that connects or combines: framing effect in environmental psychology; T; pro-environmental behavior in tourism; Please help me find papers on pro environmental behavior and framing effects in the field of tourism; impact of framing effects on tourist pro environmental behavior; psychological mechanisms of framing in tourism environmental protection; effectiveness of different framing strategies for green travel.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.17192v1",
+      "title": "Narrative Frames: A New Approach to Analysing Metaphors in AI Ethics and Policy Discourse",
+      "abstract": "Metaphors fundamentally shape how we reason about complex issues like artificial intelligence, yet current approaches to metaphor analysis in political discourse suffer from inconsistent definitions and methodologies. This paper introduces Narrative Frames, a novel categorisation system that addresses these limitations by providing a standardised framework for identifying and analysing metaphors in AI policy debates.   Building on Lakoff and Johnson's conceptual metaphor theory, we derive 49 distinct narrative frames through a two-stage process: inductively coding 685 metaphors from the MetaNet database, then cross-referencing findings with 82 critical metaphor analysis studies. This methodology grounds the typology in both empirical data and established theoretical concepts while resolving definitional ambiguities that have hindered cross-study comparison.   The Narrative Frames system offers researchers, journalists, and policymakers a shared vocabulary for analysing how metaphors shape public perception and policy priorities in AI governance. By revealing both the frames present and notably absent in discourse, this approach enables more transparent analysis of underlying assumptions and power dynamics. We discuss limitations and propose future applications, including computational scaling using large language models.",
+      "authors": [
+        "Daniel Stone"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY"
+      ],
+      "published": "2026-03-17T22:46:22+00:00",
+      "link": "https://arxiv.org/pdf/2603.17192v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "narrative frames and conceptual metaphor theory",
+      "llm_evidence_cn": "叙事框架与概念隐喻理论",
+      "llm_evidence": "叙事框架与概念隐喻理论",
+      "canonical_evidence": "叙事框架与概念隐喻理论",
+      "llm_tldr_en": "Introduces a standardized framework for analyzing narrative frames and metaphors in policy discourse.",
+      "llm_tldr_cn": "引入了一个标准化的框架，用于分析政策话语中的叙事框架和隐喻。",
+      "llm_tldr": "引入了一个标准化的框架，用于分析政策话语中的叙事框架和隐喻。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.20775v1",
+      "title": "Evaluating Uplift Modeling under Structural Biases: Insights into Metric Stability and Model Robustness",
+      "abstract": "In personalized marketing, uplift models estimate incremental effects by modeling how customer behavior changes under alternative treatments. However, real-world data often exhibit biases - such as selection bias, spillover effects, and unobserved confounding - which adversely affect both estimation accuracy and metric validity. Despite the importance of bias-aware assessment, a lack of systematic studies persists. To bridge this gap, we design a systematic benchmarking framework. Unlike standard predictive tasks, real-world uplift datasets lack counterfactual ground truth, rendering direct metric validation infeasible. Therefore, a semi-synthetic approach serves as a critical enabler for systematic benchmarking, effectively bridging the gap by retaining real-world feature dependencies while providing the ground truth needed to isolate structural biases. Our investigations reveal that: (i) uplift targeting and prediction can manifest as distinct objectives, where proficiency in one does not ensure efficacy in the other; (ii) while many models exhibit inconsistent performance under diverse biases, TARNet shows notable robustness, providing insights for subsequent model design; (iii) evaluation metric stability is linked to mathematical alignment with the ATE, suggesting that ATE-approximating metrics yield more consistent model rankings under structural data imperfections. These findings suggest the need for more robust uplift models and metrics. Code will be released upon acceptance.",
+      "authors": [
+        "Yuxuan Yang",
+        "Dugang Liu",
+        "Yiyan Huang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-21T11:54:25+00:00",
+      "link": "https://arxiv.org/pdf/2603.20775v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uplift modeling for estimating incremental treatment effects",
+      "llm_evidence_cn": "用于估计增量干预效应的增益模型",
+      "llm_evidence": "用于估计增量干预效应的增益模型",
+      "canonical_evidence": "用于估计增量干预效应的增益模型",
+      "llm_tldr_en": "Benchmarks uplift models to estimate how customer behavior changes under different treatments.",
+      "llm_tldr_cn": "基准测试增益模型，以估计客户行为在不同干预措施下的变化。",
+      "llm_tldr": "基准测试增益模型，以估计客户行为在不同干预措施下的变化。",
+      "llm_tags": [
+        "query:q7"
+      ],
+      "matched_query_tag": "query:q7",
+      "matched_query_text": "effectiveness of different framing strategies for green travel",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.20911v1",
+      "title": "Do LLM-Driven Agents Exhibit Engagement Mechanisms? Controlled Tests of Information Load, Descriptive Norms, and Popularity Cues",
+      "abstract": "Large language models make agent-based simulation more behaviorally expressive, but they also sharpen a basic methodological tension: fluent, human-like output is not, by itself, evidence for theory. We evaluate what an LLM-driven simulation can credibly support using information engagement on social media as a test case. In a Weibo-like environment, we manipulate information load and descriptive norms, while allowing popularity cues (cumulative likes and Sina Weibo-style cumulative reshares) to evolve endogenously. We then ask whether simulated behavior changes in theoretically interpretable ways under these controlled variations, rather than merely producing plausible-looking traces. Engagement responds systematically to information load and descriptive norms, and sensitivity to popularity cues varies across contexts, indicating conditionality rather than rigid prompt compliance. We discuss methodological implications for simulation-based communication research, including multi-condition stress tests, explicit no-norm baselines because default prompts are not blank controls, and design choices that preserve endogenous feedback loops when studying bandwagon dynamics.",
+      "authors": [
+        "Tai-Quan Peng",
+        "Yuan Tian",
+        "Songsong Liang",
+        "Dazhen Deng",
+        "Yingcai Wu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CY"
+      ],
+      "published": "2026-03-21T18:50:22+00:00",
+      "link": "https://arxiv.org/pdf/2603.20911v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "testing descriptive norms and engagement mechanisms",
+      "llm_evidence_cn": "测试描述性规范与参与机制",
+      "llm_evidence": "测试描述性规范与参与机制",
+      "canonical_evidence": "测试描述性规范与参与机制",
+      "llm_tldr_en": "Evaluates if LLM agents exhibit theoretically interpretable behaviors like response to descriptive norms.",
+      "llm_tldr_cn": "评估大语言模型智能体是否表现出理论上可解释的行为，如对描述性规范的反应。",
+      "llm_tldr": "评估大语言模型智能体是否表现出理论上可解释的行为，如对描述性规范的反应。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "psychological mechanisms of framing in tourism environmental protection",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

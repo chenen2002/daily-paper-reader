@@ -1,0 +1,387 @@
+Title: Narrative Frames: A New Approach to Analysing Metaphors in AI Ethics and Policy Discourse
+
+URL Source: https://arxiv.org/pdf/2603.17192v1
+
+Published Time: Thu, 19 Mar 2026 00:26:43 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# Narrative Frames: A New Approach to Analysing Metaphors in AI Ethics and Policy Discourse 
+
+Daniel Stone Centre for the Future of Intelligence, University of Cambridge Jesus College, University of Cambridge Diffusion.Au dcs53@cam.ac.uk / daniel@diffusion.au 
+
+# Abstract 
+
+Metaphors fundamentally shape how we reason about complex issues like artificial intelligence, yet current approaches to metaphor analysis in political discourse suffer from inconsistent definitions and methodologies. This paper introduces Narrative Frames, a novel categorisation system that addresses these limitations by providing a standardised framework for identifying and analysing metaphors in AI policy debates. Building on Lakoff and Johnson’s conceptual metaphor theory, we derive 49 distinct narrative frames through a two-stage process: inductively coding 685 metaphors from the MetaNet database, then cross-referencing findings with 82 critical metaphor analysis studies. This methodology grounds the typology in both empirical data and established theoretical concepts while resolving definitional ambiguities that have hindered cross-study comparison. The Narrative Frames system offers researchers, journalists, and policymakers a shared vocabulary for analysing how metaphors shape public perception and policy priorities in AI governance. By revealing both the frames present and notably absent in discourse, this approach enables more transparent analysis of underlying assumptions and power dynamics. We discuss limitations and propose future applications, including computational scaling using large language models. 
+
+Keywords: metaphor analysis, conceptual metaphor theory, narrative frames, AI governance, political discourse, Lakoff and Johnson 
+
+# 1 Introduction 
+
+The language we use to discuss AI is not merely descriptive; it is a powerful tool that can either illuminate or obscure the ethical stakes. Lakoff and Johnson (1980) assert metaphors are fundamental forms of reasoning, helping us think “about abstract concepts (i.e. ideas) in terms of more concrete concepts (e.g. food)” (Brugman et al., 2019, p. 1). They suggest as speakers select target domains (abstract concepts, ’ideas’), they highlight and hide different characteristics of target domains (concrete ideas, ’food’). Consequently, several experimental studies reveal that when strategically chosen by individuals to conceptualise issues or events, metaphors are highly persuasive, and their use has significant consequences. For example, Boulenger (2012), Citron and Goldberg (2014) and Landau (2014) demonstrated metaphors can 
+
+Narrative Frames: A New Approach to Analysing Metaphors 1
+
+> arXiv:2603.17192v1 [cs.CY] 17 Mar 2026
+
+neurologically steer reasoning and influence behaviour. Bosman and Hagendoorn (1991), Robins and Mayer (2000) and Thibodeau and Boroditsky (2013) found metaphors effectively overcome fixed biases when used by advocates in communities with sharply divided political ideologies and affiliations. This is particularly true for complex topics like the economy, climate change, or artificial intelligence, where audiences are unfamiliar, anxious, and struggling to conceptualise implications (Landau et al., 2014; P. Thibodeau et al., 2016). Given its technical complexity and societal significance, public perception of AI ethics and policy is especially vulnerable to the influence of strategic framing and metaphoric reasoning as stakeholders navigate contentious debate over ethical implications. For instance, the metaphor of AI as a ‘race’ emphasises speed, overshadowing safety and ethical concerns, potentially leading to policies favouring quick wins over long-term ethical considerations (Cave & Ó hÉigeartaigh, 2017). Political professionals like Westen (2008), Shenker-Osorio (2012), and Luntz (2007) have not only theorised about metaphors’ impact on cognition and reasoning but also demonstrated their practical application, helping popularise this approach among the political establishment. However, despite the crucial role metaphors play in shaping policy debates, significant concerns have emerged about the academic process of analysing them. The first section outlines multiple competing definitions of key concepts, such as ‘frames,’ and the conflicting knowledge structures and analytical methodologies that arise from these varying definitions across different fields, revealing that these competing definitions result in misinterpretation or misallocation of potential consequences. The second section of this paper introduces a new theoretical framework, Narrative Frames, which addresses these concerns. Grounded in Lakoff and Johnson’s metaphor master list and other theoretical contributions, this framework simplifies the process of identifying metaphors and understanding the abstract concepts they represent. It also facilitates examining the relationships between alternative metaphors and evaluating their consistency with, or opposition to, a speaker’s overarching goals in political communication. In doing so, it reveals the power dynamics, persuasive strategies, and intended effects when employed by influential actors. The third section outlines the two-stage methodology employed to determine a proposed typology of narrative frames. Firstly, the 685 metaphors in the MetaNet database (Jiang et al., 2020), based on the Metaphor Master List, were coded to common themes using an inductive approach. This involved identifying recurring patterns and conceptual mappings across the metaphors and grouping them into thematically coherent categories. Secondly, a systematic cross-referencing of 82 critical metaphor analysis studies, selected based on their relevance to political discourse and use of metaphor analysis techniques, was conducted to identify common frames used in existing research. The common frames and metaphors identified through this qualitative content analysis were mapped onto themes derived from the MetaNet database, revealing 49 distinct Narrative Frames that align with Lakoff and Johnson’s theoretical foundation. This two-stage methodology ensures that the Narrative Frames categorisation system is grounded in both empirical dimensions and established theoretical concepts, enhancing its validity and applicability across various domains. In the fourth section, I discuss the limitations of the methodology and approach. Beyond academia, Narrative Frames provide a valuable tool for journalists, policymakers, and the public to identify and analyse underlying assumptions, values, and goals promoted by different stakeholders in AI discussions. For example, journalists can use Narrative Frames to identify and deconstruct metaphors strategically employed by speakers in debates about AI regulation, advocates can more effectively map the competitive landscape between their position and their opponents’, and policymakers can ensure their communication about policy implications aligns with their intentions. Together, this leads to more informed and nuanced public discourse and policy decisions that consider the complex ethical considerations surrounding AI. In conclusion, this paper contributes to the literature on metaphors, framing, and AI ethics by proposing the Narrative Frames categorisation system. By addressing limitations of current approaches and providing a shared framework for interdisciplinary collaboration, Narrative Frames can advance our understanding of how 
+
+Narrative Frames: A New Approach to Analysing Metaphors 2metaphors shape public perception and policy debates related to AI. The following sections will elaborate on this approach’s theoretical foundations and practical applications, situating it within the broader scholarly conversation. 
+
+# 2 Major Concepts in Cognitive Linguistics 
+
+The Narrative Frames approach builds upon existing cognitive linguistic and discourse theory that explores the importance and influence of metaphor and framing techniques on cognition. After reviewing the existing literature, relevant concepts can be categorised into three levels: 
+
+• A Conceptual level (Broader, abstract ideas and cognitive processes), 
+
+• A Systematic level (Structured, organised aspects of cognition), 
+
+• A Technical level (Specific ways knowledge is represented and organised). 
+
+# 2.1 Conceptual Level 
+
+The conceptual level encompasses broad, abstract ideas and cognitive processes that shape our understanding. Key concepts include Johnson’s “Image Schemas” or “cogs,” which are pre-linguistic embodied structures described as “a recurring, dynamic pattern of [perception] that give coherence and structure to our experience” operating “above that of concrete rich images” (1987, p. xiv). These ideas about associative meaning-making relate to Kant’s transcendental schema (Hanna, 2017; Kant, 2003). Later, Johnson and Lakoff (1980) introduced ‘experiential gestalts,’ which are similar to image schemas but more complex, multidimensional images arising from bodily interactions, linguistic experience, and historical or cultural contexts. Image schemas initiate them but contribute other components like participants, parts, and stages clustered “to form a gestalt—a whole that we human beings find more basic than the parts” (Lakoff & Johnson, 1980, p. 70). The concept of gestalts, for instance, serves the medical hypothesis that “more complex conceptual structures are the result of neural networks that simultaneously activate multiple bound primitive structures located in various areas of the brain” (Feldman, 2006; Feldman & Narayanan, 2004; Lakoff, 2008; as cited in Stickles et al., 2016, p. 56). These neural structures “are activated as part of the overall spreading of neural activation”, directly influencing thought processes. Quinn and Holland (1987) highlight that experiential gestalts, the most interpretive and abstract layer of Lakoff and Johnson’s work, are particularly relevant in studying the contextual and associative role of culture in political reasoning. This is exemplified by Lakoff and Johnson’s suggestion that the experiential gestalt of “argument” is often understood through the lens of “war.” The idea that cognition begins at an unstructured and associative level is reflected in similar concepts such as Nikoli’s (2009) Ideasthesia, where the activation of certain concepts triggers sensory experiences similar to actual perceptions; Piaget’s (1952) theory of schema, which involves hierarchically categorised units of understanding existing in complex relationships; and Fauconnier and Turner’s (2003) Conceptual Blending, where elements and relations between different scenarios are subconsciously “blended” as a ubiquitous process in everyday thought and language. These concepts highlight the abstract and associative stage, which begins cognitive processes, and the role of embodied experience in shaping conceptual understanding. 
+
+Narrative Frames: A New Approach to Analysing Metaphors 32.2 Systematic Level 
+
+The systematic level focuses on the structured, organised aspects of cognition, where the contested definition of ‘frames’ comes into view. Originating in Minsky’s (1975) work on knowledge representation, ‘frames’ have become a fundamental, albeit sometimes ambiguous, notion across various fields, including cognitive semantics, computational linguistics, artificial intelligence, cognitive psychology, media studies, and discourse studies (Ziem, 2021 for an overview). Despite differing definitions and views on their function and influence, two common conceptualisations of frames are popular in the study of political language. 
+
+2.2.1 Semantic Frames 
+
+Fillmore’s (1975, 1976, 2001) Semantic Frames are schematic representations of situations or events, including participants, props, and roles, that provide the background and cognitive structure necessary for understanding word meanings. A word cannot be understood without access to all essential related knowledge; for example, ‘buy’ is interconnected with ‘sell’, ‘cost’, and ‘spend’. When a word is used, it evokes a semantic frame of encyclopaedic meaning from a particular, culturally-defined perspective. Fillmore (1975, p. 128) illustrates this with the example of “bachelor,” asking, “Why is it confusing to ask if the pope is a bachelor?” Holland and Quinn (1987, p. 23) explain that “the word bachelor ’frames’ a simplified world in which prototypical events unfold,” and “The Pope, under a vow of celibacy, is not relevant character in the cultural world of marriage.” Also known as “scripts” or “schemata,” semantic frames have significantly contributed to natural language understanding research (Schank & Abelson, 1977) and the development of Large Language Models. Fillmore’s work forms the basis for several narrative analytic approaches. For instance, Chambers and Jurafsky’s “narrative event chains” (2008, p. 789) have become a popular narrative discourse tool by introducing temporal and causal dimensions to semantic frames, defining them as “a partially ordered set of events related by a common protagonist.” While semantic frames provide background knowledge for understanding individual words and events, narrative event chains capture the higher-level structure and coherence by linking frames together based on a common protagonist and a sequential, causal relationship. 
+
+2.2.2 Conceptual Metaphor Frames 
+
+However, for analysing discourse’s ethical and political dimensions, George Lakoff and Mark Johnson’s Conceptual Metaphor Frames, introduced in Metaphors We Live By (1980), offer a more directly relevant approach. These metaphorical frames allow us to formalise their idea of gestalts by mapping them conceptually between a source domain (the more tangible, experiential concept) and a target domain (the abstract concept used to aid understanding). By highlighting specific aspects of the target domain and obscuring others, these frames shape our normative views and influence how we perceive and judge political issues. Thus, while Semantic Frames provide the structural background for understanding how specific language shapes perception, Conceptual Metaphor Frames are pivotal in shaping our ethical and political interpretations. The latter’s perceptual structuring makes it a foundational approach in analysing how language reflects and shapes our understanding of policy debates. A relevant idea in conceptual metaphor theory, ‘entailments’ structure cognition and operationalise abstract gestalts. They are not random or isolated words but consistent mappings that translate inferential logic from the source to the target domain. For instance, when the two earlier gestalts bond in the ‘ARGUMENT is WAR’ metaphor, it uses entailments evoking battle strategies, attacks (‘he shot down my point’), defences (‘I defended my argument’), and outcomes of winning (‘I was victorious’) or losing (‘I was defeated’). The cumulative use of entailments over a text transforms abstract concepts into comprehensible images and familiar stories, building a coherent conceptual picture that shapes our understanding of the target concept 
+
+Narrative Frames: A New Approach to Analysing Metaphors 4and distinguishes metaphorical mappings from simple literary devices. Lakoff and Johnson’s ‘entailments’ operate at a more abstract level than Fillmore’s “scripts” and Chambers and Jurafsky’s “narrative event chains”. While Lakoff and Johnson do not extensively discuss culture, Kövecses points out that it influences entailments. However, Lakoff and Johnson argue that the cognitive processes underlying entailments are universal, suggesting that deep cognitive structures of metaphorical mappings are shared across cultures, even if specific mappings are shaped by cultural context. Lakoff and Johnson show that consistent metaphorical mappings shape our understanding by highlighting and obscuring aspects of the target domain, profoundly influencing how we perceive and judge political issues. Consequently, conceptual metaphor theory has been embraced across disciplines like cognitive linguistics, philosophy, psychology, computer science (notably machine learning), and political science (Colburn & Shute, 2008; Gibbs, 1994, 2011; Kovecses, 2010). However, each field interprets and applies these frameworks through its own lens, often leading to divergent interpretations that can challenge cross-disciplinary integration and dialogue. 
+
+# 2.3 Technical Level 
+
+The technical level , the most concrete of the three levels, focuses on the specific mechanisms and structures used to represent and organise knowledge in the mind. This is the ‘pointy end’, where researchers have developed methodologies, typologies, and diagnostic tools to investigate how information is stored, retrieved, and manipulated within cognitive systems, as well as the consequences and implications of its use. My focus narrows to aspects of Lakoff and Johnson’s conceptual metaphor theory most relevant to understanding the construction and persuasiveness of political discourse while acknowledging related theories (such as Fillmore’s) where appropriate. Lakoff and Johnson’s (1980) master list of conceptual metaphors has become an influential reference point for studying framing and metaphor. The list provides a systematic typology of recurring mappings between source and target domains, such as “CHANGE is MOTION” and “HOPE is LIGHT”. By organising conceptual metaphors based on their underlying structure, the master list offers a rigorous framework for understanding how metaphors operate across abstract concepts. However, the master list has faced scrutiny. Vervaeke and Kennedy (1996) argue that it oversimplifies metaphor and fails to capture its complexity and diversity. Kövecses (2010) and Idström and Piirainen (2013) challenge its cultural bias towards Western, English-speaking cultures. Gibbs (2011) and Steen (2011) question its intuitive nature and call for empirical validation through corpus linguistics and experimental studies. Semino (2008) and Musloff (2004) suggest it overlooks domain-dependent metaphors, particularly in political discourse. Goatly (1997) argues it overemphasises universality while downplaying cultural, historical, and ideological factors, and Charteris-Black (2011) calls for more attention to the social-political dimensions and power relations in metaphor use. Despite this, the master list’s structured approach has made it an invaluable tool across different fields. It provides a shared vocabulary, well-defined rules, and a systematic framework that facilitates its application, adaptation, and consistent use by researchers (including all of the critical authors above). Despite its age, it remains a foundational resource for many empirical and theoretical approaches to uncovering the underlying conceptual structures that guide our thinking about complex political issues. These approaches generally divide into two distinct paths of practice: the turn towards predictable empiricism and the path towards critical theory. 
+
+Narrative Frames: A New Approach to Analysing Metaphors 52.3.1 The Turn Towards Predictable Empiricism 
+
+Lakoff and Johnson’s attempt to establish syntactic mappings has become attractive to empirically-minded researchers in linguistics, social science, and computer science. The metaphor master list’s typology of metaphorical mappings has inspired a substantial body of schematic literature and is the foundation for several metaphor databases, including MetaBank (Martin, 1994), ATT-Meta (Lee & Barnden, 2001a, 2001b), FrameNet (Baker et al., 1998; Fillmore et al., 2003; Litkowski, 2010), and MetaNet (Stickles et al., 2016). The most notable are FrameNet, which focuses on the syntactic properties of semantic frames, and MetaNet, which specifically addresses metaphorical frames and the mappings between them. These resources support various forms of discourse and narrative analysis, such as examining metaphorical framing of news discourse (Stickles et al., 2016), by providing a structured way to explore language’s conceptual underpinnings. Similarly, efforts have been made to identify the relationship between formal metaphors and neural activations. 
+
+2.3.2 Critical Approaches 
+
+Notable contributions include Critical Metaphor Analysis (CMA), developed by scholars like Jonathan Charteris-Black (2004) and Andreas Musolff (2011), which critically examines the ideological and power dynamics behind metaphor use. Musolff (2006) proposed the Metaphor Scenario Analysis approach, which delves into the narrative stories that metaphors draw upon and contribute to, offering insights into how metaphors shape and are shaped by these narratives. Meanwhile, the Discourse Dynamics Framework, developed by Cameron et al. (2009), emphasises interactional dynamics and how metaphors evolve dynamically in real-time conversation rather than their socio-political implications. These methods involve three stages: identification (which metaphors are present, using techniques from the technical level), interpretation (what usage patterns and constructions they support or undermine, using concepts from the systematic level), and explanation (who uses them, how they interact with context, and the ideological reasons for their use, typically drawing from the conceptual level). While these critical approaches offer valuable insights into the role of metaphors in shaping public discourse, their application in practice raises some methodological concerns. Researchers often develop a study-specific typology during the identification and interpretation stages, sometimes loosely based on the metaphor master list. However, identifying themes within the text remains largely subjective and reactive to the specific text under analysis (Semino et al., 2018). Despite implying a technical and empirical base, this approach often simplifies master list concepts without a transparent methodology, causing inconsistencies and a lack of consensus among researchers (Cacciatore et al., 2016; Leeper & Slothuus, 2020). This is exacerbated by the lack of a consistent definition of ‘frames’ (Matthes, 2009; Scheufele & Iyengar, 2014), which can lead to attributing effects to frames that diverge from their intended theoretical functions (Herrnson et al., 2007; Hertog & Mcleod, 2001). Referencing experimental studies from other fields can enhance the perceived legitimacy of claims about discourse impacts, but these claims must be based on a clear and precise understanding of the underlying concepts (Borah, 2011; Entman et al., 2008). Otherwise, assertions about cognitive processes and their socio-political implications risk being misleading. To bolster causal claims and enhance interdisciplinary dialogue, especially in public policy and AI, researchers using critical metaphor analysis methods must integrate their work with insights from linguistics, psychology, neuroscience, and computer science. This multidisciplinary approach is necessary to fully understand how metaphors influence cognition, communication, and behaviour in political contexts (Gibbs Jr., 2017; Thibodeau et al., 2017). Creating a shared understanding of key terms across disciplines will foster more rigorous, 
+
+Narrative Frames: A New Approach to Analysing Metaphors 6empirically grounded research, enhance visibility, facilitate collaboration, and pave the way for advanced interpretive computational models (Shutova et al., 2016; Veale et al., 2016). 
+
+# 3 Narrative Frames 
+
+This paper introduces ‘Narrative Frames’, a novel categorisation model that bridges the divide between metaphorical framing in policy discourse practice and existing conceptual linguistic frameworks. It addresses some limitations in critical metaphor analysis by deriving a common set of narratives directly from the original metaphor master list. This reduces subjectivity and inconsistency in the identification and interpretation of metaphors while providing a more accessible and structured approach for researchers in policy and political rhetoric. Moreover, Narrative Frames conceptually reinforces the connection between discourse and cognitive processes, better contextualising the strength and limits of any identified effects and facilitating enhanced comparative analysis between studies. 
+
+# 3.1 Conceptual Foundation 
+
+Narrative Frames 1 are conceptually defined according to Entman’s (1993, p. 52) interpretation of framing, which highlights specific problems, causal relationships, moral evaluations, and solutions while simultaneously obscuring others, directing the audience’s understanding in a particular way. The foundation of Narrative Frames lies in Johnson and Lakoff’s work on Conceptual Metaphors (often called Metaphoric Frames). However, Narrative Frames diverge from this foundation in two key aspects: Firstly, Narrative Frames broaden the scope of reference beyond strict focus on linguistic metaphors to include analogies, similes, and other forms of figurative language that use non-literal language to communicate abstract concepts. This broader scope is identified using a combination of Charteris-Black’s (2004) and Pragglejaz’s (2007) methodologies, as proposed by Imani (2022), for identifying metaphoric language and developing a corpus for study. Secondly, Narrative Frames directly evolve the metaphor master list into a typology of common narratives derived from the list itself. The metaphor master list, with its narrow mathematical mapping structure, tends to deconstruct conceptual metaphors into their components without placing them in the broader narratives they support or propagate. Narrative Frames address this by developing a typology echoing Musloff’s (2006) “metaphorical scenarios” and Werth’s (1994) “mega-metaphors”, which are extended metaphorical mappings that unfold over the course of a text or discourse. By broadening the field of view to all non-literal language and acknowledging the compounding and associative nature of meaning-making across a text, Narrative Frames bring back the associative dimension to cognition outlined in gestalts and operationalised through entailments. This approach reinforces the connection between discourse and cognitive processes, better contextualising the strength and limits of any identified effects and facilitating enhanced comparative analysis between studies. The term “narrative” represents these frames because it captures the holistic and associative nature of meaning-making that occurs at the gestalt level in Lakoff’s theory. Narratives are powerful tools for organising and conveying complex information, as they provide a coherent structure that integrates various elements, such as events, characters, and themes, into a meaningful whole (Bruner, 1991; Fisher, 1984). This narrative structure closely resembles the way gestalts operate in Lakoff’s framework, where multiple components (i.e. participants, parts, and stages) are integrated into a coherent whole (Lakoff & Johnson, 1999). Moreover, policy discourse commonly uses narratives to frame issues, shape public opinion, and influence decision-making 
+
+> 1This has no relationship to Barkhuizen’s (2008) ‘narrative frames’, which are qualitative diagnostic tools typically used in education.
+
+Narrative Frames: A New Approach to Analysing Metaphors 7(Jones & McBeth, 2010; Shanahan, Jones, & McBeth, 2011). Aligning frames with narratives helps better understand and analyse language’s role in shaping policy discourse and its effects on public perception and behaviour. Aligning with our approach, Lakoff and Johnson themselves took a simpler, more context-sensitive approach to metaphor when communicating their work to a broader audience. In Don’t Think of an Elephant (2004), they discuss concepts similar to WAR and FAMILY without strict definitions, using narrative techniques to make their ideas more relatable and engaging for less specialised readers. Narrative Frames acknowledges that the repeated, contextually relevant deployment of Lakoff and Johnson’s Conceptual Metaphors elevates them from being one step in a linguistic reasoning process. In doing so, it helps us maintain a clear link to their historical work and the fields that have emerged from it while also answering how these metaphors seek to address the questions, “What am I to believe? And what am I to do?” 
+
+# 4 Methodology: Identifying Narrative Frames 
+
+The proposed list of narrative frames was developed through two complementary processes. 
+
+# 4.1 Identifying and Classifying Target Domains 
+
+The 685 metaphors currently listed in the MetaNet database, which has continued the work started by Lakoff and Johnson’s original metaphor master list, were divided into their source domain (X) and target domain (Y) components using the ‘is’ or ‘are’ keywords as a separator. For example, the metaphor ‘ARGUMENT is WAR’ was divided into the source domain ‘ARGUMENT’ and the target domain ‘WAR’. This process allowed for the isolation and examination of the target domains, which represent the conceptual domain we aim to understand through the metaphor. An inductive coding approach was conducted manually to group similar target domains into broader narrative frames with similar narrative strategies, imagery or themes. The target domains were examined to identify common themes, concepts, or meanings that united them. These narrative frames were not predetermined but rather emerged from the analysis of the data. For example, the target domains ‘WAR’, ‘ATTACKING’, ‘BATTLEFIELD’, ‘INVADING A TERRITORY’ and ‘DEFENDING A TERRITORY’ were grouped into a broader WAR narrative frame based on their shared conceptual meanings. Some of the MetaNet metaphors presented multiple or unclear target domains during the coding process. For example, ‘FUTURE OF A NATION is THE PATH OF A BOAT’ could be coded into either the proposed 
+
+JOURNEY or MACHINE/TRANSIT narrative frames. In such cases, the most salient aspect of the metaphor was prioritised, with the ‘path of a boat’ being coded as JOURNEY based on the emphasis on movement and direction and active imagery of holidays or migration. Similarly, “GOVERNMENT’S HARMFUL TREATMENT OF RIGHTS is DAMAGING A PHYSICAL STRUCTURE” could be interpreted as BUILDING or WAR , depending on the context of use. The subject of the activity, BUILDING , was given precedence in this decision. These examples illustrate the nuanced approach to resolving ambiguous cases, guided by salience and contextual relevance. The process of defining and refining the narrative frames was iterative. As more target domains were coded, the existing frames were continuously compared and modified to better capture the conceptual relationships between domains and to form clear definitions. This involved expanding or narrowing the scope of frames, creating new frames when necessary, and resolving any challenges in defining the boundaries between frames. The iterative process produced 49 narrative frames, each representing a unique thematic connection within 
+
+Narrative Frames: A New Approach to Analysing Metaphors 8the MetaNet metaphors. This approach refines the master metaphor list, articulates broader themes in conceptual metaphor research, and bridges the gap between traditional metaphor analysis and discourse analysis methods. By aligning with common terminologies used by discourse analysts, the Narrative Frames typology enhances its validity and applicability. 
+
+# 4.2 Integrating and Refining Narrative Frames 
+
+To validate and refine the proposed narrative frame typology, a systematic cross-referencing was done with existing critical metaphor studies to identify commonly used labels relating to political and policy communication. This establishes consistency between the inductively derived frames and the findings of previous studies, identifies potentially overlooked frames, and situates the typology within broader metaphorical framing research. Research literature from 1980 2 to 2023 was selected via JSTOR and Google Scholar, focusing on peer-reviewed English articles in three main categories: 1. Works that cite Lakoff and Johnson’s seminal work Metaphors We Live By (1980), include metaphors from the master list and contain the words ‘frame,’ ‘policy,’ ‘rhetoric,’ or ‘discourse’ in their title or abstract. 2. Studies that cite the original papers proposing the three most common critical analytical techniques for metaphor analysis: “Discourse Dynamics Framework” (Cameron et al., 2009), “Metaphor Scenario Analysis” (Musolff, 2006), and “Critical Metaphor Analysis” (Charteris-Black, 2004). 3. Works that attempt to develop a list of typologies discovered as part of the broader literature review for this paper. To focus on metaphorical framing in real-world political communication, papers were screened to include only studies that apply the mentioned techniques or build on Lakoff and Johnson’s work to analyse political discourse from primary data (i.e. speeches, policy documents, media coverage), including meta-reviews synthesising such studies. Primarily theoretical or methodological articles were excluded. A qualitative content analysis using a directed approach (Hsieh & Shannon, 2005) was then conducted on the 82 qualifying papers 3 to identify metaphors in the selected texts and allocate them to the categories in the draft typology. The directed approach was chosen as it allows for validating and extending an existing theoretical framework or typology. The analysis began with a close reading of each qualifying paper’s title, abstract, and methodology section, as these typically contain the most explicit and concise information about the key terms and definitions. During this reading, specific instances of metaphorical language were identified and recorded. Significant commonalities began to emerge. For example, Charteris-Black (2004) identified metaphors he labelled CONFLICT, JOURNEY, HEALTH, BUILDING, FIRE, PHYSICAL ENVIRONMENT, RELIGION , and BODY PARTS . Cammaerts (2012) identified SPORTS, GAMES, WAR , and TRANSPORT . Rotimi Taiwo (2010) found 
+
+BUILDING, BATTLE and JOURNEY . Vestermark (2007) saw a COMMUNITY, PERSON and HUMAN BEING . Mouna Hamrita (2016) found ALIENATION, EVIL, DEMON and WAR . Ezeifeka (2013) identified SACRIFICE, REWARDS IN HEAVEN, WAR/CONFLICT, VILLAINS, DISEASE/ILLNESS, A COG IN THE WHEEL , and DEAD ISSUE .For example, despite the use of ‘conflict’, ‘war’, and ‘battle’, the dynamics each author associates with the label are often very similar and, in many cases, use the same entailments. Charteris-Black (2011, p. 169) 
+
+> 2The year Lakoff and Johnson published the master list.
+> 3See Appendix for citations.
+
+Narrative Frames: A New Approach to Analysing Metaphors 9writes of his ‘conflict’ metaphor, “[they] are used to frame government policies as a military campaign”. Cammaerts (2012, p. 10) describes their ‘war’ metaphor as “political actors being on the defensive, digging in . . . denoting an unwillingness to compromise while at the same time waging a full-scale political war . . . requiring a united front against the enemy.” Taiwo (2013, p. 201) describes ‘battle’ as a “conceptualisation of [social] problems as something to war against . . . in a battle to establish freedom from dominant forces”. Hamrita (2016, p. 100) identifies ‘war’ when a politician situates opponents as “an enemy” in “clash and conflicts” where the public is encouraged to “fight them as they represent a symbolic destructive threat to the Tunisian identity”. Ezeifeka (2013, p. 184) wrote that ‘war/conflict’ frames “appeal to the emotions. . . about devastating consequences”, “which will take their toll on innocent victims”, who must be “protected and defended”. Identified metaphors were allocated to corresponding categories in the draft typology based on their conceptual similarity. For example, the above examples were evidence of a ‘WAR’ narrative frame, which appears in the master list as “ARGUMENTS are WAR”. As conceptual nuance began to emerge within common frames, nested, secondary narrative frames were created (such as JOURNEY/QUEST and JOURNEY/RACE ) to reflect the distinct narrative dynamics that emerged. Few existing works have tried to develop the master list into a typology similar to narrative frames. Kövecses (2010) perhaps making the most notable contribution, clustered the metaphors into 13 categories: ANIMALS , BUILDINGS AND CONSTRUCTION , COOKING AND FOOD , FORCES , GAMES AND SPORTS ,
+
+HEALTH AND ILLNESS , HEAT AND COLD , LIGHT AND DARKNESS , MACHINES AND TOOLS , MONEY AND ECONOMIC TRANSACTIONS , MOVEMENT AND DIRECTION , PLANTS , and HUMAN BODY . Yet there are some unusual exceptions— 
+
+JOURNEY , WAR and SUBSTANCE , explicitly stated in the master list and commonly cited in the literature, are notably absent. The process of identifying metaphors, allocating them to categories, and refining the typology was iterative and recursive. As new metaphors and categories emerged, the typology was renegotiated and restructured to capture better the range of metaphors present in the selected texts while also striving to maintain a concise and manageable set of categories to facilitate the typology’s use as a practical tool for researchers. This back-and-forth process continued until a comprehensive and coherent typology was developed that accounted for all identified metaphors. The final typology, resulting from this iterative analysis, not only validates the initial categories derived from the metaphor master list but also extends and refines them based on the metaphors used in real-world discourse. 
+
+# 5 Proposed Schema of Narrative Frames 
+
+The systematic process described in the previous section identified 49 narrative frames, organised into a hierar-chical framework that delineates primary conceptual domains (e.g., JOURNEY , MACHINE ) and nested categories reflecting specific instantiations with distinct narrative implications (e.g., JOURNEY/RACE , JOURNEY/QUEST ). This typology captures the diverse ways metaphorical framing operates in political discourse to shape public opinion and policy debates. The narrative frames in this typology serve as the fundamental foundations of metaphoric narratives, each with its unique characteristics and implications. Some frames, such as JOURNEY , WAR , and GAME , offer rich narrative landscapes that allow for complex storytelling and analogies, evoking specific actors, dynamics, goals, and challenges. Others, like BODY , SUBSTANCE , and OBJECT , focus on single aspects or components of a concept, representing a more elemental form of storytelling with limited scope for narrative elaboration. Frames like MACHINE , HEALTHCARE/DISEASE , and BUILDING/CONSTRUCTION facilitate discussions about how specific actions can have specific effects, such as ‘pulling a policy lever’ or ‘firming up public support.’ 
+
+Narrative Frames: A New Approach to Analysing Metaphors 10 It is important to note that while these narrative frames are the building blocks of metaphoric narratives, they are not exhaustive and can be integrated with each other to create new meanings. Narrative frames can be paired to create “blended spaces” (Fauconnier & Turner, 2003), enhancing meaning and emphasising specific characteristics. For example, blending the WAR and RACE frames can form an “Arms Race” narrative, combining elements from different frames to create a cohesive story. However, in these blends, the fundamental characteristics of the original frames persist, maintaining their distinct conceptual logic and narrative implications. The following Narrative Frame Schema, listed in no particular order, provides a preview of the full typology: 
+
+# 5.1 Narrative Frame Schema                                                  
+
+> 1. TIME
+> 2. ANIMAL
+> (a) ANIMAL/BEAST
+> 3. WAR
+> 4. GAME
+> 5. JOURNEY
+> (a) JOURNEY/RACE
+> (b) JOURNEY/QUEST
+> (c) JOURNEY/SPATIAL
+> 6. MACHINE
+> (a) MACHINE/CAR
+> (b) MACHINE/TRANSIT
+> 7. HEALTHCARE
+> (a) HEALTHCARE/DISEASE
+> (b) HEALTHCARE/VIRUS
+> 8. BODY
+> (a) BODY/EMBODIMENT
+> (b) BODY/SENSORY
+> 9. NATURAL WORLD
+> (a) NATURAL WORLD/PLANT
+> (b) NATURAL WORLD/ECOSYSTEM
+> (c) NATURAL WORLD/WEATHER
+> 10. SUBSTANCE
+> 11. OBJECT
+> (a) OBJECT/CONTAINER
+> 12. BUILDING
+> (a) BUILDING/CONSTRUCTION
+> 13. TRANSACTION
+> 14. INAUTHENTIC
+> 15. FOOD AND COOKING
+> 16. MYTHICAL
+> (a) MYTHICAL/JUDEOCHRISTIAN
+> (b) MYTHICAL/CLASSICAL
+> (c) MYTHICAL/SPIRITUAL
+> 17. VIEW
+> (a) VIEW/WINDOW
+> (b) VIEW/CAMERA
+> 18. PERFORMANCE
+> (a) PERFORMANCE/THEATRE
+> (b) PERFORMANCE/VISUAL ARTS
+> (c) PERFORMANCE/WRITING
+> (d) PERFORMANCE/MUSIC
+> 19. POLICING
+> 20. LEGAL ORDER
+> 21. POWER AND HIERARCHY
+> (a) POWER AND HIERARCHY/WORKPLACE
+> (b) POWER AND HIERARCHY/SLAVERY
+> 22. RELATIONSHIPS
+> (a) RELATIONSHIPS/FAMILY
+
+The following sections will explore two case study narrative frames, demonstrating the typology’s value as a comprehensive tool for understanding and critiquing metaphorical language’s power in political discourse. 
+
+# 5.2 A Closer Look: War 
+
+The WAR narrative frame is highly oppositional and competitive, presenting challenges, conflicts, or efforts as military battles. It places the reader in relation to an “opponent”, presenting an adversarial perspective that focuses on the role of strategy choices in achieving a goal. This is high stakes, zero-sum and defined by victory or defeat. It often emphasises a core set of ‘good’ values or principles we must rally around and defend to mobilise united, collective action with a burning sense of urgency and focus. It is characterised by entailments drawn from military language (i.e. battle, front lines, fight, invasion, adversary) and military symbols, imagery or references. This effect can be strengthened by using language that, while not overtly militaristic, enhances the frame in context, such as phrases like ‘stand together’ and ‘take action’. Its usage may have several normative ethical implications for AI policy. Firstly, it may lead to polarisation and adversarial dynamics (hindering constructive dialogue, collaboration, or compromise). Secondly, it may 
+
+Narrative Frames: A New Approach to Analysing Metaphors 11 oversimplify policy challenges’ complex and multifaceted nature into ‘good vs bad’ discussions. Thirdly, it may lead to the justification of extreme measures and overt militarisation of the technology (i.e. ignoring ethical principles such as transparency and accountability or directing funding towards R&D in military contexts rather than civilian ones). However, in certain contexts, the WAR frame may serve to underscore the gravity of the situation and the need for decisive action. By framing AI policy challenges as existential threats, may galvanise public support and political will to address pressing issues. The frame’s emphasis on unity and collective action could also foster a sense of shared responsibility and purpose in tackling complex problems. Examples include: 
+
+• “The war on unethical AI”, 
+
+• “On the front lines of AI Ethics”, 
+
+• “We must marshal our efforts and combat climate change”, 
+
+• “Battleground of data privacy”, 
+
+• “Deploying AI Safety”, 
+
+• “Unregulated AI deployment is a minefield ”, 
+
+• “We’re being blitzed by open-source models”. As one of the most common frames, WAR frequently blends with other frames that suggest momentum (e.g., 
+
+JOURNEY or RACE ) or cause and effect (e.g., MACHINE , BUILDING ). It shares many competitive and oppositional mechanics with the friendlier and more cooperative GAME .
+
+# 5.3 A Closer Look: Journey 
+
+The Journey narrative frame is a progressive and exploratory framework that situates challenges or pursuits within the context of a metaphorical expedition towards a desired outcome. It places the reader as an agent of movement in a dynamic spatial environment, emphasising strategic navigation and overcoming obstacles, whether natural, manufactured, or adversarial. It contains three sub-variants (detailed as distinct concepts in the supplementary schema) that represent the unique characteristics of this frame. Firstly, JOURNEY/RACE (which portrays progress or goal pursuit as a competitive race, emphasising speed, direct competition, rules of engagement, and rewards for success), 
+
+JOURNEY/QUEST (which depicts progress or goal pursuit as a quest, emphasising a deep sense of purpose, over-coming significant hardships, and the endurance required to achieve a meaningful goal), and JOURNEY/SPATIAL 
+
+(which focuses on the reader’s spatial relationship to other entities or locations without the implication of a goal-directed journey). Looking at the JOURNEY/RACE narrative frame more closely, it is a dynamic framework that positions motion as a race against time and adversaries, engaging the reader in a high-speed chase toward clearly defined, winnable goals. It is characterised by entailments drawn from language about competitive races (i.e. “accelerate,” “sprint,” “fast-track,” “outpace”). The race typically follows established rules and codes of conduct and requires rapid, strategic action that can be enhanced through training and preparation for success. Its usage in AI policy may have several normative implications. Firstly, it may overemphasise speed and competition, leading to rushed decision-making and a lack of due diligence. This may be especially true to longer-term consequences described as ‘beyond the finish line’, such as broader societal, economic or ethical consequences of ‘victory’. Secondly, its competitive nature may neglect collaborative or inclusive approaches 
+
+Narrative Frames: A New Approach to Analysing Metaphors 12 that hinder comprehensive or inclusive development (i.e. hoarding knowledge). Thirdly, it may reinforce and legitimise existing power imbalances and lead to the concentration of decision-making power (and benefits) to a small number of actors with more resources, expertise and access who ‘pull away’. Lastly, focusing on a single race may lead to overlooking the importance of exploring alternative approaches, methodologies, or objectives in AI development. Despite these risks, the JOURNEY/RACE frame may also serve to motivate and inspire action, driving innovation and progress in AI regulation. The structured nature of the competition could encourage adherence to established rules and codes of conduct, promoting responsible and ethical practices. The frame’s emphasis on overcoming obstacles and achieving clearly defined goals may also provide a sense of purpose and direction in the face of complex challenges. Examples include: 
+
+• “Accelerating towards a cure in the race against the pandemic”, 
+
+• “In the sprint for market dominance, speed and innovation lead ”, 
+
+• “We need to overcome obstacles to innovation”, 
+
+• “Leading the pack in adopting AI technologies”, 
+
+• “Racing to the top in green technology”, 
+
+• “The fast track to AI regulation compliance”. As another common frame, JOURNEY/RACE shares the foundational aspect of movement and progression with 
+
+JOURNEY but distinguishes itself through its emphasis on speed and competitive interaction, akin to GAME .It is often paired with MACHINE or BODY Narrative Frames, which facilitate conversations about the ‘vehicle’ with which you are participating in the race. It contrasts with WAR by focusing more on individual or team achievement within a structured competition rather than conflict. 
+
+# 6 Limitations 
+
+This study is limited by its exclusive focus on English-language publications and the potential omission of relevant studies due to variations in terminology and indexing across databases. Future research should aim to expand the scope of the literature review and assess the inter-coder reliability of the proposed schema. More broadly, as Quinn and Holland (1987) and Kövecses (2010) argue, capturing the full complexity of metaphorical framing is challenging due to cultural, contextual, and communicative factors that render metaphor interpretation inherently subjective. While acknowledging this debate, this paper does not seek to engage with it directly. Instead, it recognises the significant body of practice employing conceptual metaphor theory across various fields and argues that, given the widespread use of this approach and its potential to shape critical decisions in policy and AI development, it is valuable to attempt to bring these diverse practitioners together through a shared framework and common terms. The proposed framework aims to facilitate the identification, critique, and situating of narrative frames in political rhetoric more easily while maintaining a strong connection to conceptual metaphor theory’s foundations. By providing a common language and structure, this paper seeks to improve coordination and dialogue among the various fields of practice that employ conceptual metaphor theory, regardless of one’s stance on the possibility of a truly objective typology. The goal is to enhance the coherence and impact of this work, given its growing influence on important societal issues. 
+
+Narrative Frames: A New Approach to Analysing Metaphors 13 7 Conclusion 
+
+This paper has identified significant concerns in current conceptual metaphor analysis practices, such as inconsistent definitions and conceptual understandings. Misalignment between different fields working on conceptual metaphor and AI further exacerbates these issues. To address these challenges, the Narrative Frames typology is proposed as a new approach to understanding and navigating the complex debate surrounding AI ethics and policy. The Narrative Frames typology provides a shared language and framework for understanding the complex debate surrounding AI ethics and policy. It enables researchers, journalists, policymakers, and the public to more easily deconstruct the underlying assumptions, values, and goals promoted by different actors, leading to more informed discourse and decision-making. By providing a common foundation for interdisciplinary collaboration, Narrative Frames advance our understanding of how metaphors shape public perception and policy debates related to AI, which is crucial in a field where scholars from diverse backgrounds must work together. The rigorous methodology, grounded in established theoretical foundations and practical applications, positions this paper as a meaningful contribution to the literature on metaphors, framing, and AI ethics. As the AI discourse evolves, the Narrative Frames categorisation system will serve as a valuable tool for navigating the complexities of this critical conversation. 
+
+# References 
+
+Agerri, R., Barnden, J., Lee, M., & Wallington, A. (2008). Textual Entailment as an Evaluation Framework for Metaphor Resolution: A Proposal. In J. Bos & R. Delmonte (Eds.), Semantics in Text Processing. STEP 2008 Conference Proceedings (pp. 357–363). College Publications. https: //aclanthology.org/W08-2228 
+
+Baker, C. F., Fillmore, C. J., & Lowe, J. B. (1998). The Berkeley FrameNet Project. 36th Annual Meeting of the Association for Computational Linguistics and 17th International Conference on Computational Linguistics, Volume 1 , 86–90. https://doi.org/10.3115/980845.980860 
+
+Barkhuizen, G., & Wette, R. (2008). Narrative frames for investigating the experiences of language teachers. System , 36 (3), 372–387. https://doi.org/10.1016/j.system.2008.02.002 
+
+Borah, P. (2011). Conceptual Issues in Framing Theory: A Systematic Examination of a Decade’s Literature. Journal of Communication , 61 (2), 246–263. https://doi.org/10.1111/j.1460-2466.2011 .01539.x 
+
+Bosman, J., & Hagendoorn, L. (1991). Effects of Literal and Metaphorical Persuasive Messages. Metaphor and Symbolic Activity , 6 (4), 271–292. https://doi.org/10.1207/s15327868ms0604_3 
+
+Boulenger, V., Shtyrov, Y., & Pulvermüller, F. (2012). When do you grasp the idea? MEG evidence for instantaneous idiom understanding. NeuroImage , 59 (4), 3502–3513. https://doi.org/10.1016/j.neur oimage.2011.11.011 
+
+Brugman, B. C., Burgers, C., & Vis, B. (2019). Metaphorical framing in political discourse through words vs. concepts: A meta-analysis. Language and Cognition , 11 (1), 41–65. https://doi.org/10.1017/lang cog.2019.5 
+
+Cacciatore, M. A., Scheufele, D. A., & Iyengar, S. (2016). The End of Framing as we Know it . . . and the Future of Media Effects. Mass Communication and Society , 19 (1), 7–23. https://doi.org/10.108 0/15205436.2015.1068811 
+
+Cameron, L., Maslen, R., Todd, Z., Maule, J., Stratton, P., & Stanley, N. (2009). The Discourse Dynamics Approach to Metaphor and Metaphor-Led Discourse Analysis. Metaphor and Symbol , 24 (2), 63. Cammaerts, B. (2012). The strategic use of metaphors by political and media elites: The 2007–11 Belgian 
+
+Narrative Frames: A New Approach to Analysing Metaphors 14 constitutional crisis. International Journal of Media and Cultural Politics , 8 (2/3). Casasanto, D. (2009). Space for Thinking. In Language, Cognition and Space: State of the art and new directions (pp. 453–478). Equinox Publishing. https://www.equinoxpub.com/home/view-chapter/?id =22052 
+
+Cave, S., & Ó hÉigeartaigh, S. (2017). An AI Race for Strategic Advantage: Rhetoric and Risks (SSRN Scholarly Paper 3446708). https://papers.ssrn.com/abstract=3446708 
+
+Chambers, N., & Jurafsky, D. (2008). Unsupervised Learning of Narrative Event Chains. In J. D. Moore, S. Teufel, J. Allan, & S. Furui (Eds.), Proceedings of ACL-08: HLT (pp. 789–797). Association for Computational Linguistics. https://aclanthology.org/P08-1090 
+
+Charteris-Black, J. (2004). Corpus Approaches to Critical Metaphor Analysis . Springer. Charteris-Black, J. (2011). Politicians and Rhetoric: The Persuasive Power of Metaphor . Springer. Citron, F. M. M., & Goldberg, A. E. (2014). Metaphorical sentences are more emotionally engaging than their literal counterparts. Journal of Cognitive Neuroscience , 26 (11), 2585–2595. https://doi.org/10 .1162/jocn_a_00654 
+
+Colburn, T. R., & Shute, G. M. (2008). Metaphor in computer science. Journal of Applied Logic , 6 (4), 526–533. https://doi.org/10.1016/j.jal.2008.09.005 
+
+Desai, R. H., Binder, J. R., Conant, L. L., Mano, Q. R., & Seidenberg, M. S. (2011). The neural career of sensory-motor metaphors. Journal of Cognitive Neuroscience , 23 (9), 2376–2386. https: //doi.org/10.1162/jocn.2010.21596 
+
+Entman, R. M. (1993). Framing: Toward Clarification of a Fractured Paradigm. Journal of Communication ,
+
+43 (4), 51–58. https://doi.org/10.1111/j.1460-2466.1993.tb01304.x 
+
+Entman, R. M., Matthes, J., & Pellicano, L. (2008). Nature, Sources, and Effects of News Framing. In 
+
+The Handbook of Journalism Studies . Routledge. Ezeifeka, C. (2013). Strategic Use of Metaphor in Nigerian Newspaper Reports: A Critical Perspective .
+
+https://www.semanticscholar.org/paper/Strategic-Use-of-Metaphor-in-Nigerian-Newspaper -A-Ezeifeka/b53c25d528d164bacbf37bf474d799e64a343b74 
+
+Fauconnier, G., & Turner, M. (2003). The Way We Think: Conceptual Blending And The Mind’s Hidden Complexities . Basic Books. Feldman, J., & Narayanan, S. (2004). Embodied meaning in a neural theory of language. Brain and Language , 89 (2), 385–392. https://doi.org/10.1016/S0093-934X(03)00355-9 
+
+Feldman, R. (2006). From biological rhythms to social rhythms: Physiological precursors of mother-infant synchrony. Developmental Psychology , 42 (1), 175–188. https://doi.org/10.1037/0012-1649.42.1.1 75 
+
+Fillmore, C., & Baker, C. F. (2001). Frame semantics for text understanding . https://www.semanticsc holar.org/paper/Frame-semantics-for-text-understanding-Fillmore-Baker/72cc80486744320 d5b9a2ea75e3fb1cde4ca669c 
+
+Fillmore, C. J. (1975). An Alternative to Checklist Theories of Meaning. Annual Meeting of the Berkeley Linguistics Society , 123–131. https://doi.org/10.3765/bls.v1i0.2315 
+
+Fillmore, C. J. (1976). Frame Semantics and the Nature of Language. Annals of the New York Academy of Sciences , 280 (1), 20–32. https://doi.org/10.1111/j.1749-6632.1976.tb25467.x 
+
+Fillmore, C. J., Johnson, C. R., & Petruck, M. R. L. (2003). Background to FrameNet. International Journal of Lexicography , 16 (3), 235–250. https://doi.org/10.1093/ijl/16.3.235 
+
+Gibbs Jr., R. W. (2017). Metaphor wars: Conceptual metaphors in human life . Cambridge University Press. https://doi.org/10.1017/9781107762350 
+
+Gibbs, R. W. (1994). The Poetics of Mind: Figurative Thought, Language, and Understanding . Cambridge University Press. Gibbs, R. W. (2011). Evaluating Conceptual Metaphor Theory. Discourse Processes , 48 (8), 529–562. 
+
+Narrative Frames: A New Approach to Analysing Metaphors 15 https://doi.org/10.1080/0163853X.2011.606103 
+
+Goatly, A. (1997). The Language of Metaphors . Routledge. https://doi.org/10.4324/9780203210000 
+
+Hamrita, M. (2016). The Metaphorical and Ideological Representation of the Political Opponent in the Hardline Islamist Discourse in Tunisia . https://www.academia.edu/66645220/The_Metaphorical_a nd_Ideological_Representation_of_the_Political_Opponent_in_the_Hardline_Islamist_Disco urse_in_Tunisia 
+
+Hanna, R. (2017). Kant’s Theory of Judgment: Completing the Picture of Kant’s Metaphysics of Judgment. In Stanford Encyclopedia of Philosophy . https://plato.stanford.edu/entries/kant-judgment/supp lement5.html 
+
+Herrnson, P. S., Stokes-Brown, A. K., & Hindman, M. (2007). Campaign Politics and the Digital Divide: Constituency Characteristics, Strategic Considerations, and Candidate Internet Use in State Legislative Elections. Political Research Quarterly , 60 (1), 31–42. https://doi.org/10.1177/1065912906298527 
+
+Hertog, J., & Mcleod, D. (2001). A multiperspectival approach to framing analysis: A field guide. In 
+
+Reese, Gandy, and Grant (pp. 139–161). Holland, D., & Quinn, N. (Eds.). (1987). Cultural Models in Language and Thought . Cambridge University Press. Hsieh, H.-F., & Shannon, S. E. (2005). Three Approaches to Qualitative Content Analysis. Qualitative Health Research , 15 (9), 1277–1288. https://doi.org/10.1177/1049732305276687 
+
+Imani, A. (2022). Critical Metaphor Analysis: A Systematic Step-by-step Guideline. LSP International Journal , 9 (1). https://doi.org/10.11113/lspi.v9.17975 
+
+Jiang, J., Lupoiu, R., Wang, E. W., Sell, D., Hugonin, J. P., Lalanne, P., & Fan, J. A. (2020). MetaNet: A new paradigm for data sharing in photonics research. Optics Express , 28 (9), 13670–13681. https: //doi.org/10.1364/OE.388378 
+
+Johnson, M. (1987). The body in the mind: The bodily basis of meaning, imagination, and reason .University of Chicago Press. Kant, I. (2003). The Critique of Pure Reason [eBook]. Project Gutenberg. https://www.gutenberg.or g/files/4280/4280-h/4280-h.htm 
+
+Kovecses, Z. (2010). Metaphor: A Practical Introduction . Oxford University Press. Lacey, S., Stilla, R., & Sathian, K. (2012). Metaphorically feeling: Comprehending textural metaphors activates somatosensory cortex. Brain and Language , 120 (3), 416–421. https://doi.org/10.1016/j.ba ndl.2011.12.016 
+
+Lakoff, G. (2004). Don’t Think of an Elephant: Know Your Values and Frame the Debate . Chelsea Green Publishing. Lakoff, G. (2008). The neural theory of metaphor. In The Cambridge handbook of metaphor and thought 
+
+(pp. 17–38). Cambridge University Press. https://doi.org/10.1017/CBO9780511816802.003 
+
+Lakoff, G. (2009). The Political Mind: A Cognitive Scientist’s Guide to Your Brain and Its Politics .Penguin Books. Lakoff, G., & Johnson, M. (1980). Metaphors We Live By . University of Chicago Press. Landau, M. J., Oyserman, D., Keefer, L. A., & Smith, G. C. (2014). The college journey and academic engagement: How metaphor use enhances identity-based motivation. Journal of Personality and Social Psychology , 106 (5), 679–698. https://doi.org/10.1037/a0036414 
+
+Lee, M., & Barnden, J. (2001a). Application of the ATT-Meta Metaphor-Understanding System to an Example of the Metaphorical View of MIND PARTS AS PERSONS .Lee, M., & Barnden, J. (2001b). Mental Metaphors from the Master Metaphor List: Empirical Examples and the Application of the ATT-Meta System .Leeper, T., & Slothuus, R. (2020). How the News Media Persuades: Framing Effects and Beyond. In E. Suhay, B. Grofman, & A. H. Trechsel (Eds.), Oxford Handbook of Electoral Persuasion (pp. 151–168). 
+
+Narrative Frames: A New Approach to Analysing Metaphors 16 Oxford University Press. https://doi.org/10.1093/oxfordhb/9780190860806.013.4 
+
+Litkowski, K. (2010). Multilingual FrameNets in Computational Lexicography: Methods and Applications. 
+
+International Journal of Lexicography , 23 , 105–109. https://doi.org/10.1093/ijl/ecp034 
+
+Martin, J. H. (1994). Metabank: A Knowledge-Base of Metaphoric Language Conventions. Computational Intelligence , 10 (2), 134–149. https://doi.org/10.1111/j.1467-8640.1994.tb00161.x 
+
+Matthes, J. (2009). What’s in a Frame? A Content Analysis of Media Framing Studies in the World’s Leading Communication Journals, 1990–2005. Journalism & Mass Communication Quarterly , 86 (2), 349–367. https://doi.org/10.1177/107769900908600206 
+
+Minsky, M. (1975). A Framework for Representing Knowledge. In P. Winston (Ed.), The Psychology of Computer Vision (pp. 211–277). McGraw-Hill. https://dspace.mit.edu/bitstream/handle/1721.1 /6089/AIM-306.pdf?sequence=2 
+
+Musolff, A. (2004). Metaphor and political discourse: Analogical reasoning in debates about Europe .
+
+https://doi.org/10.1057/9780230504516 
+
+Musolff, A. (2006). Metaphor Scenarios in Public Discourse. Metaphor and Symbol , 21 . https: //doi.org/10.1207/s15327868ms2101_2 
+
+Musolff, A. (2011). Metaphor in political dialogue. Language and Dialogue , 1, 191–206. https: //doi.org/10.1075/ld.1.2.02mus 
+
+Needham-Didsbury, I. (2013). Endangered Metaphors. Intercultural Pragmatics . https://www.academia .edu/5236298/IdstrÃűm_and_Piirainen_2012_Endangered_Metaphors_Cognitive_Linguistic_St udies_in_Cultural_Contexts_CLSCC_ 
+
+Nikolí, D. (2009). Is synaesthesia actually ideaesthesia? An inquiry into the nature of the phenomenon .
+
+https://www.semanticscholar.org/paper/IS-SYNAESTHESIA-ACTUALLY-IDEAESTESIA-AN-INQUIRY -THE-NikolÃŋ/622600e08f7d1ee2c6e27a8933239addbc56bd44 
+
+Piaget, J. (1952). The Origins of Intelligence in Children . International Universities Press. Pragglejaz Group. (2007). MIP: A Method for Identifying Metaphorically Used Words in Discourse. 
+
+Metaphor and Symbol , 22 (1), 1–39. https://doi.org/10.1080/10926480709336752 
+
+Robins, S., & Mayer, R. E. (2000). The Metaphor Framing Effect: Metaphorical Reasoning About Text-Based Dilemmas. Discourse Processes , 30 (1), 57–86. https://doi.org/10.1207/S15326950dp3001_03 
+
+Schank, R. C., & Abelson, R. P. (1977). Scripts, Plans, Goals, and Understanding: An Inquiry Into Human Knowledge Structures . Psychology Press. https://doi.org/10.4324/9780203781036 
+
+Scheufele, D., & Iyengar, S. (2014). The state of framing research: A call for new directions . https: //doi.org/10.1093/oxfordhb/9780199793471.013.47 
+
+Schmidt, G. L., & Seger, C. A. (2009). Neural correlates of metaphor processing: The roles of figurativeness, familiarity and difficulty. Brain and Cognition , 71 (3), 375–386. https://doi.org/10.1016/j.bandc.20 09.06.001 
+
+Semino, E. (2008). Metaphor in Discourse . Cambridge University Press. Semino, E., Demjén, Z., & Demmen, J. (2018). An Integrated Approach to Metaphor and Framing in Cognition, Discourse, and Practice, with an Application to Metaphors for Cancer. Applied Linguistics ,
+
+39 (5), 625–645. https://doi.org/10.1093/applin/amw028 
+
+Shutova, E., Kiela, D., & Maillard, J. (2016). Black Holes and White Rabbits: Metaphor Identification with Visual Features. In K. Knight, A. Nenkova, & O. Rambow (Eds.), Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (pp. 160–170). https://doi.org/10.18653/v1/N16-1020 
+
+Steen, G. (2011). The Language of Knowledge Management: A Linguistic Approach to Metaphor Analysis. 
+
+Systems Research and Behavioral Science , 28 , 181–188. https://doi.org/10.1002/sres.1087 
+
+Steinhart, E. (2005). Generating and Interpreting Metaphors with Netmet. APA Newsletter on Philosophy and Computers , 4 (2). https://philarchive.org/rec/STEGAI-2 
+
+Narrative Frames: A New Approach to Analysing Metaphors 17 Stickles, E., David, O., Dodge, E., & Hong, J. (2016). Formalizing contemporary conceptual metaphor theory: A structured repository for metaphor analysis. Constructions and Frames , 8. https://doi.org/ 10.1075/cf.8.2.03sti 
+
+Taiwo, R. (2013). Metaphor in Nigerian Political Discourse. Select Papers from the 2008 Stockholm Metaphor Festival , 193–207. https://www.academia.edu/14941242/Metaphor_in_Nigerian_Politic al_Discourse 
+
+Thibodeau, P. H., & Boroditsky, L. (2013). Natural Language Metaphors Covertly Influence Reasoning. 
+
+PLOS ONE , 8 (1), e52961. https://doi.org/10.1371/journal.pone.0052961 
+
+Thibodeau, P. H., Hendricks, R. K., & Boroditsky, L. (2017). How Linguistic Metaphor Scaffolds Reasoning. 
+
+Trends in Cognitive Sciences , 21 (11), 852–863. https://doi.org/10.1016/j.tics.2017.07.001 
+
+Thibodeau, P., Winneg, A., Frantz, C., & Flusberg, S. (2016). The mind is an ecosystem: Systemic metaphors promote systems thinking. Metaphor and the Social World , 6, 225–242. https://doi.org/10 .1075/msw.6.2.03thi 
+
+Veale, T., Shutova, E., & Klebanov, B. (2016). Metaphor: A Computational Perspective. Synthesis Lectures on Human Language Technologies , 9, 1–160. https://doi.org/10.2200/S00694ED1V01Y201601HLT031 
+
+Vervaeke, J., & Kennedy, J. M. (1996). Metaphors in Language and Thought: Falsification and Multiple Meanings. Metaphor and Symbolic Activity , 11 (4), 273–284. https://doi.org/10.1207/s15327868ms1 104_3 
+
+Ziem, A. (2021). FrameNet, Barsalou Frames and the Case of Associative Anaphora (pp. 93–112). 
+
+https://doi.org/10.1515/9783110720129-005 
+
+Narrative Frames: A New Approach to Analysing Metaphors 18

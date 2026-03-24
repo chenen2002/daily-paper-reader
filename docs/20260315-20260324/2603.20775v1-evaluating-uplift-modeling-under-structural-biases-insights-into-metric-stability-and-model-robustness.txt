@@ -1,0 +1,719 @@
+Title: Evaluating Uplift Modeling under Structural Biases: Insights into Metric Stability and Model Robustness
+
+URL Source: https://arxiv.org/pdf/2603.20775v1
+
+Published Time: Tue, 24 Mar 2026 00:50:31 GMT
+
+Number of Pages: 17
+
+Markdown Content:
+# EVALUATING UPLIFT MODELING UNDER STRUCTURAL BIASES :INSIGHTS INTO METRIC STABILITY AND MODEL ROBUSTNESS 
+
+# Yuxuan Yang 1,2 Dugang Liu 1∗ Yiyan Huang 2∗
+
+> 1
+
+Shenzhen University, 2Great Bay University 
+
+yyuxuan959@gmail.com, dugang.ldg@gmail.com, huangyiyan@gbu.edu.cn 
+
+# ABSTRACT 
+
+In personalized marketing, uplift models estimate the incremental effect of an intervention by modeling how customer behavior would change under alternative treatments using counterfactual analysis. However, real-world marketing data often exhibit various biases, such as selection bias, spillover effects, measurement error, and unobserved confounding. These biases can adversely affect both the accuracy of uplift estimation and the validity of evaluation metrics. Despite the importance of bias-aware assessment, there remains a lack of systematic studies evaluating how different models and metrics perform under such biased conditions. To bridge this gap, we design a systematic benchmarking framework. Unlike standard predictive tasks, real-world uplift datasets inherently lack counterfactual ground truth. This limitation renders the direct validation of evaluation metrics infeasible and prevents the precise quantification of biases. Therefore, a semi-synthetic approach serves as a critical enabler for systematic benchmarking. This approach effectively bridges the gap by retaining real-world feature dependencies while providing the ground truth needed to isolate structural biases. Our investigations reveal that: (i) our results indicate that uplift targeting and prediction can manifest as distinct objectives, where proficiency in one does not ensure efficacy in the other; (ii) while many models exhibit inconsistent performance under diverse biases, TARNet shows notable robustness, providing insights for subsequent model design; (iii) the stability of evaluation metrics is linked to their mathematical alignment with the ATE, suggesting that ATE-approximating metrics yield more consistent model rankings under structural data imperfections. These findings suggest the need for more robust uplift models and evaluation metrics under real-world data imperfections. Code will be released to the public once the manuscript is accepted. 
+
+Keywords Uplift Modeling,Model Evaluation,Causal Inference,Uplift Benchmarking 
+
+# 1 Introduction 
+
+Uplift modeling has emerged as a pivotal methodology for optimizing decision-making in personalized marketing by estimating the individual uplift from target interventions (e.g., advertisements or promotions) for those who are most likely to show incremental responses (e.g., clicks or purchases). Based on the potential outcomes framework of causal inference [ 1], uplift modeling aims to quantify the difference between an individual’s potential outcomes, Y 1 (under treatment) and Y 0 (under control), thereby capturing the individualized treatment effect (ITE) Y 1 − Y 0. However, this is challenging due to the fundamental problem in causal inference that only one potential outcome is observable (factual), while the other remains unobservable (counterfactual), rendering the ITE unidentifiable and complicating both model training and validation [1]. To address the unidentifiability of ITE, most uplift methods focus on estimating the Conditional Average Treatment Effect (CATE), τ (x) = E[Y 1 − Y 0 | X = x], which approximates the ITE given observed covariates X. State-of-the-art approaches range from meta-learners (e.g., [ 2, 3]) to neural network architectures (e.g., [ 4 , 5]). This paradigm has been widely employed across diverse domains, including healthcare [ 6 , 7], education [ 8 , 9 ], policy evaluation 
+
+> ∗
+
+Corresponding author. 
+
+> arXiv:2603.20775v1 [cs.LG] 21 Mar 2026
+
+[ 10 , 11 ], customer retention [ 12 , 13 ], recommendation systems [ 14 , 15 ], and e-commerce [ 16 , 17 , 18 ]. Uplift models are particularly critical in data-driven decision-making contexts such as digital marketing, owing to their ability to optimize resource allocation by quantifying incremental effects and maximizing response rates. Nevertheless, the effectiveness of uplift models depends on several key assumptions in causal inference. First, the Stable Unit Treatment Value Assumption (SUTVA) precludes interference between units. Second, the unconfoundedness assumption requires that all covariates affecting both treatment and outcomes be fully observed. Third, uplift models are typically trained on real-world marketing data under randomized control trials (RCTs), thereby mitigating covariate shift between treatment and control groups. In practice, these assumptions often fail due to common biases in marketing data—such as selection bias, spillover effects, measurement error, and hidden confounding—which can distort uplift estimates and undermine decision-making [19, 20, 21]. Coincidentally, uplift model evaluation faces parallel challenges. The gold-standard metrics, Precision in Estimation of Heterogeneous Effects (PEHE) for individual-level uplift accuracy and Average Treatment Effect (ATE) for population-level targeting performance, are infeasible in practice due to unobservable counterfactuals [ 22 , 23 ]. Consequently, practitioners rely on surrogate metrics, including Uplift score, Area Under the Uplift Curve (AUUC), and Qini coefficient, to assess model quality [ 24 , 25 ]. These metrics, originally designed for idealized experimental settings, may implicitly depend on the above assumptions. This raises concerns about their reliability in model evaluation when biases violate these constraints, potentially leading to erroneous model rankings and suboptimal model selection [26, 27]. 
+
+Contributions. Despite the prevalence of structural biases in online marketing data, their impact on model reliability and metric validity in uplift modeling has received little attention. In this paper, we prioritize establishing a systematic understanding of uplift model and metric robustness under real-world marketing biases, rather than introducing novel methodologies. Our goal is to deliver actionable insights into existing tools, addressing a critical need in uplift modeling research to facilitate reliable deployment in practice and inspire future work on bias-resilient evaluation metrics. Specifically, our contributions are threefold: 
+
+(1) We conduct a comprehensive analysis for the complex interplay between data biases and uplift modeling. We discuss inherent challenges within marketing contexts posed by selection bias, spillover effects, measurement error, and hidden confounding, and provide empirical evidence on their separate and combined impacts on uplift model training and evaluation. 
+
+(2) We propose desiderata for experimental design that disentangle bias effects in uplift benchmarks. We advocate for controlled semi-synthetic environments that simulate realistic marketing scenarios, incorporate tunable bias parameters for isolated and combined analysis, and explore interactions between biases, targeting fractions, uplift learners, and evaluation metrics. Our findings highlight the need for a more careful task-dependent experimental design with adequate targeting fractions and evaluation metrics to select targeting strategies in biased scenarios. 
+
+(3) We gain important insights into the robustness of the uplift model and evaluation metrics through our comprehensive empirical investigations. Specifically, we conclude that (i) our results demonstrate a divergence between uplift targeting and prediction, where proficiency in one task does not guarantee success in the other; (ii) while many models exhibit inconsistent performance across diverse biases, TARNet shows notable robustness, suggesting that its structural separation of potential outcome modeling provides valuable insights for designing resilient architectures; (iii) the stability of evaluation metrics is linked to their mathematical alignment with the population-level causal operator, indicating that ATE-approximating metrics yield more consistent model rankings under structural data imperfections. 
+
+# 2 Related Work 
+
+Common Biases in Personalized Marketing. Uplift modeling in personalized marketing is susceptible to several structural biases that can violate key causal assumptions and compromise the accuracy of treatment effect estimation. One major source is selection bias , which arises when treatment assignment is systematically influenced by observed covariates (non-RCT scenario). This can lead to covariate distributional shifts between treated and control groups, reducing the generalizability of outcome models across groups and distorting uplift estimates [ 28 , 19 , 29 ]. Another pervasive phenomenon is spillover effects , also known as interference, which violates the SUTVA by allowing one individual’s treatment assignment to affect the outcomes of others. Such violations are common in social platforms like TikTok, where user interactions can propagate treatment effects across social networks [ 24 , 30 , 31 ]. A third source of bias is measurement error in covariates, arising from noisy data sources such as self-reported surveys or misrecorded data. These inaccuracies introduce noise into model inputs, which can cause models to overfit to noisy patterns and misspecified causal effects [ 32 , 20 ]. Finally, unobserved confounding poses a fundamental threat to identifiability in causal inference. When latent variables (e.g., user mood or private income) influence both treatment assignment and 2outcomes but are unmeasured, causal estimators can be non-identifiable, thus leading to biased causal estimates from observational data [21, 33, 34]. 
+
+Uplift Modeling and Uplift Evaluation. Recent research on uplift modeling has focused on two primary classes of methods: meta-learners and neural network–based models. Meta-learners, including the S-learner, T-learner, X-learner, R-learner, U-learner, and DR-learner [ 35 , 2, 36 ], estimate the CATE by fitting separate or joint outcome models with tailored loss functions. While these approaches are widely applicable, their performance depends heavily on the estimation quality of the base learners and the validity of key causal assumptions. Neural network models, such as BNN [ 37 ], TARNet and CFRNet [ 4 ], Dragonnet [ 5], FlexTENet [ 38 ], DESCN [ 39 ], and EFIN [ 40 ], leverage deep representation learning to capture complex and nonlinear potential outcome functions, often incorporating balancing objectives to reduce confounding bias. Despite these methodological innovations, uplift evaluation remains a persistent challenge, especially in observational settings where counterfactual outcomes are unavailable. Ideal evaluation criteria such as the PEHE and ATE provide gold-standard accuracy measures of uplift models, but require access to both potential outcomes, which is infeasible in real-world applications [ 22 , 23 ]. Consequently, practitioners often rely on gain-curve–based metrics, including Uplift score, AUUC, and Qini coefficient [ 24 , 25 ]. Although widely used, these metrics implicitly rely on the same causal assumptions as the models themselves, which might render them invalid when those assumptions are violated. 
+
+# 3 Problem Setup 
+
+This paper follows the standard potential outcomes framework for uplift modeling. Let {(Xi, T i, Y i)}Ni=1 be a dataset of N units, where X ∈ Rd denotes customer covariates, T ∈ { 0, 1} is a binary treatment, and Y ∈ R is a continuous outcome. Each unit has two potential outcomes, Y 1 and Y 0, while only one of them can be observed as the factual outcome Y = T Y 1 + (1 − T )Y 0. The CATE is defined as τ (x) = E[Y (1) − Y (0) | X = x], and the goal of uplift modeling is to learn an estimator ˆτ (x) of τ (x) from observational data, for either uplift prediction (predicting individual-level uplift values) or uplift targeting (targeting top-ranked individuals to maximize the total response). Uplift modeling usually relies on several key assumptions: 1. Randomized Controlled Trials (RCTs): Treatment is randomly assigned in data for training and evaluation. 2. Stable Unit Treatment Value Assumption (SUTVA): A unit’s outcome depends only on the treatment it receives and is unaffected by the treatments assigned to other units. 3. Unconfoundedness: There are no unobserved confounders, i.e., (Y 0, Y 1) ⊥ T | X.4. Overlap: Every unit has a non-zero probability of receiving either treatment, i.e., P (T = 1 |X = x) > 0.5. Consistency: The observed outcome equals the potential outcome under the received treatment. In most studies, Assumptions (4) and (5) hold by design. However, Assumption (1) may be violated by selection bias or limited resources to conduct RCTs; Assumption (2) may be violated by interference effects; and Assumption (3) may be violated by measurement error or hidden confounding. Such violations can bias uplift estimation and lead to misleading model evaluations. Therefore, the goal of this study is to investigate the model reliability and metric validity when Assumptions (1-3) are not satisfied. 
+
+3.1 Uplift Models 
+
+We evaluate nine representative uplift models, comprising the S-learner, T-learner, X-learner[ 35 ], R-learner[ 2], U-learner[ 2 ], DR-learner [ 3 , 36 ], RA-learner [ 41 ], TARNet [ 4] and Dragonnet [ 5 ]. Detailed descriptions are provided in Section A. 
+
+3.2 Evaluation Metrics 
+
+We evaluate model performance using five metrics, categorized into two groups: (i) oracle metrics, including PEHE k[42 ,4 , 26 ] and ATE k; and (ii) practical metrics, comprising Uplift k, AUUC k[43 , 26 ] and Qini k[44 , 45 , 46 , 24 , 47 ]. Detailed descriptions are provided in Section B. 
+
+# 4 Challenges for Uplift Modeling 
+
+In this section, we discuss three main challenges that online marketing practitioners encounter in uplift modeling. 3Challenge 1: Missing Counterfactual Outcomes. 
+
+The core challenge in causal inference is the missing counterfactual. For any individual, we can only observe one potential outcome (the potential outcome is under either treatment or control), but never both [ 48 ]. This fundamental limitation precludes direct learning of individual-level treatment effects, complicating both training and evaluation tasks in uplift modeling. 
+
+Challenge 2: Structural Biases in Marketing Data. 
+
+Selection bias: personalized targeting induces covariate shift between treatment groups Personalized marketing frequently leverages recommender systems informed by customer preferences (e.g., browsing behavior [ 49 ] and past purchases [ 29 ]). When recommendations drive treatment assignment, the treated and control groups differ systematically in their covariates. Formally, assignment is non-random and exhibits covariate shift: P (X|T = 1) ̸ = P (X|T = 0) ,which further leads to a shift between factual and counterfactual distributions [ 4 ]. As a result, models trained on the factual domain cannot generalize to the entire domain [50, 51, 52]. 
+
+Spillover effects: social influence violates SUTVA and overestimates uplift values. Consumers’ purchasing decisions are often affected by factors related to other people (e.g., perceived price fairness [ 31 ], friends’ recommendations [ 53 ]), which violates the fundamental SUTVA assumption. In this case, potential outcomes are no longer independent across individuals. For a specific individual i, Yi can depend on treatment and outcomes of its neighbors. This network dependence complicates the potential-outcome structure, making individual covariates insufficient to over-explain uplift values and introducing bias into CATE estimation [54, 55]. 
+
+Measurement error: noisy customer features distort training and estimation. Platform-collected features can contain errors due to limited time in research interview [ 56 ], data entry mistakes [ 57 ], and survey design [ 20 ]. Denoting the true features by X and the measurement noise by ϵx, the observed features become Xobs = X + ϵx. Such perturbations not only introduce latent noise that violates SUTVA but also degrade feature informativeness and propagate bias into CATE estimates [58, 59]. 
+
+Unobserved confounding: latent factors confound treatment–outcome relationships. Unmeasured factors in marketing, such as cultural context [ 60 ] and transient mood [ 61 ], can violate the Unconfoundedness assumption, leading to 
+
+(Y 0, Y 1)̸ ⊥ T |X. Even with rich observed covariates, missing latent factors still prevent correct model specification, undermining uplift estimation and the validity of downstream decision—making [62, 63, 64]. 
+
+Challenge 3: Metric Validity under Biases. 
+
+PEHE and ATE are ideal metrics for evaluating uplift models [ 22 , 23 ], but they are infeasible in practice due to the missing counterfactual problem (Challenge 1). Practitioners therefore rely on observable surrogates such as Uplift, AUUC, and the Qini coefficient (see Section 3.2), which are typically informative in randomized controlled trials [ 65 ]. In real marketing settings, however, data are rarely randomized, and even when they are randomized, they often exhibit the biases described above. This raises a critical yet underexplored question: to what extent do selection bias, spillover effects, measurement error, and unobserved confounding compromise these evaluation metrics? Prior work has shown that these metrics can be unreliable in certain cases [ 66 , 26 ], but the field still lacks a clear mapping from the type and magnitude of bias to the resulting degradation in metric reliability. Such an exploration is essential for model selection and for designing robust evaluation protocols in real-world biased environments. 
+
+# 5 Experiments 
+
+5.1 Experimental Setup 
+
+To evaluate the robustness of uplift models and their evaluation metrics under structural biases commonly observed in marketing data, we design a semi-synthetic experimental framework, a widely adopted approach in causal inference [ 51 , 27 , 23 ]. This is motivated by three considerations. First, real-world datasets lack counterfactual outcomes, making it impossible to directly assess model accuracy or metric validity. Second, although many benchmark uplift datasets originate from RCTs, they may still be affected by spillover effects or measurement error, hindering both uplift estimation and model evaluation. Third, semi-synthetic data generation allows us to control the severity of multiple bias types while preserving realistic feature distributions, enabling comprehensive and systematic robustness analysis. To create the semi-synthetic data, we collect covariates from the Hillstrom dataset [ 67 ], a benchmark in uplift modeling [ 68 , 69 ]. Compared to the massive and sparse Criteo dataset[ 70 ], Hillstrom’s compact scale allows for better experimental control. By mitigating the interference of high-dimensional sparsity, this dataset provides an effective testbed for a focused analysis of our proposed mechanisms and the resulting performance shifts. Specifically, it contains 
+
+n = 64 ,000 samples, and each sample has covariates Xi ∈ Rd with d = 8 , consisting of 1 continuous and 7 discrete 4variables. We simulate treatment assignments and potential outcomes using the following data-generating process (DGP). We first define the neighborhood of unit i as 
+
+N (i) = {Xj : ∥Xi − Xj ∥2 ≤ 0.1},
+
+which captures all units within a fixed Euclidean distance. Using N (i), we compute the average treatment value and the average outcome value contributed by its neighbors: 
+
+σN (i) = 1
+
+|N (i)|
+
+X  
+
+> Xj∈N(i)
+
+ζj , γtN (i) = 1
+
+|N (i)|
+
+X  
+
+> Xj∈N(i)
+
+γtj .
+
+The treatment assignment for unit i follows a Bernoulli distribution: 
+
+Ti | Xi ∼ Bern  1/  1 + exp  −ξ  ζi + 0 .2 σN (i) + 0 .3 , (1) where the individual baseline treatment value function is defined as ζi = β⊤ 
+
+> T
+
+Xi with βT ∼ N (−0.2, 0.01) .The potential outcomes and observed outcomes are generated by 
+
+Y ti = γti + θtγtN (i), t ∈ { 0, 1};
+
+Yi = TiY 1 
+
+> i
+
++ (1 − Ti)Y 0 
+
+> i
+
++ ϵ, ϵ ∼ N (0 , 0.1) , (2) where γti captures the i-th individual’s baseline outcome value under treatment t, and γtN (i) represents the average γt of its neighbors. Specifically, the function γti incorporates linear, quadratic, and cubic (for t = 1 ) interaction terms of the covariates: 
+
+γ0 
+
+> i
+
+=
+
+> d
+
+X
+
+> j=1
+
+β0 
+
+> j
+
+Xi,j +
+
+> d
+
+X
+
+> j,k =1
+
+β0
+
+> j,k
+
+Xi,j Xi,k ,γ1 
+
+> i
+
+=
+
+> d
+
+X
+
+> j=1
+
+β1 
+
+> j
+
+Xi,j +
+
+> d
+
+X
+
+> j,k =1
+
+β1
+
+> j,k
+
+Xi,j Xi,k +
+
+> d
+
+X
+
+> j,k,l =1
+
+β1
+
+> j,k,l
+
+Xi,j Xi,k Xi,l .
+
+The coefficients are drawn as follows: β0 
+
+> j
+
+∼ Bern(0 .3) , β0 
+
+> j,k
+
+∼ Bern(0 .2) , β1 
+
+> j
+
+∼ Bern(0 .2) , β1 
+
+> j,k
+
+∼ Bern(0 .5) , and 
+
+β1 
+
+> j,k,l
+
+∼ Bern(0 .6) . Moreover, this DGP allows us to systematically control four types of structural biases through the following dedicated parameters: • Selection Bias: controlled via σi, which scales the influence of σN (i) in the treatment propensity model, with values {0.8, 1.6, 2.4}. Other parameters are fixed at m = 0 .1, ω = 1 .2, and (θ0, θ 1) = (0 .4, 0.8) .• Spillover Effects: induced through (θ0, θ 1), which determine the strength of network effects in the outcome models, taking values {(0 .4, 0.8) , (0 .5, 0.95) , (0 .6, 1.1) }. Remaining parameters are fixed at σi = 0 (RCT), 
+
+m = 0 .1, and ω = 1 .2.• Measurement Error: introduced by adding noise to the covariates, which incurs perturbation into observational covariates Xobs = X + ϵx with ϵx ∼ N (0 , ω/ 8) , where ω ∈ { 1.2, 2.4, 3.6}. Other parameters are fixed at 
+
+σi = 0 (RCT), m = 0 .1, and (θ0, θ 1) = (0 .4, 0.8) .• Unobserved Confounding: simulated by removing a fraction m of covariates, reducing the observed feature dimension to d − ⌊ md ⌋. The knob m takes values {0.1, 0.3, 0.5}, representing levels of hidden confounding. Other parameters are fixed at σi = 0 (RCT), ω = 1 .2, and (θ0, θ 1) = (0 .4, 0.8) .Note that larger knob values correspond to stronger biases in all four bias settings. For each setting, all results are averaged over 10 independent runs on the fixed dataset to mitigate the impact of random initialization. The dataset is split into training, validation, and test sets in a ratio of 49% /21% /30% .
+
+5.2 Model Training and Evaluation 
+
+Model Training. We train 9 uplift modeling approaches, covering both meta-learning algorithms (S-, T-, X-, R-, U-, DR-, RA-learners) and neural network architectures (TARNet and Dragonnet). All meta-learners share the same model backbones: we use XGBoost (eXtreme Gradient Boosting) for outcome estimation and LR (logistic regression) for propensity score estimation. All training models are tuned using a combination of Optuna [ 71 ] and grid search to ensure fair comparison. The details of hyperparameter searching range for LR, XGBoost, TARNet, and Dragonnet 5are provided in Section C. All model training processes are conducted on a Dell 3640 workstation with an Intel Xeon W-1290P 3.60GHz CPU and NVIDIA GeForce RTX 3080 Ti GPU. 
+
+Model Evaluation. To evaluate model performance, we adopt 5 widely used uplift evaluation metrics that reflect different aspects of model performance. For oracle evaluation metrics (counterfactual data are available), we use PEHE k
+
+to measure individual-level estimation accuracy (lower is better), and use ATE k to measure population-level targeting profit (higher is better). For utility-oriented evaluation (only observed data are available), we consider Uplift k, AUUC k,and Qini k, with the values of AUUC k and Qini k scaled by Nk (higher is better for all of the three metrics). In the following, we will present a comprehensive empirical analysis, focusing on two main aspects: (i) model perfor-mance under different structural biases , and (ii) robustness of common evaluation metrics under assumption violations . All results are reported on the test sets. 
+
+5.3 Model Performance Under Structural Biases 
+
+Results are stable across runs (with most standard deviations below 3% , see Section D), supporting the validity of our analysis. 
+
+5.3.1 Trade-off between PEHE and ATE in Model Performance 
+
+A comparison between Table 1 and Table 2 reveals a clear decoupling of individual-level precision and population-level accuracy. Specifically, while meta-learners such as the R-learner and U-learner achieve superior PEHE rankings, they frequently suffer from substantial ATE bias. Dragonnet exhibits the opposite trend, providing the most reliable ATE estimates despite its lower PEHE performance. This divergence, consistent across all models except for TARNet (a detailed analysis is provided in 5.3.3), underscores the structural tension between Uplift Prediction and Uplift Targeting 
+
+[ 26 ]. Such results indicate that prioritizing the fit of local fluctuations can inadvertently degrade the global stability of causal estimations. 
+
+5.3.2 Linking Model Design to Performance Gaps. 
+
+This performance difference comes down to how these two types of models optimize. Explicit effect modeling via objective decomposition, exemplified by meta-learners such as R-learner which relies on pseudo-outcomes. In practice, R-learner is achieved by targeting a weighted objective function derived from Robinson’s transformation: 
+
+ˆτ = arg min 
+
+> τn
+
+X
+
+> i=1
+
+[( Yi − ˆm(Xi)) − τ (Xi)( Wi − ˆe(Xi))] 2
+
+where Yi and Ti are the observed outcome and treatment assignment, respectively. The nuisance components ˆm(Xi) = 
+
+E[Y |Xi] and ˆe(Xi) = P (T = 1 |Xi) denote the conditional mean outcome and the propensity score. This approach explicitly models the treatment effect τ (Xi) as a function of the features X, enabling the model to focus on the heterogeneity of causal effects across individual characteristics. Furthermore, it incorporates doubly robust estimation to achieve debiasing. Implicit distributional balancing via representation learning, exemplified by Dragonnet, shifts the focus from simple outcome curve-fitting to learning a causally-informed latent embedding ϕ(X). Building on the dual-head architecture seen in TARNet, Dragonnet integrates propensity score prediction into a joint objective: 
+
+Ltotal = 1
+
+n
+
+> n
+
+X
+
+> i=1
+
+(Q(ϕ(Xi), T i) − Yi)2 + αLCE 
+
+where LCE = CrossEntropy (g(ϕ(xi)) , t i) is the cross-entropy loss for treatment assignment, and Q(·) and g(·)
+
+represent the outcome and propensity heads, respectively. These heads operate on the shared representation layers denoted by ϕ(·). The hyperparameter α regulates the trade-off between the two tasks. This multi-task design forces the shared layer ϕ(x) to retain information relevant to the treatment assignment mechanism, capturing critical data that a pure regression model might otherwise discard as noise. By coupling the outcome and treatment tasks, the model ensures the latent representation remains grounded in the confounding logic. Ultimately, this approach achieves implicit balancing without the need for explicit reweighting, prioritizing ATE estimation robustness over the fine-grained fitting of individual heterogeneity. 65.3.3 Why TARNet is Special? 
+
+TARNet adopts a shared representation architecture inspired by the T-learner framework, employing two independent regression heads to model treatment-specific potential outcomes. This architecture is formulated by defining the predicted outcome for unit i as: 
+
+ˆYi = Tih1(Φ( Xi)) + (1 − Ti)h0(Φ( Xi)) 
+
+where Ti ∈ { 0, 1} denotes the binary treatment assignment, and h1(·), h0(·) represent the hypothesis heads correspond-ing to the treated and control groups. To optimize the model, the loss function is defined as the Mean Squared Error: 
+
+L = 1
+
+n
+
+> n
+
+X
+
+> i=1
+
+( ˆYi − Yi)2
+
+This hybrid architecture bridges explicit branching with implicit representation, effectively merging the strengths of both approaches. By pairing deep neural networks’ feature extraction with the structural separation of potential outcome modeling, the model balances PEHE and ATE estimation. This ensures the framework remains globally stable while capturing specific treatment effects. Table 1: Comparison of model performance (measured by PEHE 30% averaged over 10 runs) under various settings (Table omitted the corresponding values of θ1 ∈ { 0.8, 0.95 , 1.1} in setting B). Lower values indicate better performances.                                                                                                                               
+
+> Model/Setting Setting A (varying ξ)Setting B (varying θ0)Setting C (varying ω)Setting D (varying m)0.8 1.6 2.4 0.4 0.5 0.6 1.2 2.4 3.6 0.1 0.3 0.5
+> S-learner 2.6860 2.6162 2.6905 2.6694 3.1238 3.6429 2.6694 2.6394 2.6551 2.6694 2.8040 2.9545
+> T-learner 2.7296 2.7995 2.8449 2.7604 3.2095 3.6946 2.7604 2.7251 2.7434 2.7604 2.9870 3.0597 X-learner 2.7712 2.8247 2.8632 2.7492 3.2435 3.7478 2.7492 2.7512 2.7441 2.7492 2.9827 3.0822 R-learner 2.6032 2.5219 2.4124 2.6417 3.1016 3.5165 2.6417 2.6130 2.6032 2.6417 2.8712 3.0388 U-learner 2.5828 2.4473 2.3895 2.6549 3.0766 3.5295 2.6549 2.6231 2.6266 2.6549 2.8866 3.0466 DR-learner 2.7772 2.8404 2.9050 2.7483 3.2638 3.7512 2.7483 2.7993 2.7399 2.7483 2.9837 3.0677 RA-learner 2.6700 2.0681 1.7253 3.0100 3.2469 3.4909 3.0100 3.0775 2.9233 3.0100 3.0624 2.8635
+> TARNet 2.6382 2.6680 2.7507 2.6365 3.1192 3.5958 2.6365 2.6301 2.6090 2.6365 2.8707 3.0030
+> Dragonnet 2.7930 3.1418 2.9525 2.8236 3.3065 3.7491 2.8236 2.8953 2.7709 2.8236 2.9415 3.1043
+
+Table 2: Comparison of model performance (measured by ATE 30% averaged over 10 runs) under various settings (Table omitted the corresponding values of θ1 ∈ { 0.8, 0.95 , 1.1} in setting B). Higher values indicate better performances.                                                                                                                               
+
+> Model/Setting Setting A (varying ξ)Setting B (varying θ0)Setting C (varying ω)Setting D (varying m)0.8 1.6 2.4 0.4 0.5 0.6 1.2 2.4 3.6 0.1 0.3 0.5
+> S-learner 2.7054 2.6744 2.6295 2.8102 2.8640 3.0842 2.8102 2.8134 2.8096 2.8102 2.7056 2.1225 T-learner 2.8102 2.7429 2.6856 2.8841 3.0120 3.1529 2.8841 2.8746 2.8818 2.8841 2.7606 2.1834 X-learner 2.8181 2.7536 2.6836 2.8765 3.0297 3.1697 2.8765 2.8774 2.8716 2.8765 2.7596 2.1867
+> R-learner 2.7944 2.6808 2.6557 2.8499 2.9866 3.1343 2.8499 2.8541 2.8550 2.8499 2.7581 2.1871
+> U-learner 2.7968 2.6824 2.6765 2.8315 2.9834 3.1332 2.8315 2.8409 2.8480 2.8315 2.7567 2.1832 DR-learner 2.8179 2.7358 2.6735 2.8709 3.0226 3.1568 2.8709 2.8908 2.8697 2.8709 2.7583 2.1838
+> RA-learner 1.6375 1.5869 1.5844 1.5675 1.6645 1.7246 1.5675 1.5971 1.5700 1.5675 1.5854 1.2348 TARNet 2.8421 2.7537 2.7042 2.8783 3.0296 3.1775 2.8783 2.8778 2.8813 2.8783 2.7547 2.1757 Dragonnet 2.8477 2.7622 2.7143 2.9005 3.0469 3.2046 2.9005 2.8865 2.8991 2.9005 2.7722 2.1679
+
+5.3.4 Evaluation with Varyed Data Splitting Ratios. 
+
+To ensure these performance gaps are robust, we extended our evaluation to other targeting fractions ( k ∈{10% , 50% , 70% }). While the polygon shapes in the radar charts (Figure 1 and Figure 2) shift slightly with k,the relative model rankings remain remarkably consistent. Across all subplots, neural-based models like Dragonnet consistently align better with population-level ATE, whereas meta-learners (e.g., R-learner and U-learner) retain their edge in individual-level PEHE. This stability suggests that our findings reflect inherent model behaviors rather than artifacts of a specific data fraction. We therefore focus our detailed analysis on k = 30% , as it serves as a representative case for how these different designs handle structural biases. 7Figure 1: Radar chart of model performance ranked by PEHE k across different bias settings. Outer points indicate higher ranks. 
+
+Figure 2: Radar chart of model performance ranked by ATE k across different bias settings. Outer points indicate higher ranks. 
+
+5.4 Evaluation Metric Robustness Under Biases 5.4.1 Analysis of Evaluation Metrics under Different Biases. 
+
+We begin by assessing the structural reliability of the metrics, focusing on the consistency of model rankings across different radar charts (Figures 3, 4, and 5). The Uplift and AUUC charts produce expansive, overlapping boundaries across all bias types, reflecting stable performance rankings. In contrast, the Qini charts (Figure 4) struggle under Selection Bias (Setting A) and Unobserved Confounding (Setting D), where they visibly shrink and become irregular. This divergence suggests that the choice of metric is not just a formality, it changes how we judge model reliability, with Qini proving far less stable in biased environments. 
+
+Figure 3: Radar chart of model performance ranked by AUUC k across different bias settings. Outer points indicate higher ranks. 8Figure 4: Radar chart of model performance ranked by Qini k across different bias settings. Outer points indicate higher ranks. 
+
+Figure 5: Radar chart of model performance ranked by Uplift k across different bias settings. Outer points indicate higher ranks. 
+
+5.4.2 Further Analysis of Metrics Based on Spearman Rank Correlation. 
+
+To evaluate the robustness of standard uplift evaluation metrics, we analyze the Spearman rank correlation of Uplift, AUUC, and Qini with the oracle ATE across four controlled bias settings. This analysis investigates whether these widely adopted metrics consistently recover the oracle model rankings. As illustrated in Table 3, metrics derived from average treatment effects, such as Uplift and AUUC, demonstrate reliable robustness across various experimental settings. This phenomenon is not limited to a single data split ratio because the Spearman rank correlation coefficients for Uplift/AUUC remain high as k varies. This leads to a ranking that is very similar to ATE, while the Qini coefficient consistently underperforms with lower correlation levels than Uplift/AUUC in most cases. 
+
+5.4.3 Connecting Metric Logic to Robustness Divergence 
+
+Table 3 reveals that Uplift and AUUC exhibit strong robustness across different configurations. As detailed in Section B, these metrics utilize a mean-based logic by normalizing outcomes ( STNk /N TNk and SCNk /N CNk ) to estimate the expected incremental performance per unit. This structural alignment with the ATE definition ( E[Y |T = 1] − E[Y |T = 0] )explains their resilience against bias in data. Conversely, the Qini coefficient operates on population-scale logic. V QC i
+
+employs the ratio N Ti /N Ci to project control responses onto the treatment scale. While this balances group sizes, it also introduces significant sensitivity to group imbalance and structural bias. For example, when the control group is small, the scaling factor acts as an error amplifier, causing the metric to deviate from the true uplift trajectory. In summary, while Qini is effective for estimating total business gain, Uplift and AUUC appear more reliable for ranking models under structural bias, as their mean-based logic is less sensitive to the group imbalances we observed. 9Table 3: Comparison of rank correlation for different evaluation metrics (measured by Spearman rank correlation coeffi-cient averaged over 10 runs) under various settings (Table omitted the corresponding values of θ1 ∈ { 0.8, 0.95 , 1.1} in setting B). Higher values indicate better performances.                                                                                                                                                                   
+
+> Metric/Setting Setting A (varying ξ)Setting B (varying θ0)Setting C (varying ω)Setting D (varying m)0.8 1.6 2.4 0.4 0.5 0.6 1.2 2.4 3.6 0.1 0.3 0.5
+> Uplift 10% 0.417 0.733 0.383 0.883 0.967 0.667 0.883 0.783 0.550 0.883 0.867 0.333 AUUC 10% 0.333 0.683 0.367 0.800 0.667 0.650 0.800 0.617 0.367 0.800 0.933 0.583
+> Qini 10% 0.550 0.917 0.467 0.700 0.400 0.567 0.700 0.700 0.600 0.700 0.083 0.467 Uplift 30% 0.950 0.850 0.483 1.000 0.950 0.983 1.000 0.867 0.983 1.000 0.533 0.917
+> AUUC 30% 0.950 0.917 0.783 0.900 0.933 0.867 0.900 0.817 0.950 0.900 0.800 0.800 Qini 30% 0.350 0.467 0.233 0.483 0.750 0.533 0.483 0.500 0.550 0.483 0.633 0.283 Uplift 50% 0.950 0.833 0.300 0.950 0.850 0.733 0.950 0.983 1.000 0.950 0.867 0.917
+> AUUC 50% 0.950 0.867 0.567 0.983 0.917 0.950 0.983 0.983 0.983 0.983 0.917 0.833 Qini 50% 0.800 0.267 0.350 0.733 0.867 0.900 0.733 0.567 0.667 0.733 0.017 0.283 Uplift 70% 0.983 0.967 -0.167 0.983 0.950 0.983 0.983 0.967 0.983 0.983 0.817 0.833 AUUC 70% 0.833 0.817 0.450 1.000 0.983 1.000 1.000 0.950 0.967 1.000 0.950 0.950
+> Qini 70% 0.817 0.700 0.100 0.850 0.783 0.883 0.850 0.600 0.817 0.850 -0.067 0.900
+
+# 6 Conclusion 
+
+In this study, we conducted a comprehensive empirical analysis to evaluate the robustness of uplift models and evaluation metrics under four prevalent marketing biases: selection bias, spillover effects, measurement error, and hidden confounding. Our empirical results reveal several key insights: 1) uplift targeting and uplift prediction are distinct. It is important to recognize that individual-level precision does not automatically translate into population-level efficacy; 2) the observed resilience of TARNet in this study suggests that its shared representation and head separation may provide a more balanced trade-off. However, these findings still require further research for more comprehensive validation; 3) observations from our experiments suggest that Uplift and AUUC, which are mathematically analogous to ATE, exhibit relative stability under the biased conditions investigated. This observation provides a preliminary framework for developing further robust assessment criteria in similar contexts. However, further research is required where the ATE itself may be difficult to identify. 
+
+Limitations and Future Work. While our work offers practical empirical guidance for uplift modeling in precision marketing, it has several limitations that suggest avenues for future exploration. Firstly, we focus on four common biases, but other important challenges in personalized marketing, such as data imbalance [ 72 ], limited supervision [ 73 ], and carryover effects [ 74 ], remain unexamined. Investigating how these factors influence the model performance and evaluation metric robustness would be a valuable next step. Secondly, while this study involves a rigorous empirical analysis, the scope is primarily constrained to the Hillstrom benchmark dataset. This selection was intended to provide a controlled experimental environment with reduced noise. However, it is possible that these results do not fully account for the substantial variability found in diverse real-world industrial contexts. Therefore, future research is needed to evaluate the applicability of this framework across a broader range of industrial datasets. Thirdly, this study evaluates nine representative uplift models rather than more recent architectural developments. This choice is based on the premise that many newer models are iterative modifications of these established paradigms. By examining these foundational models, we seek to understand how standard architectural frameworks are affected by specific biases. This analysis may serve as a useful reference for researchers when considering different architectural paradigms in future work. Fourthly, spillover effects in this study are primarily predicated on Euclidean distance rather than more intricate network structures. This design is a deliberate attempt to parsimoniously isolate the potential impact of spillover effects on model performance, thereby reducing the likelihood of interference from other confounding factors. We acknowledge that this approach is a simplification. Therefore, future research could explore more sophisticated spillover mechanisms that better reflect real-world complexities while continuing to refine methods for decoupling these effects from extraneous variables. Fifthly, although our findings demonstrate that Uplift and AUUC exhibit high evaluative stability, we still recommend a multi-metric approach in practical applications to ensure a comprehensive performance profile. Furthermore, the continuous development of novel metrics remains essential to further enhance assessment reliability across diverse and complex bias scenarios. 10 References 
+
+[1] Donald B Rubin. Estimating causal effects of treatments in randomized and nonrandomized studies. Journal of educational Psychology , 66(5):688, 1974. [2] Xinkun Nie and Stefan Wager. Quasi-oracle estimation of heterogeneous treatment effects. Biometrika , 108(2):299– 319, 2021. [3] Edward H Kennedy. Towards optimal doubly robust estimation of heterogeneous causal effects. Electronic Journal of Statistics , 17(2):3008–3049, 2023. [4] Uri Shalit, Fredrik D Johansson, and David Sontag. Estimating individual treatment effect: generalization bounds and algorithms. In International conference on machine learning , pages 3076–3085. PMLR, 2017. [5] Claudia Shi, David Blei, and Victor Veitch. Adapting neural networks for the estimation of treatment effects. 
+
+Advances in neural information processing systems , 32, 2019. [6] Maciej Jaskowski and Szymon Jaroszewicz. Uplift modeling for clinical trial data. In ICML workshop on clinical data analysis , volume 46, pages 79–95, 2012. [7] Houssam Nassif, Finn Kuusisto, Elizabeth S Burnside, David Page, Jude Shavlik, and Vítor Santos Costa. Score as you lift (sayl): A statistical relational learning approach to uplift modeling. In Joint European conference on machine learning and knowledge discovery in databases , pages 595–611. Springer, 2013. [8] Diego Olaya, Jonathan Vásquez, Sebastián Maldonado, Jaime Miranda, and Wouter Verbeke. Uplift modeling for preventing student dropout in higher education. Decision support systems , 134:113320, 2020. [9] Yertai Tanai and Kamil Ciftci. How to customize an early start preparatory course policy to improve student graduation success: an application of uplift modeling. Annals of Operations Research , 347(2):913–936, 2025. [10] Cristhian Bermeo, Kevin Michell, and Werner Kristjanpoller. Estimation of causality in economic growth and expansionary policies using uplift modeling. Neural Computing and Applications , 35(18):13631–13645, 2023. [11] Berardino Barile, Marco Forti, Alessia Marrocco, and Angelo Castaldo. Causal impact evaluation of occupational safety policies on firms’ default using machine learning uplift modelling. Scientific Reports , 14(1):10380, 2024. [12] Floris Devriendt, Jeroen Berrevoets, and Wouter Verbeke. Why you should stop predicting customer churn and start using uplift models. Information Sciences , 548:497–515, 2021. [13] Théo Verhelst, Denis Mercier, Jeevan Shestha, and Gianluca Bontempi. A churn prediction dataset from the telecom sector: a new benchmark for uplift modeling. In Joint European Conference on Machine Learning and Knowledge Discovery in Databases , pages 292–299. Springer, 2023. [14] Masahiro Sato, Janmajay Singh, Sho Takemori, Takashi Sonoda, Qian Zhang, and Tomoko Ohkuma. Uplift-based evaluation and optimization of recommenders. In Proceedings of the 13th ACM Conference on Recommender Systems , pages 296–304, 2019. [15] Wenjie Wang, Changsheng Wang, Fuli Feng, Wentao Shi, Daizong Ding, and Tat-Seng Chua. Uplift modeling for target user attacks on recommender systems. In Proceedings of the ACM Web Conference 2024 , pages 3343–3354, 2024. [16] Yiyan Huang, Cheuk Hang Leung, Xing Yan, Qi Wu, Nanbo Peng, Dongdong Wang, and Zhixiang Huang. The causal learning of retail delinquency. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 35, pages 204–212, 2021. [17] Javier Albert and Dmitri Goldenberg. E-commerce promotions personalization via online multiple-choice knapsack with uplift modeling. In Proceedings of the 31st ACM International Conference on Information & Knowledge Management , pages 2863–2872, 2022. [18] Yinqiu Huang, Shuli Wang, Min Gao, Xue Wei, Changhao Li, Chuan Luo, Yinhua Zhu, Xiong Xiao, and Yi Luo. Entire chain uplift modeling with context-enhanced learning for intelligent marketing. In Companion Proceedings of the ACM Web Conference 2024 , pages 226–234, 2024. [19] Huishi Luo, Fuzhen Zhuang, Ruobing Xie, Hengshu Zhu, Deqing Wang, Zhulin An, and Yongjun Xu. A survey on causal inference for recommendation. The Innovation , 5(2), 2024. [20] Muhammad Ali. Measuring and mitigating bias and harm in personalized advertising. In Proceedings of the 15th ACM Conference on Recommender Systems , pages 869–872, 2021. [21] Zonghao Chen, Ruocheng Guo, Jean-François Ton, and Yang Liu. Conformal counterfactual inference under hidden confounding. In Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining , pages 397–408, 2024. 11 [22] Hao Wang, Jiajun Fan, Zhichao Chen, Haoxuan Li, Weiming Liu, Tianqiao Liu, Quanyu Dai, Yichao Wang, Zhenhua Dong, and Ruiming Tang. Optimal transport for treatment effect estimation. Advances in Neural Information Processing Systems , 36:5404–5418, 2023. [23] Yiyan Huang, Cheuk H Leung, Siyi Wang, Yijun Li, and Qi Wu. Unveiling the potential of robustness in selecting conditional average treatment effect estimators. Advances in Neural Information Processing Systems ,37:135208–135243, 2024. [24] Floris Devriendt, Darie Moldovan, and Wouter Verbeke. A literature survey and experimental evaluation of the state-of-the-art in uplift modeling: A stepping stone toward the development of prescriptive analytics. Big data ,6(1):13–41, 2018. [25] Dugang Liu, Xing Tang, Yang Qiao, Miao Liu, Zexu Sun, Xiuqiang He, and Zhong Ming. Benchmarking for deep uplift modeling in online marketing. arXiv preprint arXiv:2406.00335 , 2024. [26] Minqin Zhu, Zexu Sun, Ruoxuan Xiong, Anpeng Wu, Baohong Li, Caizhi Tang, Jun Zhou, Fei Wu, and Kun Kuang. Rethinking causal ranking: A balanced perspective on uplift model evaluation. In Forty-second International Conference on Machine Learning , 2025. [27] Divyat Mahajan, Ioannis Mitliagkas, Brady Neal, and Vasilis Syrgkanis. Empirical analysis of model selection for heterogeneous causal effect estimation. In The Twelfth International Conference on Learning Representations ,2024. [28] James McInerney, Brian Brost, Praveen Chandar, Rishabh Mehrotra, and Benjamin Carterette. Counterfactual evaluation of slate recommendations with sequential reward interactions. In Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining , pages 1779–1788, 2020. [29] Zefeng Chen, Wensheng Gan, Jiayang Wu, Kaixia Hu, and Hong Lin. Data scarcity in recommendation systems: A survey. ACM Transactions on Recommender Systems , 3(3):1–31, 2025. [30] Daan Caljon, Jente Van Belle, Jeroen Berrevoets, and Wouter Verbeke. Optimizing treatment allocation in the presence of interference. arXiv preprint arXiv:2410.00075 , 2024. [31] Robin M Gubela, Stefan Lessmann, and Björn Stöcker. Multiple treatment modeling for target marketing campaigns: A large-scale benchmark study. Information Systems Frontiers , 26(3):875–898, 2024. [32] Richard P Bagozzi, Youjae Yi, and Kent D Nassen. Representation of measurement error in marketing variables: Review of approaches and extension to three-facet designs. Journal of Econometrics , 89(1-2):393–421, 1998. [33] David Vrtana and Anna Krizanova. The power of emotional advertising appeals: Examining their influence on consumer purchasing behavior and brand–customer relationship. Sustainability , 15(18):13337, 2023. [34] Xinyuan Zhu, Yang Zhang, Fuli Feng, Xun Yang, Dingxian Wang, and Xiangnan He. Mitigating hidden confounding effects for causal recommendation. IEEE Transactions on Knowledge and Data Engineering ,36(9):4794–4805, 2024. [35] Sören R Künzel, Jasjeet S Sekhon, Peter J Bickel, and Bin Yu. Metalearners for estimating heterogeneous treatment effects using machine learning. Proceedings of the national academy of sciences , 116(10):4156–4165, 2019. [36] Dylan J Foster and Vasilis Syrgkanis. Orthogonal statistical learning. The Annals of Statistics , 51(3):879–908, 2023. [37] Fredrik Johansson, Uri Shalit, and David Sontag. Learning representations for counterfactual inference. In 
+
+International conference on machine learning , pages 3020–3029. PMLR, 2016. [38] Alicia Curth and Mihaela Van der Schaar. On inductive biases for heterogeneous treatment effect estimation. 
+
+Advances in Neural Information Processing Systems , 34:15883–15894, 2021. [39] Kailiang Zhong, Fengtong Xiao, Yan Ren, Yaorong Liang, Wenqing Yao, Xiaofeng Yang, and Ling Cen. Descn: Deep entire space cross networks for individual treatment effect estimation. In Proceedings of the 28th ACM SIGKDD conference on knowledge discovery and data mining , pages 4612–4620, 2022. [40] Dugang Liu, Xing Tang, Han Gao, Fuyuan Lyu, and Xiuqiang He. Explicit feature interaction-aware uplift network for online marketing. In Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining , pages 4507–4515, 2023. [41] Alicia Curth and Mihaela Van der Schaar. Nonparametric estimation of heterogeneous treatment effects: From theory to learning algorithms. In International Conference on Artificial Intelligence and Statistics , pages 1810– 1818. PMLR, 2021. [42] Jennifer L Hill. Bayesian nonparametric modeling for causal inference. Journal of Computational and Graphical Statistics , 20(1):217–240, 2011. 12 [43] Piotr Rzepakowski and Szymon Jaroszewicz. Decision trees for uplift modeling with single and multiple treatments. 
+
+Knowledge and Information Systems , 32(2):303–327, 2012. [44] Patrick D Surry and Nicholas J Radcliffe. Quality measures for uplift models. submitted to KDD2011 , 2011. [45] Nicholas Radcliffe. Using control groups to target on predicted lift: Building and assessing uplift model. Direct Marketing Analytics Journal , pages 14–21, 2007. [46] Eustache Diemert, Artem Betlei, Christophe Renaudin, and Massih-Reza Amini. A large scale benchmark for uplift modeling. In KDD , 2018. [47] Mouloud Belbahri, Alejandro Murua, Olivier Gandouet, and Vahid Partovi Nia. Qini-based uplift regression. The Annals of Applied Statistics , 15(3):1247–1272, 2021. [48] Paul W Holland. Statistics and causal inference. Journal of the American statistical Association , 81(396):945–960, 1986. [49] Zhi Li, Hongke Zhao, Qi Liu, Zhenya Huang, Tao Mei, and Enhong Chen. Learning from history and present: Next-item recommendation via discriminatively exploiting user behaviors. In Proceedings of the 24th ACM SIGKDD international conference on knowledge discovery & data mining , pages 1734–1743, 2018. [50] Jiayi Tong, Jie Hu, George Hripcsak, Yang Ning, and Yong Chen. Disc2o-hd: Distributed causal inference with covariates shift for analyzing real-world high-dimensional data. Journal of Machine Learning Research ,26(3):1–50, 2025. [51] Alicia Curth and Mihaela Van Der Schaar. In search of insights, not magic bullets: Towards demystification of the model selection dilemma in heterogeneous treatment effect estimation. In International conference on machine learning , pages 6623–6642. PMLR, 2023. [52] Sookyo Jeong and Hongseok Namkoong. Robust causal inference under covariate shift via worst-case subpopula-tion treatment effects. In Conference on Learning Theory , pages 2079–2084. PMLR, 2020. [53] Yukuan Xu, Juan Luis Nicolau, and Peng Luo. Travelers’ reactions toward recommendations from neighboring rooms: Spillover effect on room bookings. Tourism Management , 88:104427, 2022. [54] Michael G Hudgens and M Elizabeth Halloran. Toward causal inference with interference. Journal of the american statistical association , 103(482):832–842, 2008. [55] Jean Pouget-Abadie, Kevin Aydin, Warren Schudy, Kay Brodersen, and Vahab Mirrokni. Variance reduction in bipartite experiments through correlation clustering. Advances in Neural Information Processing Systems , 32, 2019. [56] Jehoshua Eliashberg and John R Hauser. A measurement error approach for modeling consumer risk preference. 
+
+Management Science , 31(1):1–25, 1985. [57] Nikos Tsikriktsis. A review of techniques for treating missing data in om survey research. Journal of operations management , 24(1):53–62, 2005. [58] Susanne M Schennach. Recent advances in the measurement error literature. Annual review of economics ,8(1):341–377, 2016. [59] Basil Saeed, Anastasiya Belyaeva, Yuhao Wang, and Caroline Uhler. Anchored causal inference in the presence of measurement error. In Conference on uncertainty in artificial intelligence , pages 619–628. PMLR, 2020. [60] Denise T Ogden, James R Ogden, and Hope Jensen Schau. Exploring the impact of culture and acculturation on consumer purchase decisions: Toward a microcultural perspective. Academy of Marketing Science Review ,2004:1, 2004. [61] Nor Hazlin Nor Asshidin, Nurazariah Abidin, and Hafizzah Bashira Borhan. Perceived quality and emotional value that influence consumer’s purchase intention towards american and local products. Procedia Economics and Finance , 35:639–643, 2016. [62] Victor Veitch, Yixin Wang, and David Blei. Using embeddings to correct for unobserved confounding in networks. 
+
+Advances in Neural Information Processing Systems , 32, 2019. [63] Christos Louizos, Uri Shalit, Joris M Mooij, David Sontag, Richard Zemel, and Max Welling. Causal effect inference with deep latent-variable models. Advances in neural information processing systems , 30, 2017. [64] Eric Tchetgen Tchetgen. The control outcome calibration approach for causal inference with unobserved confounding. American journal of epidemiology , 179(5):633–640, 2014. [65] Björn Bokelmann and Stefan Lessmann. Improving uplift model evaluation on randomized controlled trial data. 
+
+European Journal of Operational Research , 313(2):691–707, 2024. 13 [66] Christophe Renaudin and Matthieu Martin. About evaluation metrics for contextual uplift modeling. arXiv preprint arXiv:2107.00537 , 2021. [67] Kevin Hillstrom. The minethatdata e-mail analytics and data mining challenge. MineThatData blog , 72:120, 2008. [68] Michał Sołtys, Szymon Jaroszewicz, and Piotr Rzepakowski. Ensemble methods for uplift modeling. Data mining and knowledge discovery , 29(6):1531–1559, 2015. [69] Weijia Zhang, Jiuyong Li, and Lin Liu. A unified survey of treatment effect heterogeneity modelling and uplift modelling. ACM Computing Surveys (CSUR) , 54(8):1–36, 2021. [70] Diemert Eustache, Betlei Artem, Christophe Renaudin, and Amini Massih-Reza. A large scale benchmark for uplift modeling. In Proceedings of the AdKDD and TargetAd Workshop, KDD, London,United Kingdom, August, 20, 2018 . ACM, 2018. [71] Takuya Akiba, Shotaro Sano, Toshihiko Yanase, Takeru Ohta, and Masanori Koyama. Optuna: A next-generation hyperparameter optimization framework. In Proceedings of the 25th ACM SIGKDD international conference on knowledge discovery & data mining , pages 2623–2631, 2019. [72] Otto Nyberg, Tomasz Ku´ smierczyk, and Arto Klami. Uplift modeling with high class imbalance. In Asian Conference on Machine Learning , pages 315–330. PMLR, 2021. [73] George Panagopoulos, Daniele Malitesta, Fragkiskos D Malliaros, and Jun Pang. Uplift modeling under limited supervision. In Joint European Conference on Machine Learning and Knowledge Discovery in Databases , pages 127–144. Springer, 2024. [74] Chengchun Shi, Xiaoyu Wang, Shikai Luo, Hongtu Zhu, Jieping Ye, and Rui Song. Dynamic causal effects evaluation in a/b testing with a reinforcement learning framework. Journal of the American Statistical Association ,118(543):2059–2071, 2023. 
+
+# A Details of Uplift Models 
+
+This section outlines the construction of common uplift learners using observed samples {(Xi, T i, Y i)}Ni=1 . Let N T
+
+and N C denote the sample sizes in the treatment and control groups such that N = N T + N C . The construction details are stated as follows. • S-learner : Fit a single model ˆμ(X, T ) with predictors (X, T ) and response Y , then compute 
+
+ˆτS (X) = ˆ μ(X, 1) − ˆμ(X, 0) .
+
+• T-learner : Fit separate models ˆμ1(X) and ˆμ0(X) on treated (XT , Y T ) and control (XC , Y C ) data, respec-tively: 
+
+ˆτT (X) = ˆ μ1(X) − ˆμ0(X).
+
+• X-learner [ 35 ]: Fit ˆμ1(X) and ˆμ0(X) (T-learner), estimate the propensity score P (T = 1 |X) with ˆπ(X),regress treatment effects for treated and control units, and fit models ˆτ 1 
+
+> X
+
+and ˆτ 0 
+
+> X
+
+separately, then combine: 
+
+ˆτX (X) = (1 − ˆπ(X))ˆ τ 1 
+
+> X
+
+(X) + ˆ π(X)ˆ τ 0 
+
+> X
+
+(X),
+
+ˆτ 1 
+
+> X
+
+= arg min 
+
+> τ
+
+1
+
+N TN T
+
+X
+
+> i=1
+
+(τ (Xi) − (Yi − ˆμ0(Xi))) 2,
+
+ˆτ 0 
+
+> X
+
+= arg min 
+
+> τ
+
+1
+
+N CN C
+
+X
+
+> i=1
+
+(τ (Xi) − (ˆ μ1(Xi) − Yi)) 2.
+
+• R-learner [2 ]: Fit factual outcome model ˆμ(X) and the propensity score model ˆπ(X), and compute residuals 
+
+ξ = Y − ˆμ(X) and ν = T − ˆπ(X), then fit ˆτR(X) by 
+
+ˆτR = arg min 
+
+> τ
+
+1
+
+N
+
+> N
+
+X
+
+> i=1
+
+(ξi − νiτ (Xi)) 2.
+
+• U-learner [ 2]: Fit ˆμ(X) and ˆπ(X), compute residuals ξ = Y − ˆμ(X) and ν = T − ˆπ(X), then regress ξ/ν 
+
+on X:
+
+ˆτU = arg min 
+
+> τ
+
+1
+
+N
+
+> N
+
+X
+
+> i=1
+
+( ξi
+
+νi
+
+− τ (Xi)) 2.
+
+14 • DR-learner [ 3, 36 ]: Fit ˆμ1(X), ˆμ0(X), and ˆπ(X). Construct doubly robust pseudo-outcomes Y 1 
+
+> DR
+
+=ˆμ1(X) + T 
+
+> ˆπ(X)
+
+(Y − ˆμ1(X)) and Y 0 
+
+> DR
+
+= ˆ μ0(X) + 1−T 
+
+> 1−ˆπ(X)
+
+(Y − ˆμ0(X)) , then regress Y 1 
+
+> DR
+
+− Y 0 
+
+> DR
+
+on X:
+
+ˆτDR = arg min 
+
+> τ
+
+1
+
+N
+
+> N
+
+X
+
+> i=1
+
+(τ (Xi) − (Y 1 
+
+> i,DR
+
+− Y 0
+
+> i,DR
+
+)) 2.
+
+• RA-learner [41 ]: Fit ˆμ1(X) and ˆμ0(X), and construct regression-adjusted pseudo-outcomes YRA =
+
+T (Y − ˆμ0(X)) + (1 − T ) (ˆ μ1(X) − Y ), then regress YRA on X:
+
+ˆτRA = arg min 
+
+> τ
+
+1
+
+N
+
+> N
+
+X
+
+> i=1
+
+(τ (Xi) − Yi,RA )2.
+
+• TARNet [4]: Learn a shared representation Φ( X) via a neural network, then use two separate heads h1(Φ) 
+
+and h0(Φ) for treated and control outcomes. The CATE is ˆτ (X) = h1(Φ( X)) − h0(Φ( X)) .• Dragonnet [5]: Builds on TARNet by adding a third head to predict the propensity score using hπ (Φ( X)) 
+
+alongside the two outcome heads. Together with the targeted regularization technique, it enables joint optimization of representations, outcome models, and propensity scores to improve average treatment effect estimation. 
+
+# B Details of Evaluation Metrics 
+
+We evaluate models using both oracle metrics (rely on counterfactual information) and practical metrics (computed with observed data). Let k denote the percentile of the total N ranked units (e.g., k = 30% ), and Nk = N · k denote the number of top-k ranked units. 
+
+Oracle metrics. The metrics, PEHE k and ATE k, serve as gold standards for uplift model evaluation but are unavailable in real-world applications because they require counterfactual outcomes. PEHE k measures the root mean squared error between predicted and true individual-level uplift values among the top-k customers (ranked by the model ˆτ
+
+)[42, 4, 26]: 
+
+PEHE k =
+
+vuut 1
+
+NkNkX
+
+> i=1
+
+(ˆ τ (xi) − τ (xi)) 2. (3) This metric reflects how well a model ˆτ identifies individuals with the highest true uplift values, making it an oracle indicator for the uplift prediction task. 
+
+ATE k measures the true population-level uplift values among the top-k customers (ranked by the model ˆτ ): 
+
+ATE k = 1
+
+NkNkX
+
+> i=1
+
+τ (xi). (4) It represents the potential average profit that could be achieved by targeting the top-k customers, serving as an oracle metric for the uplift targeting task. 
+
+Practical metrics. In practice, we cannot observe counterfactuals; thus, we can only rely on surrogate metrics computed from observed data. Let N Ti and N Ci be the numbers of treated and control units among the top- iN ranked customers, STi and SCi be their cumulative observed outcomes, and 1{·} be the indicator function, then we define the following necessary terms for i-th individual: 
+
+N Ti =
+
+> i
+
+X
+
+> j=1
+
+1{Tj =1 }, N Ci =
+
+> i
+
+X
+
+> j=1
+
+1{Tj =0 },STi =
+
+> i
+
+X
+
+> j=1
+
+1{Tj =1 }yj , SCi =
+
+> i
+
+X
+
+> j=1
+
+1{Tj =0 }yj .
+
+Uplift k directly estimates the difference in average cumulative observed outcomes between treatment and control groups within the top-k ranked customers: 
+
+Uplift k = STNk
+
+N TNk
+
+− SCNk
+
+N CNk
+
+. (5) 15 AUUC k (Area Under the Uplift Curve) integrates the uplift curve over the top-k ranked customers [43, 26]: 
+
+AUUC k = 
+
+> Nk−1
+
+X
+
+> i=1
+
+V UC  
+
+> i
+
++ V UC 
+
+> i+1
+
+2 , (6) where the uplift curve value function at the i-th individual is 
+
+V UC  
+
+> i
+
+=
+
+ STi
+
+N Ti
+
+− SCi
+
+N Ci
+
+
+
+(N Ti + N Ci ).
+
+Qini k quantifies the improvement in targeting performance over a random strategy using the Qini curve [ 44 , 45 , 46 , 24 ,47]: 
+
+Qini k = Area( Smodel , k ) − Area( Srandom , k ), (7) where Smodel and Srandom denote the ranking induced by ˆτ and by random selection, respectively. For a given ranking strategy S, the area is computed as 
+
+Area( S, k ) =  
+
+> Nk−1
+
+X
+
+> i=1
+
+V QC  
+
+> i
+
+(S) + V QC  
+
+> i+1
+
+(S)2 ,
+
+where the Qini curve value function at the i-th individual is 
+
+V QC  
+
+> i
+
+(S) = STi − SCi · N Ti
+
+N Ci
+
+.
+
+# C Hyperparameter Space 
+
+In this section, we present the hyperparameter search space for all models in Table 4. Table 4: The searching range of hyperparameters. LR and XGBoost follow the scikit-learn implementations. TARNet and Dragonnet follow the implementations in [4, 5]. Model Parameter Range Explanations LR C (0.01,10) Regularization strength XGBoost n_estimators (3,10) Number of trees max_depth (3,10) Max depth learning_rate (0.01,0.3) Learning rate subsample (0.6,1) Sampling ratio colsample_bytree (0.6,1) Sampling feature ratio reg_alpha (0,1) L1 regularization reg_lambda (0,1) L2 regularization TARNet hidden_layer {50, 100, 200} Dim of hidden layer outcome_layer {100, 200} Dim of outcome layer learning_rate {1e−2, 1e−3} Learning rate batch_size {200, 500} Batch size Dragonnet alpha {0.1, 0.5, 1, 2} Weight of treatment loss beta {0.1, 0.5, 1, 2} Targeted regularization hidden_layer {100, 200} Dim of hidden layer outcome_layer {100, 200} Dim of outcome layer learning_rate {1e−2, 1e−3} Learning rate batch_size {200,500} Batch size 16 D Standard Deviations of PEHE and ATE 
+
+In this section, we report the standard deviations of the PEHE and ATE across 10 independent runs for various experimental settings. Table 5: Comparison of model performance (measured by the standard deviation of PEHE 30% over 10 runs) under various settings (Table omitted the corresponding values of θ1 ∈ { 0.8, 0.95 , 1.1} in setting B). Lower values indicate better performances. 
+
+Model/Setting Setting A (varying ξ) Setting B (varying θ0) Setting C (varying ω) Setting D (varying m)0.8 1.6 2.4 0.4 0.5 0.6 1.2 2.4 3.6 0.1 0.3 0.5 
+
+S-learner 0.05850 0.08730 0.10850 0.07700 0.04820 0.07990 0.06500 0.04500 0.04430 0.03940 0.03470 0.08740 T-learner 0.05670 0.05810 0.04850 0.03860 0.05020 0.06540 0.05740 0.06280 0.04920 0.02950 0.02060 0.02510 X-learner 0.02510 0.03920 0.03530 0.03690 0.04190 0.04150 0.03520 0.03620 0.02610 0.03680 0.03240 0.01020 R-learner 0.09250 0.07750 0.04730 0.04780 0.05120 0.04840 0.08210 0.06780 0.03330 0.07870 0.03730 0.01670 U-learner 0.08550 0.06620 0.02600 0.10490 0.04760 0.03800 0.05860 0.10680 0.08510 0.11800 0.06520 0.01610 DR-learner 0.04360 0.05490 0.03750 0.03420 0.05340 0.05650 0.04520 0.03880 0.04360 0.04720 0.02460 0.01580 RA-learner 0.11600 0.14390 0.11810 0.11750 0.18850 0.18470 0.17900 0.10830 0.16780 0.12880 0.05790 0.22630 TARNet 0.09230 0.06800 0.11860 0.05460 0.06850 0.08410 0.04760 0.04380 0.05260 0.08500 0.03520 0.02710 DragonNet 0.09200 0.08720 0.10880 0.12420 0.14240 0.19850 0.09180 0.06680 0.12030 0.10180 0.08470 0.05560 Table 6: Comparison of model performance (measured by the standard deviation of ATE 30% over 10 runs) under various settings (Table omitted the corresponding values of θ1 ∈ { 0.8, 0.95 , 1.1} in setting B). Lower values indicate better performances. 
+
+Model/Setting Setting A (varying ξ) Setting B (varying θ0) Setting C (varying ω) Setting D (varying m)0.8 1.6 2.4 0.4 0.5 0.6 1.2 2.4 3.6 0.1 0.3 0.5 
+
+S-learner 0.08660 0.05590 0.05970 0.07600 0.08940 0.09070 0.08470 0.05100 0.06470 0.08860 0.01660 0.01610 T-learner 0.01800 0.01440 0.01230 0.01350 0.01230 0.02200 0.01580 0.01260 0.01460 0.01290 0.00730 0.00670 X-learner 0.01550 0.00810 0.01640 0.02060 0.01890 0.02190 0.02000 0.01570 0.01060 0.01550 0.00550 0.00470 R-learner 0.01610 0.04410 0.02410 0.03150 0.02590 0.04860 0.02730 0.02470 0.01780 0.01480 0.00690 0.00400 U-learner 0.02930 0.05910 0.01590 0.04500 0.04920 0.02340 0.02580 0.05410 0.03180 0.05170 0.00800 0.00670 DR-learner 0.02120 0.01690 0.01100 0.01000 0.01500 0.02440 0.01240 0.00740 0.01770 0.01590 0.00440 0.00270 RA-learner 0.10850 0.07060 0.05520 0.04340 0.06220 0.09310 0.04140 0.08910 0.04960 0.04250 0.06220 0.07860 TARNet 0.01020 0.00950 0.00860 0.01080 0.01580 0.01490 0.01420 0.01840 0.01170 0.01650 0.01070 0.01800 Dragonnet 0.01000 0.00810 0.00660 0.01460 0.01460 0.01380 0.01220 0.00830 0.00790 0.01440 0.00390 0.01950 17
