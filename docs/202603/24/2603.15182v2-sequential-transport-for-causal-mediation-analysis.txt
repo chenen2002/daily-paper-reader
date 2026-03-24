@@ -1,0 +1,3127 @@
+Title: Sequential Transport for Causal Mediation Analysis
+
+URL Source: https://arxiv.org/pdf/2603.15182v2
+
+Published Time: Tue, 24 Mar 2026 01:12:44 GMT
+
+Number of Pages: 52
+
+Markdown Content:
+# Sequential Transport for Causal Mediation Analysis 
+
+# Agathe Fernandes Machado 1, Iryna Voitsitska 2, Arthur Charpentier 1,3 ,and Ewen Gallic 4,5 1Université du Québec à Montréal (UQAM), Canada 
+
+2Ukrainian Catholic University, Ukraine 
+
+3Kyoto University, Japan 
+
+4Aix Marseille Université, CNRS, AMSE, Marseille, France 
+
+5CNRS - Université de Montréal CRM – CNRS, Montréal, Canada March 24, 2026 
+
+Abstract 
+
+We propose sequential transport (ST), a distributional framework for mediation analysis that combines optimal transport (OT) with a mediator directed acyclic graph (DAG). Instead of relying on cross-world counterfactual assumptions, ST constructs unit-level mediator counterfactuals by minimally transporting each mediator—marginally or conditionally—toward its distribution under an alterna-tive treatment while preserving the causal dependencies encoded by the DAG. For numerical mediators, ST uses monotone (conditional) OT maps based on con-ditional CDF/quantile estimators; for categorical mediators, it extends naturally via simplex-based transport. We establish consistency of the estimated transport maps and of the induced unit-level decompositions into mutatis mutandis direct and indirect effects under standard regularity and support conditions. When the treatment is randomized or ignorable (possibly conditional on covariates), these decompositions admit a causal interpretation; otherwise, they provide a princi-pled distributional attribution of differences between groups aligned with the mediator structure. Gaussian examples show that ST recovers classical mediation formulas, while additional simulations confirm good performance in nonlinear and mixed-type settings. An application to the COMPAS dataset illustrates how ST yields deterministic, DAG-consistent counterfactual mediators and a fine-grained mediator-level attribution of disparities. 
+
+# 1 Introduction 
+
+In causal reasoning, estimating the effect of a treatment on an outcome often requires accounting for intermediate variables, known as mediators , that trans-mit part of the causal influence. Causal mediation analysis provides a formal 
+
+1
+
+> arXiv:2603.15182v2 [stat.ME] 22 Mar 2026
+
+framework for quantifying these indirect pathways (Robins and Greenland, 1992; VanderWeele, 2015). Classical applications include evaluating gender-based dis-crimination in hiring decisions while accounting for differences in qualifications, or assessing medical treatments whose side effects trigger behavioral changes that subsequently affect disease progression (Pearl, 2001, 2014). Mediation allows the total effect of a treatment on an outcome to be decomposed into a direct effect and an indirect effect operating through mediators. This decomposition is important, in practice. Direct and indirect effects may act in opposite directions, so examining only the total effect can obscure meaningful risks or benefits. Moreover, the size of the indirect pathway can guide interventions: strong mediator effects suggest that acting on the mediator may lead to stronger effects than modifying the treatment itself, mutatis mutandis —that is, “changing what must be changed” to remain consistent with the causal structure, rather than a strict ceteris paribus comparison in which everything else is held fixed (Imai et al., 2010a). Beyond policy analysis and epidemiology, mediation analysis is central in algorithmic fairness, where causal definitions of discrimination rely on isolating pathways from sensitive attributes to predictions (Kusner et al., 2017). Traditional mediation approaches rely on structural equation models (SEM), of-ten in linear form, yielding decompositions such as the Kitagawa–Oaxaca–Blinder representation (Kitagawa, 1955; Oaxaca, 1973; Blinder, 1973). Semiparametric or nonparametric alternatives extend these ideas while avoiding strict functional assumptions (Imai et al., 2010c; Pearl, 2009). However, such methods (i) typically target population -level effects rather than unit-level decompositions, and (ii) may require specifying assumptions on the distributional expressions of a SEM to define mediator counterfactuals, even though the underlying functional forms are generally not identifiable from observational data. In a fully non-parametric setting, deep learning techniques, in particular normalizing flows (NF) have been used to construct counterfactuals and estimate individual-level effects (Pawlowski et al., 2020; Javaloy et al., 2023; Zhou and Wodtke, 2025). While these techniques offer flexibility in learning the functions of a SEM, they require a sufficient amount of data and may fail to approximate simple functional forms. Recently, optimal transport (OT) has emerged as a powerful tool for construct-ing counterfactual representations directly from empirical distributions, without imposing a parametric structural model, and even recovering structural counter-factuals under specific assumptions. OT-based counterfactuals have been used to map individuals from one treatment distribution to another (Charpentier et al., 2023; De Lara et al., 2024), and sequential transport (ST) algorithms have been proposed to align transport operations with the structure of a probabilistic graphi-cal model (Fernandes Machado et al., 2025b). The core idea is to build, for each untreated unit, a deterministic counterfactual mediator profile that is (i) distri-butionally aligned with the treated group and (ii) consistent with the mediator DAG, by transporting mediators sequentially along a topological order. Extensions further allow applying transport maps to categorical mediators by treating them as compositional objects transported on the simplex (Fernandes Machado et al., 2025a). In fairness applications, similar distributional transformations have been used to define counterfactually fair predictors (Black et al., 2020; Plečko et al., 2024). A related line of work investigates the extent to which counterfactuals can be nonparametrically identified when the underlying structural equations are un-known or only partially specified. In particular, Balakrishnan et al. (2025) develop 
+
+2conservative inference procedures that characterize sets of compatible counter-factuals, rather than committing to a single structural model. The approach we consider here is complementary: instead of bounding counterfactuals, we con-struct a specific distributionally grounded counterfactual, via optimal transport, that satisfies a mutatis mutandis principle and remains compatible with the ob-servable mediator distributions. Sequential transport may therefore be viewed as selecting one interpretable element from the larger counterfactual ambiguity set considered in this literature. Finally, recent work has pushed OT-based causal methodologies beyond graph-constrained formulations. Ehyaei et al. (2025) propose structural causal optimal transport , which leverages not only the causal DAG but also the structural equations 
+
+of a structural causal model to restrict the set of admissible distributions. They also introduce a relaxed version where hard causal constraints are replaced by a regularization term, leading to an efficient algorithmic approach, and they provide finite-sample guarantees when the structural equations must be estimated. While their primary focus is ambiguity-set design for distributionally robust optimiza-tion, this line of work is complementary to ours: sequential transport exploits a mediator DAG to build conditional transports (monotone in the continuous case, simplex-based in the categorical case), whereas structural causal OT shows how additional functional information (when available) can further refine OT-based causal constraints. 
+
+Contributions. We integrate these transport-based ideas into causal media-tion analysis. 1 For this, we consider the simple but widely used causal ordering 
+
+A → X → Y, where A is a binary treatment, X a (possibly high-dimensional) vector of mediators structured by a directed acyclic graph (DAG), and Y an out-come. Our key idea is to define mediator counterfactuals in a distributional mutatis mutandis sense: when changing the treatment, each mediator is modified only as necessary to reach the target distribution, while respecting the conditional structure of the joint probability distribution encoded in the DAG. Technically, we implement this through a sequential transport scheme that moves mediators one node at a time along a topological ordering (Kahn, 1962). For continuous mediators, each step applies either univariate transport or condi-tional transport, depending on the parents of the node in the DAG. This yields deterministic, interpretable mediator counterfactuals that remain in-distribution and scale linearly with the number of mediators. For categorical mediators, ST incorporates simplex-based transport to preserve label structure. Our main contributions are as follows: 
+
+• Unit-level mediation via sequential transport. We provide a DAG-aligned OT framework (namely, sequential transport , ST) to compute individual-level direct and indirect effects, by producing mediator counterfactuals consistent with the causal structure. 
+
+• Theoretical guarantees. We establish convergence results for the condi-tional transport maps underlying ST, extending classical multivariate OT theory to sequential, graph-structured settings. 
+
+> 1The replication package, including all data, code, and a replication ebook containing additional results, is available at: https://github.com/fer-agathe/causal_OT.
+
+3• Empirical validation. Gaussian simulations demonstrate the agreement between the ST approach and classical mediation decompositions in linear SEMs, while a fairness application using this transport-based approach on the COMPAS dataset illustrates the interpretability and mediator-level attribution of the indirect effect when using ST. The paper is organized as follows. Section 2 reviews causal mediation anal-ysis. Section 3 introduces OT-based counterfactuals and the mutatis mutandis 
+
+perspective. Sequential transport (ST) on DAGs is developed in Section 4. Section 5 provides theoretical guarantees for the ST approach. Section 6 presents Gaussian illustrations, and Section 7 reports results on real-world data. Section 8 discusses the overall methodology and its possible extensions. 
+
+# 2 Causal mediation analysis 
+
+We use uppercase letters for random variables (e.g., A, X, Y ) and lowercase letters for their realizations (e.g., a, x, y ); boldface denotes vectors, and i indexes units/individuals while j indexes mediators. Let (A, X, Y ) ∈ A × X × Y 
+
+be a random vector, where A is a binary treatment variable with A = {0, 1},
+
+X = ( X1, . . . , X d) is a vector of post-treatment mediators and Y is the outcome variable. We assume (A, X, Y ) ∼ P, where P is a probability measure on the product space A × X × Y . For each unit i, let (Ai, Xi, Y i) ∼ P denote the i-th random observation, and let (ai, xi, y i) denote its realization. We consider the causal ordering 
+
+A → X → Y. 
+
+This structure appears in many applications and corresponds to the canonical mediation setting described in Robins and Greenland (1992); Pearl (2001, 2014). The mediators may themselves be causally related, a dependence that we represent through a DAG G. Let parents G (Xj ) denote the parents of the random variable 
+
+Xj in the mediator DAG G. The conditional joint mediator distribution given the treatment value a factorizes as 
+
+P(X | A = a) = 
+
+> d
+
+Y
+
+> j=1
+
+P Xj | parents G (Xj ), A = a ,
+
+consistent with the recursive structure of a DAG, from Markov’s property (Koller and Friedman, 2009). Throughout, we distinguish the definition of sequential transport (ST) from its causal interpretation. ST is defined from the observable conditional laws P(Xj | parents G (Xj ), A = a) (or P(· | A = a, C = c) if pre-treatment covariates C are used) and from the mediator DAG G; hence it yields a well-defined distributional transformation regardless of whether A is exogenous. A causal interpretation requires an additional assumption: either A is randomized, or A is ignorable given observed pre-treatment covariates C, so that 
+
+P(· | A = a, C = c) = P(· | do (A = a), C = c). Under this condition, ST-based decompositions can be interpreted as ( mutatis mutandis ) direct and indirect causal effects. To identify direct and indirect effects, we require the sequential ignorability as-sumption from Imai et al. (2010b), extended to multiple mediators. This entails the absence of unobserved confounding in the treatment-outcome, treatment-mediator, and mediator-outcome relationships, as well as the absence of treatment-induced 
+
+4confounding (see Zhou and Wodtke (2025)). When the treatment is randomized, this guarantees no confounding in the treatment-outcome and treatment-mediator relationships, but not necessarily in the other assumptions. In observational set-tings where A is a sensitive attribute (e.g., race), it is common to treat A as a root node by convention (i.e., we do not model its upstream causes). In this case, identifying causal effects additionally requires assuming that there are no unob-served variables affecting both the outcome and the mediators. When the sensitive attribute is not a root node (e.g., credit score), we must additionally control for confounding in pre-treatment variables. Thus, unless these assumptions can be justified, we do not claim identification of a causal effect of A when using transport plans, in contrast to approaches based on SCMs. Rather, ST should be interpreted as a distributional pathway decomposition of differences between the A = 0 and 
+
+A = 1 groups, aligned with G (see also Section 4 for a more detailed discussion). 
+
+# 2.1 Potential outcomes and effect decomposition 
+
+For each unit i, let Xi(a) denote its potential mediator vector under treatment value a ∈ { 0, 1}, and Yi(a, x) its potential outcome under treatment value a and mediator vector value x. The individual total effect of the treatment for unit i is 
+
+τi = Yi(1 , Xi(1)) − Yi(0 , Xi(0)) .
+
+Following Robins and Greenland (1992) and Pearl (2001), this total effect can be decomposed into a natural indirect effect (NIE), 
+
+δi(a) = Yi(a, Xi(1)) − Yi(a, Xi(0)) ,
+
+and a natural direct effect (NDE), 
+
+ζi(a) = Yi(1 , Xi(a)) − Yi(0 , Xi(a)) ,
+
+In general (without a no-interaction restriction), the total effect admits the decom-position τi = δi(1) + ζi(0) ; under the no-interaction assumption, δi(0) = δi(1) 
+
+and ζi(0) = ζi(1) , hence τi = δi + ζi. These definitions rely on so-called cross-world (or nested ) counterfactuals, in which potential outcomes from two different hypothetical treatment worlds are combined, as in Yi(0 , Xi(1)) , as coined in the mediation literature (Andrews and Didelez, 2021; Tchetgen Tchetgen and VanderWeele, 2014; Naimi, 2015). In causal mediation analysis, we are also interested in the average causal mediation effects, defined as 
+
+¯τ = EY (1 , X(1)) − Y (0 , X(0)) ,
+
+¯δ = EY (0 , X(1)) − Y (0 , X(0)) ,
+
+¯ζ = EY (1 , X(1)) − Y (0 , X(1)) .
+
+Classical approaches resolve this difficulty by specifying a structural causal model (SCM) for the data-generating process, often using linear SEM. Such models yield tractable decompositions, including Kitagawa–Oaxaca–Blinder formulas, under functional and distributional assumptions (Kitagawa, 1955; Oaxaca, 1973; Blinder, 1973). However, individual-level mediator counterfactuals remain difficult to define outside a fully specified SCM, especially in high-dimensional settings or 
+
+5when mediators consist of mixed data types. Some work handles multiple types of a single mediator arranged in a causal graph and enables the identification of individual-level non-parametric effects via Monte Carlo simulation (Imai et al., 2010a,c). In addition, Zhou and Wodtke (2025) extend this work to handle multiple mediators in the graph, using normalizing flows in a non-parametric setting to flexibly learn the structural functions within the SCM, also referred to as causal normalizing flows (Pawlowski et al., 2020; Javaloy et al., 2023; Poinsot et al., 2024). Throughout the paper, we distinguish between the definition of transport-based counterfactuals and their causal interpretation . The ST construction is purely distri-butional : it is built from the observed conditional laws P(Xj | parents G (Xj ), A =
+
+a) and from the structure of the mediator DAG. Hence, ST defines a transported me-diator vector as soon as these conditional distributions are well-defined/estimable, regardless of whether A is exogenous. A causal interpretation requires additional assumptions. First, when A is a root node in the causal graph (e.g., randomized or ignorable given observed covariates), there is no unobserved confounding between treatment and outcome or between treatment and mediators. In this case, observational and interventional distributions coincide if additional sequen-tial ignorability assumptions from Imai et al. (2010b); Zhou and Wodtke (2025), such as the ignorability of the mediators, are satisfied. Under these conditions, 
+
+P(· | A = a) = P(· | do (A = a)) (or conditionally on covariates). In that case, the resulting ST-based decompositions admit a causal interpretation as mu-tatis mutandis direct and indirect effects. In particular, when A is a sensitive attribute such as race in our application, we may represent A as parentless in the graph by convention (that is, we do not model its upstream causes). This is a notational/expositional choice, not an exogeneity assumption. Accordingly, without further assumptions, we do not interpret the resulting decomposition as an identified causal effect of A; rather, it should be read as a distributional pathway decomposition of between-group differences. Moreover, in observational settings where A may be confounded, ST does not claim to identify causal effects (i.e., it does not in general recover quantities under do (A = a)); instead, it provides a principled distributional decomposition of observed differences between the 
+
+A = 0 and A = 1 groups aligned with the assumed mediator structure. 
+
+# 2.2 Motivation for distributional counterfactuals 
+
+Our goal is to construct mediator counterfactuals without assuming a parametric SCM. Instead, we seek a distributional mutatis mutandis interpretation: when changing the treatment, the mediators should be modified in the minimal way required to place the individual in the appropriate mediator distribution, while respecting the DAG structure. This perspective connects directly to transport-based constructions developed for counterfactual fairness (Charpentier et al., 2023; De Lara et al., 2024; Fernandes Machado et al., 2025a,b). It provides a principled, nonparametric alternative to specifying a structural model, and motivates the use of OT in the next section. 
+
+63 Optimal transport theory for a mutatis mu-tandis counterfactual mechanism 
+
+Classical causal mediation analysis relies on structural models to define mediator counterfactuals, typically via functional equations linking treatment, mediators, and outcomes. In contrast, transport-based approaches construct counterfactual versions of observed variables directly from their empirical distributions, without committing to a parametric SCM and ensuring in-distribution counterparts. This distributional point of view is particularly appealing when mediators are high-dimensional, and when interest lies in individual-level counterfactuals consistent with observed data geometry. In this section we present transport–based counterfactual constructions and explain why they provide a natural mutatis mutandis semantics for mediation analysis. Our goal is to modify an individual’s mediator vector only to the extent necessary to represent what their mediators would have been under a different treatment assignment, while preserving the structure of mediator causal relation-ships encoded in the DAG. 
+
+# 3.1 Transport-based counterfactuals in the literature 
+
+Hereafter, X = ( X1, . . . , X d) denotes the (random) mediator vector, possibly affected by A (directly or through other mediators) and influencing the outcome of interest Y .The idea of using OT theory to construct realistic counterfactuals has emerged in several areas of causal inference and fairness. In Charpentier et al. (2023), Torous et al. (2024) and De Lara et al. (2024), multivariate OT is used to map individuals from the distribution of X | A = 0 to that of X | A = 1 , thereby defining non-parametric counterfactual outcomes and features, and without specifying causal relationships between mediators. Building on this viewpoint, Fernandes Machado et al. (2025b) develop sequential transport (ST), an algorithmic framework that aligns the transport operation with the causal structure of a probabilistic graphi-cal model. This ensures that transported features remain coherent with respect to conditional dependencies between mediators. For categorical mediators, the simplex-based approach of Fernandes Machado et al. (2025a) provides determinis-tic transport maps that avoid random label switching and preserve interpretable marginal distributions across categories. Transport-based counterfactuals (including OT and ST) share a common intu-ition: instead of specifying a full structural causal model, they map each individual to a counterfactual state that is (i) in-distribution under the target treatment value, and (ii) minimally different from the factual state according to a chosen transport cost. When transport is performed sequentially along a mediator DAG (as in ST), the construction additionally aims to (iii) preserve the DAG-implied conditional semantics by transporting each mediator conditional on (already transported) parent variables. 
+
+# 3.2 Mutatis mutandis semantics 
+
+A central challenge in mediation analysis is the interpretation of cross-world counterfactuals such as Y (0 , X(1)) . These expressions describe what the outcome 
+
+7would have been if the treatment had been set to 0 (a ← 0) while the mediator had taken whatever value it would have had under treatment value a = 1 (Nguyen et al., 2022). Such counterfactuals cannot be jointly observed, and their definition typically relies on a SCM with unobserved disturbances. As previously mentioned, OT theory provides an alternative that is distribu-tional rather than structural. Instead of requiring a functional model for X(1) ,we ask: “How should the mediator vector of a given individual change when switching the treatment, in a way that makes minimal changes to this vector , while ensuring that the modified mediator vector lies in the distribution of mediators under the new treatment value?” This principle embodies the classical notion of mutatis mutandis : only the aspects of the mediator vector that are causally downstream of the treatment should be allowed to change, and only to the extent required to align with the target mediator distribution. OT naturally implements this idea by solving a minimal-cost distributional transportation problem. 
+
+# 3.3 Transport maps and individual-level counterfactu-als 
+
+Let ν0 and ν1 denote the distributions of X under A = 0 and A = 1 . A transport map T : Rd → Rd pushing ν0 toward ν1, i.e. T#ν0 = ν1, provides an individual-level counterfactual assignment. For the unit i,
+
+xi(1) ≈ T (xi).
+
+Under suitable regularity conditions, OT yields monotone (when ν0 and ν1 are univariate) or cyclical monotone (when their supports lie in Rd) maps solving a minimal deviation principle. In the context of mediators, this gives a nonparametric analogue of the structural relation xi(1) = f (a = 1 , ui), where ui is unobserved noise for unit i in a structural equation, and f is a vector-valued function that assigns values to the mediators given the exogenous variables U (see Pearl et al. (2016) for further details on the SCM framework): instead of modeling f explicitly (e.g. , as with normalizing flows), an OT map constructs the transformation directly from data. A global multivariate OT mapping T is defined as a single map transporting the entire mediator vector x at once, without treating its components individually. While such a map matches the joint target distribution (and thus respects, in a distributional sense, the dependence structure of ν0 and ν1), it is agnostic to the 
+
+direction of causal relationships encoded by the mediator DAG. In particular, when 
+
+X contains causally ordered components, a single multivariate transport may alter the conditional mechanisms (e.g., the laws of Xj | parents G (Xj )) in ways that are incompatible with the DAG factorization, thereby distorting the mediated causal relationships. This motivates the sequential construction of Section 4, where mediators are transported one at a time following a topological order of the DAG, so as to preserve the DAG-implied conditional structure of the mediator variables. 
+
+83.4 Transport-induced mutatis mutandis estimands 
+
+Let νa = L(X | A = a) denote the mediator distribution in group A = a.More generally than any specific construction, consider a measurable transport mechanism T0→1 : X → X that maps the A = 0 mediator distribution toward the A = 1 one (e.g., in the Monge sense T0→1# ν0 = ν1, or approximately in finite samples). For an untreated unit, define the transported mediator vector 
+
+X†(1) := T0→1(X) under A = 0 .
+
+This provides a mutatis mutandis counterfactual mediator profile: mediators are modified only as needed to align with the target distribution under A = 1 , accord-ing to the chosen transport criterion. 
+
+Transport-induced direct and indirect effects. Let μa(x) = E[Y |
+
+A = a, X = x] for a ∈ { 0, 1}. The transport-induced (indirect, direct, total) effects for the A = 0 group are defined as 
+
+δ† := E
+
+h
+
+μ0
+
+
+
+X†(1) 
+
+
+
+− μ0(X) A = 0 
+
+i
+
+, (1) 
+
+ζ† := E
+
+h
+
+μ1
+
+
+
+X†(1) 
+
+
+
+− μ0
+
+
+
+X†(1) 
+
+
+
+A = 0 
+
+i
+
+, (2) 
+
+τ † := δ† + ζ† = E
+
+h
+
+μ1
+
+
+
+X†(1) 
+
+
+
+− μ0(X) A = 0 
+
+i
+
+. (3) 
+
+Distributional vs. causal interpretation. The mapping T0→1 and the estimands above are defined purely from observable distributions and thus yield a 
+
+distributional decomposition of between-group differences. When A is randomized (or ignorable given pre-treatment covariates), observational and interventional distributions coincide, and the same decomposition admits a causal interpretation as mutatis mutandis direct and indirect effects. (A0) Let X†(1) = T0→1(X) | A = 0 and X0 = supp( X | A = 0) . We assume that μ0(x) is estimable on the transported region in the sense that, for some small η ≥ 0,
+
+P
+
+
+
+X†(1) ∈ X 0 A = 0 
+
+
+
+≥ 1 − η. 
+
+When η = 0 , this reduces to supp( X†(1)) ⊆ X 0.This assumption is a common-support (positivity) condition ensuring that the transported mediators X†(1) = T0→1(X) | A = 0 remain (up to a fraction 
+
+η) within the observed support X0 = supp( X | A = 0) , thereby avoiding extrapolation when evaluating the outcome regression μ0(x) on the transported region. Although transport-based constructions avoid writing nested (cross-world) counterfactuals of the form Y (a, X(a′)) (see, e.g., VanderWeele (2014); Xu et al. (2023)), the plug-in decomposition still evaluates μ0(·) at transported mediator profiles. Assumption (A0) therefore plays the role of a positivity/estimability condition ensuring that outcome regression is learnable on the transported region. In practice, we recommend reporting overlap diagnostics (e.g., propensity score ranges, nearest-neighbor distances from X†(1) to the A = 0 sample) and, if needed, trimming observations with extreme lack of overlap. 
+
+93.5 Strengths and limitations of transport-based ap-proaches 
+
+Transport-based counterfactuals present several advantages for causal mediation analysis. First, they provide unit-level counterfactual mediators without specifying the functional forms within a SCM. Second, they guarantee that counterfactual me-diators remain in-distribution. Third, they naturally incorporate causal structures when transport is performed sequentially along a DAG. At the same time, any transport plan from OT theory constructs counterfactu-als that are distributionally identified: they are defined from the observed group distributions and can be viewed as a guided interpolation between them. In the setting considered in this paper, A is assumed exogenous (a root node), so that conditioning on A coincides with intervention, and the resulting transport-based decompositions admit a causal interpretation. It should be noted that in obser-vational settings where A may be confounded, transport-based counterfactuals remain well-defined as distributional objects, but interpreting them causally would require additional assumptions (e.g., ignorability given covariates) or appropriate adjustment. The next section formalizes this idea by providing the detailed ST mechanism that respects mediator causal relationships encoded in a DAG. This ST approach extends naturally to categorical variables, and yields well-defined individual-level direct and indirect effects. 
+
+# 4 Sequential transport on a mediator DAG 
+
+Section 3.4 introduced transport–based counterfactual mediators through a generic 
+
+map T0→1 : X → X that pushes ν0 := L(X | A = 0) toward ν1 := L(X |
+
+A = 1) . A direct multivariate construction of T0→1, however, need not respect the internal structure of X: when mediators obey a directed acyclic graph (DAG), a global transformation may distort the conditional relationships encoded by the graph and produce counterfactual profiles that are misaligned with the intended parent–child semantics. To obtain counterfactual mediators that are both distributionally valid and 
+
+graph-aligned , we instantiate T0→1 through a sequential transport: we update the mediators one coordinate at a time, in a topological order of the mediator DAG, and condition each update on the already-transported parent values. This yields a deterministic transported profile x⋆ 
+
+> 1,i
+
+for each observation xi in group A = 0 .Our construction can be viewed as a graphical analogue of the Knothe– Rosenblatt (KR) rearrangement, which itself is rooted in the Rosenblatt factoriza-tion (chain rule) (Rosenblatt, 1952) and was formalized by Knothe (1957), with later probabilistic graphical formulations discussed in Lauritzen (2020); Cheridito and Eckstein (2023). Closely related ideas have recently been used for “counterfactual fairness” in Fernandes Machado et al. (2025a,b). Here we adapt and formalize them in our mediation setting, covering both numerical and categorical mediators. 
+
+# 4.1 Mediator DAG and notation 
+
+Let A ∈ { 0, 1} denote the treatment and X = ( X1, . . . , X d) the mediator vector. Let G be a mediator DAG whose nodes are {X1, . . . , X d} and whose directed edges 
+
+10 encode dependencies between mediators downstream of A. For each mediator Xj ,write Zj = parents G (Xj ) for its parent set. Because G is acyclic, there exists a topological ordering Xπ(1) , . . . , X π(d) such that all parents of Xπ(j) appear among {Xπ(1) , . . . , X π(j−1) } (see Kahn (1962) and for practical implementation, several algorithms are discussed in Section 20.4 in Cormen et al. (2022)). For a ∈ { 0, 1} and each j, denote by 
+
+Pa,j (· | z) the conditional law of Xj | (Zj = z, A = a).
+
+In the data, we observe na units in group A = a, with index set Ia = {i : Ai = a}
+
+and mediator vectors xi = ( xi1, . . . , x id ). For each j, we form the empirical sample of child–parent pairs 
+
+χa,j =   xij , xi, Zj
+
+ : i ∈ I a ,
+
+which summarizes information about Pa,j (· | z). When Zj = ∅, this reduces to the marginal sample of Xj in group A = a.
+
+# 4.2 Sequential transport 
+
+Population-based sequential transport Sequential Transport (ST) is defined by conditional transport maps that are composed along the ordering π.The key point is that, once parents have been transported, the target conditional law for a child should be evaluated at the transported parent values. Accordingly, it is convenient to define a two-argument conditional transport: for each mediator 
+
+j, let Tj (· | z0, z1) be a measurable map such that, for each (z0, z1),
+
+ Tj (· | z0, z1) 
+
+> #
+
+P0,j (· | z0) = P1,j (· | z1).
+
+Here z0 indexes the source conditional (from group A = 0 ), whereas z1 indexes the target conditional (in group A = 1 ). When Zj = ∅, we simply write Tj for the marginal transport. For an individual i with Ai = 0 and factual mediator vector x0,i , the popula-tion ST counterfactual x† 
+
+> 1,i
+
+is constructed recursively: 
+
+(x† 
+
+> 1,i,π (1)
+
+= Tπ(1) 
+
+ x0,i,π (1) 
+
+ ,x† 
+
+> 1,i,π (j)
+
+= Tπ(j)
+
+
+
+x0,i,π (j) x0,i, parents G (Xπ(j)), x† 
+
+> 1,i, parents G(Xπ(j))
+
+
+
+, j = 2 , . . . , d, 
+
+and we set x† 
+
+> 1,i
+
+= ( x†
+
+> 1,i,π (1)
+
+, . . . , x †
+
+> 1,i,π (d)
+
+).Intuitively, ST modifies each mediator just enough to match the appropriate conditional distribution in group A = 1 , while conditioning on the already-transported parents so as to remain aligned with the DAG. This contrasts with applying a single multivariate transport map to X, which generally does not preserve the intended parent–child conditioning relationships encoded by G.
+
+Sample-based sequential transport In practice, we replace {Tj }dj=1 by estimates { bTj }dj=1 learned from the samples χ0,j and χ1,j , yielding the estimated transported profile x⋆ 
+
+> 1,i
+
+via the same recursion with bTj in place of Tj . The next subsections describe numerical and categorical constructions of bTj and establish consistency results for the resulting sequentially transported mediators. 
+
+11 4.3 Transport for numerical mediators 
+
+When Xj is numerical, we estimate a univariate or conditional transport map depending on whether Xj has parents beyond the treatment variable. 
+
+No parents. If parents G (Xj ) = ∅, the mediator depends only on the treat-ment. In this case, we apply the classical univariate OT map based on smoothed cumulative distribution function (CDF) and quantile function: 
+
+∀x ∈ X j , Tj (x) = Q1,j ◦ F0,j (x),
+
+where F0,j is a smoothed empirical CDF under A = 0 , and Q1,j a smoothed quantile function under A = 1 , i.e., F0,j (x) := P(Xj ≤ x | A = 0) while 
+
+Q1,j (u) := inf {x ∈ R : F1,j (x) ≥ u}, for u ∈ (0 , 1) , where F1,j (x) := 
+
+P(Xj ≤ x | A = 1) .
+
+Parents present. If parents G (Xj )̸ = ∅, we transport Xj conditionally on its parents. Let Zj = parents G (Xj ). For each zj , we seek a map Tj (· | zj ) such that 
+
+ Tj (· | zj ) 
+
+> #
+
+P(Xj | Zj = zj , A = 0) = P Xj | Zj = TZj (zj ), A = 1  .
+
+We implement this using the kernel-based conditional transport estimator of Fernandes Machado et al. (2025b), which approximates the conditional CDF under A = 0 and the corresponding conditional quantile under A = 1 . The mapping thus generalizes the Rosenblatt (or Knothe–Rosenblatt) construction to a conditional and treatment-indexed setting. 
+
+# 4.4 Transport for categorical mediators 
+
+When Xj is categorical with K levels, we write Xj ∈ [K] = {1, . . . , K } and represent its conditional law given its parents as a probability vector on the 
+
+(K − 1) -simplex SK−1 = {p ∈ RK 
+
+> +
+
+: PKk=1 pk = 1 }. Specifically, for a parent value z and group A = a, let 
+
+pa,j (z) =  P(Xj = k | Zj = z, A = a) 
+
+> k∈[K]
+
+∈ S K−1,
+
+which we estimate in practice (e.g., via multinomial/softmax regression or local smoothing), yielding simplex-valued fitted probabilities for each unit. We then transport distributions on the simplex rather than labels directly. Fol-lowing Fernandes Machado et al. (2025a), we construct a deterministic OT map 
+
+Tj : SK−1 → S K−1 that pushes the source fitted probabilities toward the target ones. For a unit with A = 0 and parents z, this produces a transported probability vector ˜pj = Tj (p0,j (z)) .To obtain a categorical counterfactual in [K], we finally map ˜pj to a ver-tex of the simplex, i.e., to a unit vector ek (the kth canonical basis vector) cor-responding to category k. A simple deterministic choice is argmax rounding, 
+
+ˆxj (1) = arg max k∈[K](˜ pj )k . However, argmax rounding does not in general preserve the target category proportions. When we wish the induced categorical counterfactuals to match the target marginals in group A = 1 , we instead per-form a global (semi-discrete) OT allocation of the transported vectors ˜pj onto the 
+
+12 vertices {e1, . . . , eK } so that the resulting one-hot assignments have empirical frequencies equal (or close) to the target category marginals; see Appendix C and Algorithm 4. When parents are present, the above steps are applied conditionally: we com-pute pa,j (z) at the relevant parent values, transport using the already-transported parents (as in the continuous case), and apply the rounding/allocation within the corresponding conditional target distribution. 
+
+# 4.5 Resulting counterfactual mediator vector 
+
+Applying the above steps to each mediator in topological order yields a fully transported counterfactual vector 
+
+x⋆ 
+
+> 1,i
+
+=  x⋆
+
+> 1,π (1)
+
+, . . . , x ⋆
+
+> 1,π (d)
+
+,
+
+which (i) belongs to the support of the A = 1 mediator distribution, (ii) respects the DAG structure between mediator variables, and (iii) differs “minimally” from 
+
+x0,i in transport cost. The mapping is deterministic and therefore provides a stable basis for individual-level analysis. Algorithm 1 summarizes the ST procedure; detailed implementations for nu-merical and categorical mediators are provided in Appendix C. We assume As-sumption (A0) so that evaluating bμ0(x⋆
+
+> 1,i
+
+) does not rely on extrapolation. 
+
+# 4.6 Direct and indirect effects via sequential transport 
+
+Given a predictive model bμa(·) for the outcome under treatment A = a, modeling 
+
+μa(x) = E[Y | A = a, x], ST yields unit-level decompositions of the total effect: 
+
+
+
+δi = bμ0(x⋆
+
+> 1,i
+
+) − bμ0(x0,i ), (indirect) 
+
+ζi = bμ1(x⋆
+
+> 1,i
+
+) − bμ0(x⋆
+
+> 1,i
+
+), (direct) 
+
+τi = δi + ζi.
+
+The indirect effect δi isolates the contribution of the mediator transformation, while the direct effect ζi captures the change in treatment holding the mediator counterfactual fixed in its transported state. Both quantities exist at the individual level, require no parametric SCM, and respect the causal ordering encoded in G.These expressions parallel the natural direct and indirect effects by replacing the cross-world structural counterfactuals x(1) with ST-constructed counterfac-tuals x⋆
+
+> 1,i
+
+. Although x⋆ 
+
+> 1,i
+
+remains within the observed distribution of the data, an individual characterized by (A = 0 , x⋆
+
+> 1,i
+
+) is inherently cross-world and is never observed in practice, since it combines information from both the A = 0 and 
+
+A = 1 worlds. Section 6 illustrates the construction of the ST-based counterfactuals in Gaus-sian settings, while Section 7 applies it to a real-world fairness problem. 
+
+# 5 Theoretical guarantees for sequential trans-port 
+
+ST constructs mediator counterfactuals by composing a series of univariate or conditional transport maps along a topological ordering of the mediator DAG. 
+
+13 Algorithm 1 Sequential transport on causal graph G for untreated individual x0.
+
+Require: graph G on (a, x)(a, v) ← the topological ordering of vertices (DFS) 
+
+Tj ← identity, j ∈ v and x⋆ 
+
+> 1
+
+← x0
+
+Require: model bμ0(·) ← { y, x}, on untreated individuals (group A = 0 )
+
+Require: model bμ1(·) ← { y, x}, on treated individuals (group A = 1 )
+
+Assume Assumption (A0) when evaluating bν0 at transported mediator profiles 
+
+Require: probabilistic models bpj : X → S dj −1, for all categorical variables xj ,
+
+bpj (·) ← { xj , x−j },
+
+Require: optimal categorical splitting function Cj , for all categorical variables xj ,Algorithm 4 
+
+Require: smoothing parameters h
+
+for j ∈ v do if parents G (xj ) = {a} then 
+
+w0 ← 1n0 /n 0 and w1 ← 1n1 /n 1
+
+else 
+
+w0,i ← Khj (∥x0,parents G (xj ),i − x0,parents G (xj )∥)
+
+w1,i ← Khj (∥x1,parents G (xj ),i − x⋆  
+
+> 1,parents G(xj)
+
+∥)
+
+end if if xj numeric then 
+
+χ0,j ← { x0,j, 1, · · · , x 0,j,n 0 } ∈ Rn0
+
+χ1,j ← { x1,j, 1, · · · , x 1,j,n 1 } ∈ Rn1
+
+x⋆ 
+
+> 1,j
+
+← Algorithm 2 (x0,j , w0, w1, χ 0,j , χ 1,j )
+
+else if xj categorical then 
+
+χ0,j ← { bpj (x0,j, 1), · · · , bpj (x0,j,n 0)} ∈ S n0 
+
+> dj−1
+
+χ1,j ← { bpj (x1,j, 1), · · · , bpj (x1,j,n 1)} ∈ S n1 
+
+> dj−1
+
+x⋆ 
+
+> 1,j
+
+← Algorithm 3 (x0,j , w0, w1, χ 0,j , χ 1,j , C j )
+
+end if 
+
+x⋆ 
+
+> 1,j
+
+← Tj (x0)
+
+end for return x⋆
+
+> 1
+
+, counterfactual of x0
+
+return indirect effect δ ← bμ0(x⋆
+
+> 1
+
+) − bμ0(x0)
+
+return direct effect ζ ← bμ1(x⋆
+
+> 1
+
+) − bμ0(x⋆
+
+> 1
+
+)
+
+return total effect τ ← δ + ζ
+
+This section establishes statistical guarantees for these maps and, by extension, for the counterfactual mediators and effect decompositions they induce. The results extend classical convergence analyses for monotone OT to a conditional and graph-structured setting. Throughout, we work under assumptions compatible with the exogeneity of the treatment A (a root node in the DAG) and with the absolute continuity or discrete-support structure of the mediators discussed previously. All proofs are deferred to Appendix B. 
+
+14 5.1 Setting and assumptions 
+
+Let Xj be a mediator in the DAG with parent set Zj = parents G (Xj ). We denote by 
+
+Fa,j (· | z), Qa,j (· | z)
+
+the conditional cumulative distribution and quantile functions of Xj given Zj = z
+
+under treatment A = a. ST uses kernel-based estimators bF0,j (· | z) and bQ1,j (· | 
+
+z) to form the estimated conditional transport. To make explicit the sequential nature of ST, we distinguish the parent values used for the source conditional CDF and the target conditional quantile. For (z0, z1), define 
+
+bTj (x | z0, z1) = bQ1,j 
+
+ bF0,j (x | z0) | z1
+
+
+
+.
+
+In the sequential procedure, we take z0 to be the observed parent values in group 
+
+A = 0 and z1 to be their already-transported counterparts, i.e., z1 = bTZj (z0),where bTZj denotes the vector of transport maps for the components of Zj (in the chosen topological order). Equivalently, writing bT (z) for the transported parent vector, we have the shorthand 
+
+bTj (x | z) = bQ1,j 
+
+ bF0,j (x | z) | bT (z)
+
+
+
+.
+
+as in Fernandes Machado et al. (2025b). Similarly, categorical mediators are handled via simplex-based transport, leading to estimators bTj : SK → S K following Fernandes Machado et al. (2025a). Regularity assumptions are necessary here. Namely, we assume that (A1) con-ditional mediator distributions admit densities or finite supports; (A2) conditional CDFs are strictly increasing; (A3) kernel estimators of conditional distributions converge uniformly; (A4) the mediator graph is a known DAG. Formally, (A1) For each j, the conditional law of Xj | Zj = z, A = a has a density with respect to the Lebesgue measure (numerical case) or a probability mass function on a finite set (categorical case). (A2) The conditional CDFs Fa,j (· | z) are strictly increasing on the support of 
+
+Xj | Zj = z, A = a.(A3) Kernel estimators for the conditional distribution satisfy uniform conver-gence: 
+
+sup 
+
+> x, z
+
+bF0,j (x | z)−F0,j (x | z) p
+
+−→ 0, and sup 
+
+> u, z
+
+bQ1,j (u | z)−Q1,j (u | z) p
+
+−→ 0.
+
+(A4) The DAG G is known and acyclic, allowing a valid topological ordering. Assumption (A3) is standard in nonparametric kernel estimation and holds under mild smoothness and bandwidth conditions; see, e.g., Einmahl and Mason (2005) or Li and Racine (2007, Ch. 6). Moreover, under a conditional density bounded away from zero around the relevant quantiles, uniform convergence of bFa,j implies uniform convergence of the corresponding conditional quantile estimator by standard inversion arguments (e.g., van der Vaart (1998, Thm. 21.2)). The other assumptions are standard in transport literature, and facilitate the consistency of ST mappings. For numeric mediator, we will also require regularity in the transported co-variate argument (A5), 
+
+15 (A5) There exists ε ∈ (0 , 1/2) such that, for any compact Kj contained in the interior of supp( Zj ), the map z 7 → Q1,j (u | z) is uniformly continuous on Kj uniformly over u ∈ [ε, 1 − ε]; for instance, a Lipschitz condition: 
+
+sup 
+
+> u∈[ε, 1−ε]
+
+Q1,j (u | z) − Q1,j (u | z′) ≤ Lj ∥z − z′∥ ∀ z, z′ ∈ K j .
+
+Assumption (A5) is also mild and standard in quantile regression: it holds, for instance, if the conditional density is bounded away from zero around the relevant quantiles and the conditional CDF varies smoothly in z1, ensuring stability of inversion; see, e.g., Koenker (2005, Sec. 2.2) and related regularity conditions in Kato (2012). We use the following standard stability condition for discrete OT on the sim-plex, with (A6), continuity/stability of the simplex transport operator; and (A7), consistency of conditional probability estimators. (A6) For each j and (z0, z1) in the interior of supp( Zj ), the optimal simplex transport operator Tj (· | z0, z1) is continuous at  p0,j (· | z0), p 1,j (· | 
+
+z1); e.g., the optimal plan/map is unique (or a deterministic continuous selection is fixed). (A7) For a ∈ { 0, 1}, sup 
+
+> k, z
+
+bpa,j (k | z) − pa,j (k | z) p
+
+−→ 0.Assumption (A6) is a stability requirement for the discrete OT solution on the simplex: for fixed costs, the simplex transport is the solution of a linear program whose optimal solution mapping is (piecewise) affine and is continuous at points where the optimal plan/map is unique and nondegenerate. This type of local stability is classical in sensitivity/perturbation analysis of linear programs (Bonnans and Shapiro, 1998, 2000). When the OT problem admits multiple optimal plans (a measure-zero “degeneracy” situation under generic costs), continuity may fail for an arbitrary selection; in practice, one may either fix a deterministic continuous selection (as done in Fernandes Machado et al. (2025a)) or introduce a small strongly convex regularization (e.g., entropic) which enforces uniqueness and smooth dependence on the marginals as discussed in Appendix A.5. Assumption (A7) concerns estimation of the conditional probability vectors 
+
+pa,j (· | z) on a finite support. In simple parametric models such as the multi-nomial logit, pa,j (k | z) = πk (z; βa) with a smooth link in (z, β a), the MLE 
+
+bβa is consistent under standard regularity/identifiability conditions for general-ized linear models (e.g., no separation and finite Fisher information), and hence 
+
+bpa,j (k | z) = πk (z; bβa) converges to pa,j (k | z). Moreover, on compact sub-sets of the covariate space (bounded regressors), smoothness of πk implies that this convergence can be strengthened to uniform convergence in z (a standard continuous-mapping/Glivenko–Cantelli argument for parametric classes); see, e.g., Fahrmeir and Kaufmann (1985) and textbook treatments of multinomial logit such as Agresti (2002). Finally, note that multinomial logit probabilities are strictly positive for finite parameters, so the conditional laws typically lie in the interior of the simplex; however, probabilities can become arbitrarily close to 0 if linear predictors diverge, which may lead to numerical instability of the discrete OT solution. A common practical safeguard is to restrict attention to regions where min k pa,j (k | z) ≥
+
+c > 0 (or to apply mild regularization), ensuring the transported assignment is stable. 
+
+16 5.2 Pointwise consistency of conditional transport maps 
+
+Root mediator 
+
+Lemma 5.1 (Consistency for numeric root mediators) . Let j be such that parents G (Xj ) = 
+
+∅ (so Zj is empty). Under Assumptions (A1)–(A3), the estimated marginal transport map is consistent: in the numerical case, 
+
+sup 
+
+> x∈X j
+
+bTj (x) − Tj (x) p
+
+−→ 0, where 
+
+(
+
+Tj (x) = Q1,j (F0,j (x)) ,
+
+bTj (x) = bQ1,j ( bF0,j (x)) ,
+
+for any compact Xj contained in the interior of supp( Xj | A = 0) .
+
+In the categorical case (finite support), the plug-in simplex transport map is consistent in the same sense. 
+
+Inductive intuition (sequential plug-in). Because sequential transport (ST) follows a topological ordering of the mediator DAG, each step j only de-pends on quantities associated with nodes k < j (i.e., already-transported ances-tors/parents). For root mediators (no parents), consistency was discussed in the previous sub-section. Moving to a general node j, the only additional difficulty is that the conditional transport map bTj (· | z0, z1) is evaluated at a random 
+
+covariate value bz1 = bTZj (z0) produced by earlier stages. This is handled by a standard plug-in decomposition: (i) consistency of bTj (· | z0, z1) at fixed (z0, z1),and (ii) regularity (e.g., continuity/Lipschitz) of the population map in z1. When working at step j, we thus assume that all previous consistency statements (for 
+
+k < j ) have already been established, i.e., (H (j)) At step j, for all k < j , and any z0 in the interior of supp( Zk )
+
+bTZk (z0) p
+
+−→ TZk (z0).
+
+(H(j)) is an induction hypothesis used for intermediate plug-in results; it is proved recursively in Theorem 5.1. Now, we can discuss consistency of bTj (x | z0)
+
+when Xj is either numerical or categorical. 
+
+Numerical mediator We begin with the case where Xj is a numerical medi-ator. 
+
+Proposition 5.1 (Consistency of conditional numerical transport) . Under As-sumptions (A1)–(A3), for any mediator Xj and any (x, z0, z1) in the interior of the support of (Xj , Zj ),
+
+bTj (x | z0, z1) p
+
+−→ Tj (x | z0, z1) := Q1,j (F0,j (x | z0) | z1) .
+
+Corollary 5.1 (Sequential (parent-transported) version) . In the sequential proce-dure, we set z1 = TZj (z0), so that 
+
+bTj
+
+ x | z0, T Zj (z0) p
+
+−→ Tj
+
+ x | z0, T Zj (z0) .
+
+Proposition 5.2 (Plug-in along estimated transported parents) . Assume (A1)–(A5) and ( H(j)). Fix z0 in the interior of supp( Zj ) and set z1 = TZj (z0) and ˆz1 =
+
+bTZj (z0). Moreover, if (A5) holds for some ε > 0 and if F0,j (x | z0) ∈ [ε, 1 − ε],by consistency of the sequential transport estimator for Zj ,
+
+bTj (x | z0) := bTj
+
+
+
+x | z0, bTZj (z0)
+
+ p
+
+−→ Tj
+
+ x | z0, T Zj (z0) =: Tj (x | z0) .
+
+17 This result generalizes classical consistency of univariate monotone transport to a conditional setting. The quality of the approximation propagates through the sequence of transport operations, yielding consistent mediator counterfactuals for ST. 
+
+Categorical mediator We now turn to categorical mediators. Let pa,j (· | z)
+
+denote the conditional multinomial probability vector of Xj under A = a, given the parent values z.
+
+Proposition 5.3 (Pointwise consistency of simplex transport for categorical medi-ators) . Under Assumptions (A1)–(A4), for any (z0, z1) in the interior of the support of Zj ,
+
+bTj
+
+ p0,j (· | z0) | z0, z1
+
+ p
+
+−→ Tj
+
+ p0,j (· | z0) | z0, z1
+
+,
+
+where Tj (· | z0, z1) is the deterministic optimal simplex transport map (from the conditional law under A = 0 at z0 to that under A = 1 at z1). 
+
+Corollary 5.2 (Consistency along the sequential transport path) . Assume the conditions of Proposition 5.3. In the sequential procedure, set z1 = TZj (z0). Then for any z0 in the interior of the support of Zj ,
+
+bTj
+
+ p0,j (· | z0) | z0, z1 = TZj (z0) p
+
+−→ Tj
+
+ p0,j (· | z0) | z0, z1 = TZj (z0).
+
+Proposition 5.4 (Plug-in consistency of transport along estimated sequential transport) . Assume (A1)–(A4), (A6)–(A7) and ( H(j)). Fix z0 in the interior of 
+
+supp( Zj ) and let z1 = TZj (z0) and bz1 = bTZj (z0). By consistency of the sequential transport estimator for Zj , then 
+
+bTj
+
+ p0,j (· | z0) | z0, z1 = bTZj (z0) p
+
+−→ Tj
+
+ p0,j (· | z0) | z0, z1 = TZj (z0).
+
+# 5.3 Consistency of sequentially transported mediators 
+
+Fix a topological order π of the mediator DAG G and consider a unit i in group 
+
+A = 0 . Let x⋆ 
+
+> 1,i
+
+be the sequentially transported mediator vector defined by 
+
+
+
+x⋆ 
+
+> 1,i,π (1)
+
+= bTπ(1) 
+
+ x0,i,π (1) 
+
+ ,x⋆ 
+
+> 1,i,π (j)
+
+= bTπ(j)
+
+
+
+x0,i,π (j) x0,i, parents G (Xπ(j)), x⋆ 
+
+> 1,i, parents G(Xπ(j))
+
+
+
+, j = 2 , . . . , d, 
+
+and define the population-level ST counterfactual x† 
+
+> 1,i
+
+by the same recursion with 
+
+{Tj }dj=1 in place of { bTj }dj=1 . In order to derive convergence results, add a final assumption (A8) asking for uniform outcome regression consistency on relevant supports. (A8) For a ∈ { 0, 1},
+
+sup 
+
+> x∈Sa
+
+bμa(x) − μa(x) p
+
+−→ 0,
+
+and μa is continuous on Sa (or at least at the relevant evaluation points). Assumption (A8) is a standard plug-in requirement for outcome regression: it asks that bμa consistently estimates μa at the specific covariate values where it is evaluated, namely at the observed point x0,i and at the transported point x†
+
+> 1,i
+
+(whenever x† 
+
+> 1,i
+
+lies in the relevant support, as requested with Assumption (A0)). 
+
+18 Such pointwise (or local) regression consistency is classical in nonparametric regression theory and underpins many plug-in arguments (Stone, 1977). Compared to the double/debiased machine learning (DML) literature, Assumption (A8) is somewhat stronger: DML typically targets average causal parameters and relies on Neyman-orthogonal scores and cross-fitting, so that nuisance functions only need to be estimated consistently in an L2(P) sense (often with rate conditions), rather than pointwise at particular covariate values (Chernozhukov et al., 2018). We adopt the stronger formulation here to obtain a direct and transparent consistency statement for the unit-level effects (bδi, bζi, bτi) defined through point evaluations of 
+
+bμa.
+
+Theorem 5.1 (Consistency of sequential mediator counterfactuals (ST)) . Assume (A1)–(A4). In addition, assume the following node-specific regularity conditions: 
+
+• for each numerical mediator Xj , assume (A5) and that F0,j (x0,i,j | x0,i, parents G (Xj )) ∈
+
+[εj , 1 − εj ] for some εj ∈ (0 , 1/2) ;
+
+• for each categorical mediator Xj , assume (A6)–(A7) Then, for the fixed unit i,
+
+x⋆
+
+> 1,i p
+
+−→ x†
+
+> 1,i
+
+,
+
+i.e., each coordinate x⋆
+
+> 1,i,π (j)
+> p
+
+−→ x† 
+
+> 1,i,π (j)
+
+and hence the whole vector converges. 
+
+This theorem establishes that, for any fixed individual, the transported media-tor vector converges to its ideal mutatis mutandis transformation. The result is a consequence of the stability of the topological ordering and the continuity of conditional transports. The proof relies on uniform convergence of conditional transport maps and on stability of their composition along the DAG; full proofs are given in Appendix B. Notation x† 
+
+> 1
+
+is inspired from Torous et al. (2024) (where it denotes the counterfactual outcome of treated units had they not received treatment). Our results are stated for categorical mediators encoded as compositional data (i.e., probability vectors on the simplex), but the same consistency conclusions extend to category-valued transports as well, provided one uses a deterministic tie-breaking rule (or a mild regularization to enforce uniqueness) when mapping transported probability vectors to discrete labels. 
+
+Lemma 5.2 (Consistency of induced categorical assignments) . Assume the con-ditions of Proposition 5.4. Let g : SK → { 1, . . . , K } be a deterministic category prediction rule (e.g., g(p) = arg max  
+
+> k
+
+pk with a fixed tie-breaking convention, or the deterministic cell assignment induced by the simplex transport construction). Define the (estimated) transported probability vector, as well as the induced categorical assignments, and its population counterpart 
+
+(bp ⋆ 
+
+> 1,i,j
+
+:= bTj
+
+ p0,j (· | z0) | z0, z1 = bTZj (z0), bx⋆ 
+
+> 1,i,j
+
+:= g bp ⋆
+
+> 1,i,j
+
+ ,
+
+p† 
+
+> 1,i,j
+
+:= Tj
+
+ p0,j (· | z0) | z0, z1 = TZj (z0), x† 
+
+> 1,i,j
+
+:= g
+
+
+
+p†
+
+> 1,i,j
+
+
+
+.
+
+Assume moreover that g is locally constant at p† 
+
+> 1,i,j
+
+, i.e., there exists γ > 0 such that 
+
+∥p − p† 
+
+> 1,i,j
+
+∥∞ < γ =⇒ g(p) = g(p† 
+
+> 1,i,j
+
+),
+
+then 
+
+x⋆
+
+> 1,i,j p
+
+−→ x† 
+
+> 1,i,j
+
+.
+
+19 Note that a sufficient condition for the argmax rule is a positive margin: 
+
+max  
+
+> k
+
+p† 
+
+> 1,i,j,k
+
+− max  
+
+> ℓ̸=k
+
+p† 
+
+> 1,i,j,ℓ
+
+> 0.
+
+Remark (Dependence on the topological order) . Sequential transport is defined by recursion along a topological order of the mediator DAG. Any topological order is admissible, and different topological orders can only differ by permuting nodes that are incomparable in the partial order induced by G (i.e., neither is an ancestor of the other). For such incomparable nodes j and k, the ST update for Xj does not involve 
+
+Xk (and vice versa), so permuting their updates leaves the population recursion unchanged; hence the population-level transported vector x† 
+
+> 1,i
+
+is invariant to the choice of topological order, and the estimated vector x⋆ 
+
+> 1,i
+
+is asymptotically invariant under the consistency conditions of Theorem 5.1. By contrast, using an order that is 
+
+not topological would require transporting some mediator before one of its parents, in which case the recursion is not well-defined (or would implicitly condition on non-transported parents), and the resulting mapping would generally differ and lose the intended causal/structural interpretation. 
+
+# 5.4 Implications for effect decomposition 
+
+Here, we provide convergence properties of the ST-based unit-level decomposition defined in Section 4.6, namely the individual indirect effects bδi, direct effects bζi,and total effects bτi = bδi + bζi.
+
+Theorem 5.2 (Consistency of ST-based effect decompositions) . Fix a unit i with 
+
+Ai = 0 . Define the estimated ST-based unit-level effects by 
+
+bδi := bμ0(x⋆
+
+> 1,i
+
+) − bμ0(x0,i ), bζi := bμ1(x⋆
+
+> 1,i
+
+) − bμ0(x⋆
+
+> 1,i
+
+), bτi := bδi + bζi.
+
+Let the corresponding population-level mutatis mutandis effects be 
+
+δ† 
+
+> i
+
+:= μ0(x†
+
+> 1,i
+
+) − μ0(x0,i ), ζ† 
+
+> i
+
+:= μ1(x†
+
+> 1,i
+
+) − μ0(x†
+
+> 1,i
+
+), τ † 
+
+> i
+
+:= δ† 
+
+> i
+
++ ζ† 
+
+> i
+
+,
+
+where x† 
+
+> 1,i
+
+is the population-level ST transported mediator vector. Assume: (i) Assumption (A0) for some η ≥ 0; (ii) the conditions of Theorem 5.1 so that x⋆
+
+> 1,i p
+
+−→ x†
+
+> 1,i
+
+; and (iii) Assumption (A8). Then, for any ϵ > 0,
+
+P
+
+
+
+(bδi, bζi, bτi) − (δ† 
+
+> i
+
+, ζ † 
+
+> i
+
+, τ † 
+
+> i
+
+) > ϵ Ai = 0 
+
+
+
+≤ η + o(1) .
+
+In particular, when η = 0 (i.e., supp( X†(1)) ⊆ X 0), 
+
+(bδi, bζi, bτi) p
+
+−→ (δ† 
+
+> i
+
+, ζ † 
+
+> i
+
+, τ † 
+
+> i
+
+).
+
+Thus, under mild regularity conditions, ST yields statistically sound individual-level decompositions of causal effects, without relying on a parametric structural model. The guarantees derive directly from the stability and convergence of the underlying conditional transport maps. The next sections provide empirical illustrations in Gaussian settings and evaluate the method on real-world data under a fairness-motivated causal graph. 
+
+20 6 Gaussian illustration and simulation stud-ies 
+
+We now investigate the behaviour of ST in controlled settings. We begin with Gaussian examples where the mediation decomposition is analytically tractable, allowing direct comparison between ST-based counterfactuals and classical lin-ear SEMs. We then present Monte Carlo experiments examining the statistical performance of ST under varying sample sizes, mediator dimensions, and DAG structures. 
+
+# 6.1 Gaussian mediation with a single mediator 
+
+Consider the simple mediation model 
+
+A → X → Y, A → Y, 
+
+with 
+
+X = αA + εX , Y = βX + γA + εY ,
+
+where (εX , ε Y ) are jointly Gaussian with zero mean and covariance matrix inde-pendent of A. Under this model, the natural direct and indirect effects coincide with the algebraic SEM decomposition: 
+
+δ = NIE = αβ, ζ = NDE = γ. 
+
+Consider a unit i with ai = 0 , and denote the realization of Xi by xi =
+
+x0,i . Applying ST to this simple mediation model, we can compute the ST-based counterfactual value of unit i under A = 1 , denoted x⋆i = x⋆
+
+> 1,i
+
+, as 
+
+x⋆ 
+
+> 1,i
+
+= T (x0,i ) = Q1 ◦ F0(x0,i ),
+
+which corresponds to the classical univariate OT map. 
+
+T coincides with the affine transformation that maps the A = 0 distribution of X to that of A = 1 , recovering the SEM counterfactual calculation xi(1) = 
+
+α + xi(0) .Given a regression estimator bμa(x) consistent for E[Y | A = a, X = x], the ST-based decomposition 
+
+δi = bμ0(x⋆
+
+> 1,i
+
+) − bμ0(x0,i ), ζi = bμ1(x⋆
+
+> 1,i
+
+) − bμ0(x⋆
+
+> 1,i
+
+),
+
+satisfies 
+
+E[δi] ≈ αβ, E[ζi] ≈ γ. 
+
+Hence, ST recovers classical mediation effects in the linear-univariate-Gaussian case. The agreement holds exactly in population and approximately in finite samples, with discrepancies attributable only to estimation error in the empirical transport map. 
+
+# 6.2 Multivariate gaussian mediators with a DAG struc-ture 
+
+We now consider d mediators X = ( X1, . . . , X d) arranged in a DAG G. Let 
+
+X = BX + cA + ε, Y = θ⊤X + γA + η, 
+
+21 where B is strictly upper-triangular in accordance with the DAG ordering, c ∈
+
+Rd, and all disturbances are Gaussian. In this setting, the mediator distribution under each treatment is multivariate Gaussian with distinct means but a common covariance matrix determined by (B, Var( ε)) .Because ST applies univariate or conditional OT maps along the DAG, each transported coordinate takes the form 
+
+x⋆ 
+
+> 1,j
+
+= μ1,j (z) + σ1,j (z)
+
+σ0,j (z)
+
+ x0,j − μ0,j (z),
+
+where z = parents G (xj ) and (μa,j (z), σ a,j (z)) are the Gaussian conditional mean and standard deviation. Thus ST reproduces the affine transformation induced by the structural equations, yielding perfect agreement (up to estimation error) with the SEM-based mediation decomposition. Numerical illustrations for the two-dimensional case ( d = 2 ) are presented in Appendix D.1. 
+
+# 6.3 Monte Carlo simulations with three mediators 
+
+We assess the finite-sample performance of ST in a mixed-type mediation setting with nonlinear outcome models and causally dependent mediators. The data-generating process is designed to reflect the structure studied in Section 4, with two numerical mediators, one categorical mediator, and a binary outcome. 
+
+Data generating process. Each Monte Carlo replication, performed using the R software (version 4.5.2) consists of simulating i.i.d. observations of 
+
+(A, X, Y ) = ( A, X 1, X 2, X 3, Y ),
+
+where A ∈ { 0, 1} is a binary treatment, (X1, X 2) ∈ R2 are continuous mediators, 
+
+X3 ∈ { A, B, C} is a categorical mediator, and Y ∈ { 0, 1} is a binary outcome. Conditional on A = a, the continuous mediators (X1, X 2) follow a bivariate normal distribution with treatment-specific mean vector μa and covariance matrix 
+
+Σa, inducing both location and dependence shifts across treatment groups. The cat-egorical mediator X3 is generated conditionally on (X1, X 2, A ) via a multinomial logistic model, so that X3 is causally downstream of both numerical mediators and of the treatment. The outcome Y is then drawn from a Bernoulli distribution with success probability given by a logistic regression whose coefficients depend on the treatment level and include nonlinear and non-additive effects of the mediators. Full details of the DGP are reported in Appendix E. The resulting causal structure corresponds to the DAG shown in Figure 1, with 
+
+A → (X1, X 2, X 3) → Y, (X1, X 2) → X3,
+
+and direct effects of A on Y . In each replication, we generate n0 = 400 observa-tions with A = 0 and n1 = 200 observations with A = 1 .
+
+Counterfactual construction and benchmarks. For each simulated dataset, we construct mediator counterfactuals for individuals in the untreated group ( A = 0 ) using three transport-based approaches that yield individual-level counterfactual mediators: multivariate optimal transport without conditioning, 
+
+22 treatment a
+
+x1 (numeric) 
+
+x2 (numeric) 
+
+x3 (categorical) 
+
+outcome y
+
+Figure 1: DAG for the simulated data. 
+
+its entropic-regularized variant, and sequential transport. Sequential transport is applied along the topological order X1 → X2 → X3 induced by the mediator DAG. For ST, numerical mediators are transported using (conditional) quantile mapping, while the categorical mediator is handled via simplex-based deterministic transport as described in Section 4. As a reference, we additionally report classical causal mediation analysis based on linear structural equation models, implemented via the mediation package (Tingley et al., 2014), as well as the quantile-preservation approach using quan-tile regression proposed by Plečko and Meinshausen (2020) in the fairadapt 
+
+package (Plečko et al., 2024). For the latter, the average causal mediation effect is estimated directly and does not rely on constructing individual-level mediator counterfactuals. 
+
+Outcome regression and effect estimation. For each replication, we fit two outcome models by random forests, separately by treatment group (assuming Assumption (A0)): 
+
+bμ0(x) ≈ E[Y | A = 0 , X = x], bμ1(x) ≈ E[Y | A = 1 , X = x].
+
+Given a set of counterfactual mediators for untreated units, denoted x⋆ 
+
+> 1,i
+
+for individuals with Ai = 0 , we compute the ST-based decomposition on the untreated as defined in Section 4.6. In particular, we evaluate the indirect effect δi, the direct effect ζi, and the total effect τi = δi + ζi using the fitted outcome models bμ0 and 
+
+bμ1. This plug-in evaluation appeals to Assumption (A0), ensuring that ˆμ0(·) is supported on the transported region. We report the corresponding averages 
+
+¯δ = 1
+
+n0
+
+X
+
+> i:Ai=0
+
+δi, ¯ζ = 1
+
+n0
+
+X
+
+> i:Ai=0
+
+ζi, ¯τ = ¯δ + ¯ζ. 
+
+When counterfactual mediators for treated units are also available, we analogously compute ¯δ and ¯ζ by swapping the roles of groups 0 and 1. As a robustness diagnostic, we additionally report versions of ¯δ obtained by replacing bμa(xa,i )
+
+with the observed outcome Yi, which allows us to assess sensitivity to outcome-model estimation. 
+
+Monte Carlo protocol and outputs. The entire procedure (data genera-tion, counterfactual construction, outcome-model fitting, and effect estimation) is repeated over B = 200 independent Monte Carlo replications. For each method, we report the empirical distribution of (¯δ, ¯ζ, ¯τ ) across replications, as well as 
+
+23 the dispersion of individual-level effects for approaches that yield deterministic unit-level decompositions. The objective of these simulations is to evaluate the stability, interpretability, and finite-sample behavior of sequential transport in a setting with mixed mediator types, nonlinear outcome models, and a nontrivial mediator DAG. Results are summarized in Figure 2. 
+
+Evaluation criteria. The Monte Carlo study focuses on the empirical behav-ior of the estimated effect decompositions across replications. For each method, we examine: 
+
+• the Monte Carlo distribution of the averaged effects ¯δ, ¯ζ, and ¯τ ;
+
+• the dispersion and skewness of these quantities across replications; 
+
+• the stability of individual-level effects δ0,i and ζ1,i for methods that produce deterministic unit-level counterfactuals; 
+
+• qualitative agreement with linear SEM-based mediation in settings where the data-generating process is approximately linear-Gaussian. 
+
+Results. Figure 2 displays the empirical distributions of ¯δ, ¯ζ, and ¯τ across the 200 Monte Carlo replications. In this mixed-Gaussian simulation setting, all transport-based approaches yield broadly similar distributions. Sequential transport (ST) shows a modest reduction in dispersion compared to multivariate optimal transport (OT) and entropic optimal transport (SKH), an effect that is more clearly seen in numerical summaries (e.g., SD/IQR) than from the violin plots alone. When compared to classical causal mediation analysis based on linear struc-tural equation models (CM), ST yields average effects of similar magnitude in this approximately linear-Gaussian setting, despite relying on a fully nonparametric, distributional construction of mediator counterfactuals. Differences between ST and CM become more pronounced for individual-level effects, which are only available for transport-based methods. In the presence of mixed mediator types, including a categorical mediator handled via simplex transport, ST remains numerically stable and produces co-herent counterfactual mediator values. While variability increases relative to purely continuous settings, this increase is comparable to that observed for other transport-based methods and does not lead to pathological behavior. Overall, these results suggest that sequential transport provides a stable and interpretable finite-sample decomposition of effects in mediation settings with heterogeneous mediators and nontrivial causal structure. 
+
+# 6.4 Discussion 
+
+These experiments confirm that ST reproduces classical mediation decomposi-tions in Gaussian settings while extending naturally beyond the linear regime and to mixed mediator types. The results provide empirical support for the the-oretical guarantees of Section 5, demonstrating that ST-based counterfactuals converge to their target mutatis mutandis transformations and yield stable effect decompositions in low dimension but with different mediator types. The next section applies ST to a real-world fairness problem, where mediators include both ordinal and categorical variables structured by a causal DAG. 
+
+24 ¯δ ¯ζ ¯τ
+
+−0.2 0 0.2 0 0.2 0.4 0.1 0.2 0.3
+
+ST 
+
+SKH 
+
+OT 
+
+FPT 
+
+CM Figure 2: Estimation (200 replicated samples, n = 600 ) of average indirect effect ¯δ, average direct effect ¯ζ and average total causal effect ¯τ .
+
+# 7 Application to the COMPAS recidivism dataset 
+
+We illustrate the sequential transport framework on a well-known benchmark in the algorithmic fairness literature, the COMPAS dataset (Larson et al., 2016). This dataset contains individual-level information used to predict whether a criminal defendant is likely to reoffend within two years (recidivism within two years after parole start). Our goal is not to revisit the debate surrounding COMPAS risk scores, but to demonstrate how ST yields distributionally-grounded counterfactual mediators and produces individual-level decompositions of group disparities along the causal pathways specified by an interpretable DAG. 
+
+# 7.1 Data and causal graph 
+
+We consider the standard pretrial subset originally analyzed in Kusner et al. (2017), provided with the R package fairadapt (Plečko et al., 2024), following the preprocessing conventions used in recent transport-based fairness studies (Char-pentier et al., 2023; Fernandes Machado et al., 2025a,b). The outcome Y is the two-year general recidivism indicator, which takes the value 1 if a criminal de-fendant re-offended within two years after parole start, and 0 otherwise. The sensitive attribute is 
+
+A = race ∈ { 0, 1},
+
+where a = 1 denotes white defendants and a = 0 non-white defendants. In this application, we treat A as a root node by convention (we do not model its upstream causes), but we do not interpret the resulting decomposition as an identified causal effect of race; rather, it is a distributional pathway decomposition aligned with the mediator DAG. The mediator set includes both numerical and categorical variables: 
+
+X = {age , juv_fel_count , juv_misd_count , juv_other_count ,
+
+priors_count , charge_degree , charge_degree_bins }.
+
+Following Plečko et al. (2024),we use a simplified mediator set 
+
+X = {age , priors_count , charge_degree }
+
+25 race 
+
+age 
+
+priors_count 
+
+charge_degree 
+
+two-year recid priors_count 
+
+Figure 3: Simplified DAG for the COMPAS dataset. 
+
+and the corresponding mediator DAG shown in Figure 3, in which race influences 
+
+age , priors_count , and charge_degree , while the remaining media-tors follow the dependency structure encoded by a sparse DAG consistent with judicial and criminal-history processes. This graph offers a reasonable compromise between causal interpretability and empirical realism. 
+
+# 7.2 Sequential transport in practice 
+
+Using Algorithm 1, we estimate conditional transport maps for numerical medi-ators via kernel-based optimal transport, and apply simplex-based transport for categorical mediators (Fernandes Machado et al., 2025a). The maps are applied in a topological order of the DAG, yielding for each individual i in the non-white group a transported counterfactual vector x⋆ 
+
+> 1,i
+
+representing how their mediator profile would need to change to be aligned with the distribution of mediators among white defendants, mutatis mutandis. For the outcome regression, we fit two random forest models bμ0(x) and bμ1(x),each trained on observations from the corresponding treatment group. These flexible regressors capture potential nonlinear effects of mediators on recidivism without imposing a parametric structure. 
+
+# 7.3 Decomposition of group disparities 
+
+For individuals with Ai = 0 , we compute the ST-based unit-level decomposition defined in Section 4.6, using the fitted outcome models bμ0 and bμ1 and the trans-ported mediator values x⋆
+
+> 1,i
+
+. This yields individual indirect effects δi, direct effects 
+
+ζi, and total effects τi = δi + ζi.Under Assumption 3.1, the evaluation of bμ0 at x⋆ 
+
+> 1,i
+
+remains within regions supported by A = 0 data, which mitigates extrapolation. Aggregating over the untreated group produces ¯δ (ST-based indirect disparity), 
+
+¯ζ (ST-based direct disparity), and the total disparity bτ = ¯δ + ¯ζ.Figure 4 shows the estimated individual effects, Table 1 reports the aggregated effects. ST attributes approximately two-thirds of the disparity bτ to differences in mediator distributions. This is consistent with previous findings (Kusner et al., 2017; Charpentier et al., 2023), while providing a richer breakdown at the individual and mediator levels. 
+
+26 0 2000  δi
+
+> FPT-RF
+> 0 1500
+
+ζi
+
+> 0 1500
+
+τi
+
+> 0 1500
+> OT
+> 0 1500
+> 0 800
+> 0 800
+> SKH
+> 0 1500
+> 0 1000
+
+-0.4 0.0 0.4 
+
+> 0 800
+> ST
+
+-0.4 0.0 0.4 
+
+> 0 1000
+
+-0.6 -0.2 0.2 0.6 
+
+> 0 600
+
+Figure 4: Individual mutatis mutandis effects (distributional decomposition) for the 
+
+COMPAS dataset estimated with counterfactual-based methods using Fairadapt (FPT-RF), optimal transport (OT), penalized OT (SKH), and sequential transport (ST) according to the causal graph of Figure 3. 
+
+Metric CM FPT NF OT SKH ST 
+
+¯δ -0.09 0.00 -0.06 -0.06 0.04 -0.06 
+
+¯ζ 0.00 -0.03 0.00 -0.03 -0.04 -0.02 
+
+¯τ -0.09 -0.03 -0.06 -0.09 0.00 -0.08 
+
+Table 1: Estimated average causal effects for COMPAS , based on causal mediation analy-sis with LSEM using mediation package (CM), with counterfactual-transport-based-methods: optimal transport (OT), penalized OT (SKH), sequential transport (ST) and fairadapt (FPT) according to the DAG of Figure 3, and using normalizing flows (NF). 
+
+# 7.4 Mediator-level attribution 
+
+Since ST transports mediators sequentially, we may examine the marginal con-tribution of each mediator xj by evaluating the effect of transporting mediators only up to that node: 
+
+δ(j) 
+
+> i
+
+= bμ0
+
+
+
+x⋆, (j)1,i 
+
+
+
+− bμ0(x0,i ),
+
+where x⋆, (j)1,i denotes the partially transported vector obtained by applying the maps for xπ(1) , . . . , x π(j) but leaving all later mediators at their factual values. The same overlap requirement applies to partially transported profiles; we again rely on Assumption (A0). This yields a deterministic and DAG-coherent decomposition of the indirect effect across mediators. 
+
+27 Empirically, the largest contributions arise from priors_count and charge_degree ,both of which lie close to the root of the DAG and exhibit substantial distributional shifts across racial groups. Variable age contributes modestly, reflecting age differences between groups and its nonlinear effect on recidivism risk. 
+
+# 7.5 Discussion 
+
+As can be seen from the results, sequential transports yields a structurally coherent and distributionally grounded decomposition of group disparities. The method provides: 
+
+• deterministic counterfactual mediator profiles consistent with the causal DAG; 
+
+• unit-level estimates of direct and indirect effects; 
+
+• a natural attribution of indirect effects across individual mediators; 
+
+• compatibility with complex mediator types (categorical, ordinal, numerical); 
+
+• robustness to nonlinear outcome models. The approach remains subject to the usual identification challenges of obser-vational studies. In the presence of unobserved confounding between race and the mediators, the estimated decompositions should be interpreted as distributional rather than causal. Nevertheless, ST provides a principled construction of mutatis mutandis counterfactuals that remain in-distribution and respect the assumed me-diator DAG. As such, sequential transport yields an interpretable decomposition of observed disparities along the mediator pathways encoded in the DAG. 
+
+# 8 Discussion and extensions 
+
+This paper introduced a distributional framework for causal mediation analysis based on OT and its sequential extension along a mediator DAG. By replacing cross-world counterfactuals with mutatis mutandis transport-based mediator pro-files, the method yields individual-level decompositions of treatment effects while avoiding the need for a fully specified structural causal model with functional forms. Sequential transport produces counterfactual mediators that remain in-distribution and respect the conditional structure encoded in the DAG between the mediators, and accommodates both numerical and categorical mediators. Theoret-ical guarantees establish the consistency of the induced maps and the associated effect decompositions, and empirical results confirm similar performance in both Gaussian and non-Gaussian regimes, as well as in a real-world fairness application, compared to commonly used structural counterfactuals. 
+
+# 8.1 Interpretation and limitations 
+
+The framework is primarily distributional : it constructs mediator counterfactuals by interpolating between empirical conditional distributions rather than by as-suming a structural mechanism. As such, ST inherits both the strengths and the limitations of distributional counterfactuals. When the treatment is exogenous, as in the mediation setting considered here, the mutatis mutandis interpretation 
+
+28 aligns naturally with the graphical structure and yields interpretable decomposi-tions. In observational settings with unobserved confounding between treatment and mediators, the counterfactuals remain well defined but do not necessarily cor-respond to identified causal effects. This is a feature shared with transport-based fairness methods (Charpentier et al., 2023; Fernandes Machado et al., 2025b). A second limitation is the reliance on accurate estimation of conditional distri-butions. Although kernel estimators and simplex-based transports perform well in moderate dimensions, high-dimensional conditioning sets may lead to slower convergence or greater instability. This is mitigated in practice by the sparsity of mediator DAGs, but remains a potential challenge for fully connected graphs or large parent sets. Finally, while ST produces deterministic counterfactuals, the method is sensi-tive to the choice of DAG structure. Misspecification of mediator relationships may distort the conditional transports. In many applications, however, causal graphs are either known from domain knowledge or can be approximated by sparse structures capturing essential dependencies (Kalisch and Bühlmann, 2007; Toth et al., 2022; Cai et al., 2023). 
+
+# 8.2 Extensions to longitudinal mediators 
+
+Although our analysis focuses on static treatment and mediator variables, the framework extends naturally to time-varying settings. In longitudinal media-tion, mediators, treatments, and confounders may evolve over time, and causal estimands such as path-specific or interventional effects become more complex. The semiparametric framework of Díaz et al. (2023) provides identification and estimation strategies for such settings. Combining their approach with transport-based methodology suggests that one may construct dynamic mutatis mutandis 
+
+counterfactuals by transporting mediator trajectories sequentially across time. A straightforward extension would posit a family of time-indexed maps 
+
+Tt : ( X0,t , Z0,t ) 7 → (X1,t , Z1,t ),
+
+where Zt denotes parents or past mediators, and apply these maps recursively along a longitudinal DAG. More ambitious developments involve continuous-time or stochastic interpolations between treatment regimes, using dynamic OT or Schrödinger bridge formulations (Benamou and Brenier, 2000; Léonard, 2014). Such methods construct controlled stochastic processes whose trajectories interpolate between mediator distributions under different treatment histories, offering a principled analogue of dynamic structural counterfactuals (Robins, 1986; Robins et al., 2000; Murphy, 2003). A rigorous integration of these ideas with longitudinal mediation estimands remains an open and promising direction. 
+
+# 8.3 Beyond mediator DAGs 
+
+ST naturally extends to richer causal structures. Possible extensions include: 
+
+• Multiple treatments or multivalued interventions , where maps are estimated for each pair of treatment levels and composed along treatment paths (Imai et al., 2010a). 
+
+29 • Interventional, stochastic, or policy-based effects , where the target mediator distribution is not empirical but corresponds to a policy or inter-vention, enabling counterfactual predictions under hypothetical reforms (Didelez et al., 2006; Vansteelandt and Daniel, 2017). 
+
+• Path-specific effects , where only a subset of mediator pathways is trans-ported. This aligns ST with the framework of path-specific fairness con-straints and mediated causal pathways explored in the fairness literature (Avin et al., 2005; Shpitser, 2013). 
+
+• Hybrid generative–transport models , combining structural equations for some mediators with transport maps for others, useful when partial domain knowledge is available (Moselhy and Marzouk, 2012; Parno and Marzouk, 2018). 
+
+# 8.4 Concluding remarks 
+
+Sequential transport offers a flexible, interpretable, and distributionally robust approach to causal mediation analysis. By grounding counterfactual mediators in optimal transport and in the structure of a mediator DAG, the framework bridges classical mediation analysis, modern transport methods, and emerging applications such as algorithmic fairness. Extensions to longitudinal settings, dynamic inter-ventions, and richer causal structures promise to deepen this connection, making transport-based counterfactuals a broadly applicable tool in causal inference. 
+
+# References 
+
+Agresti, A. (2002). Categorical Data Analysis . John Wiley & Sons, Hoboken, NJ, 2 edition. Andrews, R. M. and Didelez, V. (2021). Insights into the cross-world independence assumption of causal mediation analysis. Epidemiology , 32(2):209–219. Avin, C., Shpitser, I., and Pearl, J. (2005). Identifiability of path-specific effects. In 
+
+Proceedings of the International Joint Conference on Artificial Intelligence (IJCAI) ,pages 357–363. Balakrishnan, S., Kennedy, E., and Wasserman, L. (2025). Conservative inference for counterfactuals. Journal of Causal Inference , 13(1):20230071. Benamou, J.-D. and Brenier, Y. (2000). A computational fluid mechanics solution to the monge–kantorovich mass transfer problem. Numerische Mathematik ,84:375–393. Black, E., Yeom, S., and Fredrikson, M. (2020). Fliptest: fairness testing via optimal transport. In Proceedings of the 2020 Conference on Fairness, Accountability, and Transparency , pages 111–121. Blinder, A. S. (1973). Wage discrimination: reduced form and structural estimates. 
+
+Journal of Human Resources , pages 436–455. Bonnans, J.-F. and Shapiro, A. (1998). Optimization problems with perturbations: A guided tour. SIAM Review , 40(2):228–264. 
+
+30 Bonnans, J.-F. and Shapiro, A. (2000). Perturbation Analysis of Optimization Prob-lems . Springer, New York. Cai, H., Wang, Y., Jordan, M., and Song, R. (2023). On learning necessary and sufficient causal graphs. Charpentier, A., Flachaire, E., and Gallic, E. (2023). Optimal transport for coun-terfactual estimation: A method for causal inference. In Optimal Transport Statistics for Economics and Related Topics , pages 45–89. Springer. Cheridito, P. and Eckstein, S. (2023). Optimal transport and Wasserstein distances for causal models. Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., and Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. The Econometrics Journal , 21(1):C1–C68. Cormen, T. H., Leiserson, C. E., Rivest, R. L., and Stein, C. (2022). Introduction to algorithms . MIT Press. De Lara, L., González-Sanz, A., Asher, N., Risser, L., and Loubes, J.-M. (2024). Transport-based counterfactual models. Journal of Machine Learning Research ,25(136):1–59. Díaz, I., Williams, N., and Rudolph, K. E. (2023). Efficient and flexible mediation analysis with time-varying mediators, treatments, and confounders. Journal of Causal Inference , 11(1):20220077. Didelez, V., Dawid, A. P., and Geneletti, S. (2006). Direct and indirect effects of sequential treatments. Proceedings of the 22nd Conference on Uncertainty in Artificial Intelligence (UAI) .Ehyaei, A.-R., Farnadi, G., and Samadi, S. (2025). Designing ambiguity sets for distributionally robust optimization using structural causal optimal transport. In Proceedings of the AAAI Conference on Artificial Intelligence (AAAI-25) , pages 16462–16470. Einmahl, J. H. J. and Mason, D. M. (2005). Uniform in bandwidth consistency of kernel-type function estimators. The Annals of Statistics , 33(3):1380–1403. Fahrmeir, L. and Kaufmann, H. (1985). Consistency and asymptotic normality of the maximum likelihood estimator in generalized linear models. The Annals of Statistics , 13(1):342–368. Fernandes Machado, A., Charpentier, A., and Gallic, E. (2025a). Optimal transport on categorical data for counterfactuals using compositional data and dirichlet transport. In Proceedings of the 34th International Joint Conference on Artificial Intelligence (IJCAI) .Fernandes Machado, A., Charpentier, A., and Gallic, E. (2025b). Sequential condi-tional transport on probabilistic graphs for interpretable counterfactual fairness. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 39, pages 19358–19366. 
+
+31 Imai, K., Keele, L., and Tingley, D. (2010a). A general approach to causal mediation analysis. Psychological methods , 15(4):309. Imai, K., Keele, L., and Yamamoto, T. (2010b). A general approach to causal mediation analysis. Psychological Methods , 15(4):309–334. Imai, K., Keele, L., and Yamamoto, T. (2010c). Identification, inference and sensi-tivity analysis for causal mediation effects. Statistical Science , 25(1):51–71. Janati, H., Muzellec, B., Peyré, G., and Cuturi, M. (2020). Entropic optimal transport between unbalanced gaussian measures has a closed form. Advances in Neural Information Processing Systems , 33:10468–10479. Javaloy, A., Martin, P. S., and Valera, I. (2023). Causal normalizing flows: from theory to practice. In Thirty-seventh Conference on Neural Information Processing Systems .Kahn, A. B. (1962). Topological sorting of large networks. Commun. ACM ,5(11):558–562. Kalisch, M. and Bühlmann, P. (2007). Estimating high-dimensional directed acyclic graphs with the pc-algorithm. J. Mach. Learn. Res. , 8:613–636. Kato, K. (2012). Estimation in functional linear quantile regression. The Annals of Statistics , 40(6):3108–3136. Kitagawa, E. M. (1955). Components of a difference between two rates. Journal of the American Statistical Association , 50(272):1168–1194. Knothe, H. (1957). Contributions to the theory of convex bodies. Michigan Mathematical Journal , 4(1):39–52. Koenker, R. (2005). Quantile regression , volume 38. Cambridge University Press. Koller, D. and Friedman, N. (2009). Probabilistic graphical models: principles and techniques . MIT Press. Kusner, M. J., Loftus, J., Russell, C., and Silva, R. (2017). Counterfactual fairness. In Guyon, I., Luxburg, U. V., Bengio, S., Wallach, H., Fergus, R., Vishwanathan, S., and Garnett, R., editors, Advances in Neural Information Processing Systems 30 , pages 4066–4076. NIPS. Larson, J., Mattu, S., Kirchner, L., and Angwin, J. (2016). How we analyzed the compas recidivism algorithm. ProPublica , 23.05.2016. Lauritzen, S. L. (2020). Lectures on graphical models . University of Copenhagen. Léonard, C. (2014). A survey of the schrödinger problem and some of its connec-tions with optimal transport. Discrete and Continuous Dynamical Systems - A ,34(4):1533–1574. Li, Q. and Racine, J. S. (2007). Nonparametric econometrics: theory and practice .Princeton University Press. 
+
+32 Moselhy, T. A. and Marzouk, Y. M. (2012). Bayesian inference with transport maps. 
+
+Journal of Computational Physics , 231(23):7815–7850. Murphy, S. A. (2003). Optimal dynamic treatment regimes. Journal of the Royal Statistical Society: Series B , 65(2):331–355. Naimi, A. I. (2015). Invited commentary: Boundless science—putting natural direct and indirect effects in a clearer empirical context. American Journal of Epidemiology , 182(2):109–114. Nguyen, T. Q., Schmid, I., Stuart, E. A., and Ogburn, E. L. (2022). Clarifying causal mediation analysis: Effect identification via three assumptions and five potential outcomes. Journal of Causal Inference , 10(1):246–279. Oaxaca, R. (1973). Male-female wage differentials in urban labor markets. Interna-tional Economic Review , pages 693–709. Parno, M. D. and Marzouk, Y. M. (2018). Transport map accelerated markov chain monte carlo. SIAM/ASA Journal on Uncertainty Quantification .Pawlowski, N., Coelho de Castro, D., and Glocker, B. (2020). Deep structural causal models for tractable counterfactual inference. In Larochelle, H., Ranzato, M., Hadsell, R., Balcan, M., and Lin, H., editors, Advances in Neural Information Processing Systems , volume 33, pages 857–869. Curran Associates, Inc. Pearl, J. (2001). Direct and indirect effects. In Proceedings of the Seventeenth Con-ference on Uncertainty and Artificial Intelligence, 2001 , pages 411–420. Morgan Kaufmann, San Francisco. Pearl, J. (2009). Causality . Cambridge University Press. Pearl, J. (2014). Interpretation and identification of causal mediation. Psychological methods , 19(4):459. Pearl, J., Glymour, M., and Jewell, N. P. (2016). Causal inference in statistics: A primer . John Wiley Sons. Peyré, G. and Cuturi, M. (2019). Computational optimal transport: With applica-tions to data science. Foundations and Trends in Machine Learning , 11(5-6):355– 607. Plečko, D. and Meinshausen, N. (2020). Fair data adaptation with quantile preser-vation. Journal of Machine Learning Research , 21(242):1–44. Plečko, D., Bennett, N., and Meinshausen, N. (2024). fairadapt: Causal reasoning for fair data preprocessing. Journal of Statistical Software , 110(4):1–35. Poinsot, A., Leite, A., Chesneau, N., Sebag, M., and Schoenauer, M. (2024). Learning structural causal models through deep generative models: Methods, guarantees, and challenges. In Larson, K., editor, Proceedings of the Thirty-Third Inter-national Joint Conference on Artificial Intelligence, IJCAI-24 , pages 8207–8215. International Joint Conferences on Artificial Intelligence Organization. Survey Track. 
+
+33 Robins, J. M. (1986). A new approach to causal inference in mortality studies with a sustained exposure period—application to control of the healthy worker survivor effect. Mathematical Modelling , 7(9–12):1393–1512. Robins, J. M. and Greenland, S. (1992). Identifiability and exchangeability for direct and indirect effects. Epidemiology , 3(2):143–155. Robins, J. M., Hernán, M. A., and Brumback, B. (2000). Marginal structural models and causal inference in epidemiology. Epidemiology , 11(5):550–560. Rosenblatt, M. (1952). Remarks on a multivariate transformation. The annals of mathematical statistics , 23(3):470–472. Shpitser, I. (2013). Counterfactual graphical models for longitudinal mediation analysis with unobserved confounding. Cognitive science , 37(6):1011–1035. Stone, C. J. (1977). Consistent nonparametric regression. The Annals of Statistics ,5(4):595–620. Tchetgen Tchetgen, E. J. and VanderWeele, T. J. (2014). Identification of natural direct effects when a confounder of the mediator is directly affected by exposure. 
+
+Epidemiology , 25(2):282–291. Tingley, D., Yamamoto, T., Hirose, K., Keele, L., and Imai, K. (2014). mediation: R package for causal mediation analysis. Journal of Statistical Software , 59(5):1–38. Torous, W., Gunsilius, F., and Rigollet, P. (2024). An optimal transport approach to estimating causal effects via nonlinear difference-in-differences. Journal of Causal Inference , 12(1):1–26. Toth, C., Lorch, L., Knoll, C., Krause, A., Pernkopf, F., Peharz, R., and von Kügelgen, J. (2022). Active bayesian causal inference. In Koyejo, S., Mohamed, S., Agarwal, A., Belgrave, D., Cho, K., and Oh, A., editors, Advances in Neural Information Processing Systems , volume 35, pages 16261–16275. Curran Associates, Inc. van der Vaart, A. W. (1998). Asymptotic Statistics . Cambridge University Press. VanderWeele, T. (2015). Explanation in causal inference: methods for mediation and interaction . Oxford University Press. VanderWeele, T. J. (2014). A unification of mediation and interaction: a four-way decomposition. Epidemiology , 25(5):749–761. Vansteelandt, S. and Daniel, R. M. (2017). Interventional effects for mediation analysis with multiple mediators. Epidemiology .Villani, C. (2003). Topics in optimal transportation , volume 58. American Mathe-matical Society. Xu, S., Coffman, D. L., Luta, G., and Niaura, R. S. (2023). Tutorial on causal mediation analysis with binary variables: An application to health psychology research. Health Psychology , 42(11):778. Zhou, J. and Wodtke, G. T. (2025). Causal mediation analysis with multiple media-tors: A simulation approach. 
+
+34 A Additional definitions and mathematical background 
+
+This section provides the mathematical foundations underlying the sequential transport (ST) framework: conditional optimal transport (OT), conditional quantile operators, simplex-based transport for categorical mediators, and formal defini-tions needed in the proofs. 
+
+# A.1 Conditional distributions and quantile operators 
+
+Let (X, Z, A ) denote a mediator X, its parent set Z = parents G (X), and the treatment variable A ∈ { 0, 1}. For a ∈ { 0, 1}, denote by 
+
+Fa(x | z) = P(X ≤ x | Z = z, A = a)
+
+the conditional cumulative distribution function (CDF), assumed continuous and strictly increasing in x on the support of X.The conditional quantile operator is 
+
+Qa(u | z) = inf {x : Fa(x | z) ≥ u}, u ∈ (0 , 1) .
+
+Under monotone transport, the unique optimal map pushing X | A = 0 to 
+
+X | A = 1 given Z = z is 
+
+T (x | z) = Q1(F0(x | z) | z).
+
+# A.2 Kernel estimation of conditional CDFs and quan-tiles 
+
+Let {(xi, zi)}ni=1 denote samples under A = a ∈ { 0, 1}. The conditional CDF is estimated by 
+
+bFa(x | z) = 
+
+Pni=1 Kh(z − zi) I{xi ≤ x}
+
+Pni=1 Kh(z − zi) ,
+
+with Kh(·) a smoothing kernel. Conditional quantiles under A = a are estimated by solving bQa(u | z) = inf {x : bFa(x | z) ≥ u}.
+
+Under standard assumptions (bounded kernels, h → 0, nh → ∞ ), the estimators 
+
+bF0 and bQ1 converge uniformly. 
+
+# A.3 Continuous transport 
+
+Let ν0 and ν1 be probability measures on Rd with finite second moments. Given a measurable cost function c : Rd × Rd → R, the Kantorovich OT problem seeks a coupling π between ν0 and ν1 solving 
+
+inf 
+
+> π∈Π( ν0,ν 1)
+
+Z
+
+> Rd×Rd
+
+c(x, y ) d π(x, y ), (4) 
+
+35 where Π( ν0, ν 1) denotes the set of all joint probability measures on Rd × Rd with marginals ν0 and ν1. When an OT map T exists, i.e. when there is a measurable function T : Rd → Rd such that T#ν0 = ν1, the Monge formulation 
+
+inf   
+
+> T:T#ν0=ν1
+
+Z
+
+> Rd
+
+c x, T (x) dν0(x) (5) is equivalent to (4) . In one dimension, and for convex costs such as the squared Euclidean cost, the optimal map is uniquely defined almost everywhere and admits a closed-form expression in terms of distribution and quantile functions. In the univariate case, let ν0 and ν1 be Borel probability measures on R with continuous and strictly increasing CDFs F0 and F1. Under squared Euclidean cost 
+
+c(x, y ) = ∥x − y∥2, the (unique a.e.) optimal Monge map T : R → R pushing ν0
+
+to ν1 satisfies 
+
+T#ν0 = ν1, T (x) = Q1(F0(x)) ,
+
+where Q1 denotes the quantile function (generalized inverse) of F1. This monotone rearrangement is the population counterpart of the univariate transport used in our mediator counterfactual construction Villani (2003); Peyré and Cuturi (2019). If ν0 = N (m0, σ 20 ) and ν1 = N (m1, σ 21 ) then 
+
+T (x) = m1 + σ1
+
+σ0
+
+(x − m0),
+
+recovering the familiar affine transformation in the Gaussian case. 
+
+# A.4 Discrete transport and the Birkhoff polytope 
+
+Discrete OT provides a complementary view that is useful both computationally and conceptually. Let {x0,i }n0 
+
+> i=1
+
+and {x1,j }n1 
+
+> j=1
+
+be empirical samples with weights 
+
+w0 ∈ Rn0 
+
+> +
+
+and w1 ∈ Rn1 
+
+> +
+
+, P 
+
+> i
+
+w0,i = 1 , P 
+
+> j
+
+w1,j = 1 . Define the cost matrix 
+
+C ∈ Rn0×n1 with entries Cij = c(x0,i , x 1,j ). A transport plan P is a nonnegative matrix with prescribed marginals: 
+
+U(w0, w 1) = 
+
+n
+
+P ∈ Rn0×n1 
+
+> +
+
+: P 1n1 = w0, P ⊤1n0 = w1
+
+o
+
+.
+
+The discrete Kantorovich problem is 
+
+P ⋆ ∈ arg min   
+
+> P∈U (w0,w 1)
+
+{⟨ P, C ⟩} , where P, C = X
+
+> i,j
+
+Pij Cij . (6) When w0 = 1 
+
+> n0
+
+1 and w1 = 1 
+
+> n1
+
+1, U(w0, w 1) reduces to a (rectangular) Birkhoff polytope. A plan can be turned into a proxy map through the barycentric projection 
+
+TP (x0,i ) = 1
+
+w0,i n1X
+
+> j=1
+
+Pij x1,j , (7) which coincides with a hard matching when P ⋆ is (approximately) sparse. 
+
+# A.5 Penalized and weighted optimal transport 
+
+For γ > 0 the entropic optimal transport problem between two measures ν0 and ν1
+
+is 
+
+π(γ) = arg min 
+
+> π∈Π( ν0,ν 1)
+
+ Z
+
+cdπ + γ KL  π ν0 ⊗ ν1
+
+ ,
+
+where Π( ν0, ν 1) is the set of couplings with the prescribed marginals. 
+
+36 Penalized Gaussian, univariate case Write ν0 = N (m0, σ 20 ), ν1 =
+
+N (m1, σ 21 ). Then π(γ) is the bivariate normal 
+
+π(γ) = N
+
+m0
+
+m1
+
+
+
+,
+
+ σ20 ρ(γ)σ0σ1
+
+ρ(γ)σ0σ1 σ21
+
+
+
+,
+
+with correlation 
+
+ρ(γ) = 1
+
+σ0σ1
+
+r
+
+( γ
+
+4 )2 + σ20 σ21 − 1
+
+σ0σ1
+
+γ
+
+4 .
+
+Hence, if Y0 ∼ ν0 and Y1 ∼ ν1, Cov( Y0, Y 1) = ρ(γ)σ0σ1. When γ → 0,
+
+ρ(γ) → 1 and the plan collapses onto the classical (comonotone) OT map T (y) = 
+
+m1 + σ1
+
+σ0
+
+(y − m0).
+
+Penalized Gaussian, multivariate case In the multivariate setting, the optimal coupling is a Gaussian measure 
+
+π(γ) = N
+
+m0
+
+m1
+
+
+
+, Σ0 Γ(γ)
+
+(Γ (γ))⊤ Σ1
+
+!
+
+,
+
+with cross–covariance Γ(γ) is (see Janati et al. (2020)) 
+
+Γ(γ) = 12 Σ1/20
+
+
+
+4Σ 1/20 Σ1Σ1/20 + γ2
+
+4 I
+
+1/2
+
+Σ−1/20 − γ
+
+4 I. 
+
+As γ → 0 one recovers the deterministic (un-regularised) OT map with cross-covariance Γ(0) = Σ 1/20
+
+ Σ1/20 Σ1Σ1/20
+
+1/2Σ−1/20 .
+
+Penalized discrete matching Here, the classical entropic OT is 
+
+min     
+
+> P∈U (1n0,1n1)
+> n1
+
+X
+
+> i=1
+> n0
+
+X
+
+> j=1
+
+Pij Cij + γ X
+
+> i,j
+
+Pij 
+
+
+
+log  Pij 
+
+ − 1
+
+
+
+or equivalently, 
+
+min     
+
+> P∈U (1n0,1n1)
+> n1
+
+X
+
+> i=1
+> n0
+
+X
+
+> j=1
+
+Pij Cij + γ X
+
+> i,j
+
+Pij 
+
+
+
+log  n0n1Pij 
+
+ − 1
+
+
+
+and where U(1n1 , 1n0 ) is the polytope described previously. Define the Gibbs kernel K = exp( −C/γ ), element-wise (in the sense that the exponential function is applied to each entry). We seek scaling vectors u ∈ Rn0 
+
+> +
+
+, v ∈ Rn1 
+
+> +
+
+satisfying 
+
+
+
+u ⊙  Kv = 1
+
+n0
+
+1n0 ,
+
+v ⊙  KTu = 1
+
+n1
+
+1n1 ,
+
+where ⊙ is Hadamard product (element pointwise), and then the entropic OT plan has the popular Sinkhorn form 
+
+P (γ) = diag( u) K diag( v).
+
+37 Note that one could also consider a proxy map, given by 
+
+T (γ)(xi) = n0
+
+> n1
+
+X
+
+> j=1
+
+P (γ) 
+
+> ij
+
+yj , i = 1 , . . . , n 0.
+
+As γ → 0, P (γ) → P ⋆ and T (γ) converges to the deterministic Monge map. 
+
+# A.6 Penalized matching with weights 
+
+In the generalized version of this problem, over the set of matrices, U(w0, w1),defined as  P ∈ Rn0×n1 
+
+> +
+
+: P 1n1 = w0, P ⊤1n0 = w1 ,
+
+and consider 
+
+min   
+
+> P∈U (w0,w1)
+> n1
+
+X
+
+> i=1
+> n0
+
+X
+
+> j=1
+
+Pij Cij + γ X
+
+> i,j
+
+Pij log 
+
+ Pij 
+
+w1,i w0,j 
+
+
+
+We seek here scaling vectors u ∈ Rn0 
+
+> +
+
+, v ∈ Rn1 
+
+> +
+
+such that 
+
+(
+
+u ⊙ (Kv) = w0,
+
+v ⊙ (K⊤u) = w1,
+
+solved via the iterative scheme 
+
+u(t+1) = w0
+
+Kv(t) , and v(t+1) = w1
+
+K⊤u(t+1) .
+
+Then, we have again 
+
+P (γ) = diag( u) K diag( v)
+
+is the entropic OT plan. As γ → 0, P (γ) → P ⋆ solving the unpenalized optimization problem, as discussed in Peyré and Cuturi (2019). Here again, a deterministic proxy mapping for P (γ) is obtained by 
+
+T (γ)(xi) = 1
+
+w0,i n1X
+
+> j=1
+
+P (γ) 
+
+> ij
+
+yj , i = 1 , . . . , n 0.
+
+It converges to the true Monge map (when it exists) in the limit γ → 0.
+
+# A.7 Univariate conditional transport (and the ST two-parent-value notation) 
+
+This appendix recalls the univariate monotone OT map and explains how it extends to conditional transport, using the same notation as in the main text. 
+
+Unconditional (one-dimensional) transport. Let X | A = a ∼ νa be a univariate random variable with CDF Fa and quantile function Qa. The unique monotone OT map from ν0 to ν1 is 
+
+T (x) = Q1(F0(x)) .
+
+In the Gaussian case, if X | A = a ∼ N (μa, σ 2
+
+> a
+
+), then 
+
+T (x) = μ1 + σ1
+
+σ0
+
+(x − μ0).
+
+38 Conditional transport and the (z0, z1) notation. Let Xj be a mediator with parent set Zj = parents G (Xj ). Write Fa,j (· | z) and Qa,j (· | z) for the conditional CDF and quantile of Xj given Zj = z in group A = a. The conditional monotone OT map from the law of Xj | (A = 0 , Zj = z0) to the law of Xj | (A = 1 , Zj = z1) is 
+
+Tj (x | z0, z1) = Q1,j (F0,j (x | z0) | z1) .
+
+In Section 5, we distinguish z0 (the parent values used on the source side for F0,j )from z1 (the parent values used on the target side for Q1,j ) to make explicit the sequential nature of ST. The commonly used shorthand 
+
+Tj|Zj (x | z) := Q1,j (F0,j (x | z) | z)
+
+corresponds to the special case z0 = z1 = z.
+
+Bivariate illustration (a chain X1 → X2). Consider (X1, X 2) with X1
+
+a parent of X2. For a unit in group A = 0 with observed values (x1, x 2), ST first transports x1 via 
+
+x† 
+
+> 1
+
+= T1(x1) = Q1,1(F0,1(x1)) ,
+
+and then transports x2 conditionally , using the observed parent value x1 on the source side and the transported parent value x† 
+
+> 1
+
+on the target side: 
+
+T2(x2 | x1, x †
+
+> 1
+
+) = Q1,2
+
+
+
+F0,2(x2 | x1) | x†
+
+> 1
+
+
+
+.
+
+This is precisely the ST logic: conditioning for the target quantile is performed at the already transported parent value. 
+
+Gaussian closed form. Assume X = ( X1, X 2)⊤ satisfies X | A = a ∼N (μa, Σa) with 
+
+μa =
+
+μ1,a 
+
+μ2,a 
+
+
+
+, Σa =
+
+ σ21,a ρaσ1,a σ2,a 
+
+ρaσ1,a σ2,a σ22,a 
+
+
+
+.
+
+Then X2 | (A = a, X 1 = x) is Gaussian with 
+
+μ2|a,x = μ2,a + ρa
+
+σ2,a 
+
+σ1,a 
+
+(x − μ1,a ), σ22|a,x = σ22,a (1 − ρ2
+
+> a
+
+),
+
+so the conditional monotone OT map from X2 | (A = 0 , X 1 = x1) to X2 | (A =1, X 1 = x†
+
+> 1
+
+) is 
+
+T2(x2 | x1, x †
+
+> 1
+
+) = μ2|1,x †
+
+> 1
+
++
+
+σ2|1,x †
+
+> 1
+
+σ2|0,x 1
+
+ x2 − μ2|0,x 1
+
+,
+
+with x† 
+
+> 1
+
+= T1(x1) = μ1,1 + σ1,1 
+
+> σ1,0
+
+(x1 − μ1,0).
+
+39 A.8 Categorical transport via simplex OT 
+
+Let a categorical mediator X ∈ { 1, . . . , K } have conditional probability vector 
+
+pa(z) = ( pa, 1(z), . . . , p a,K (z)) ∈ S K , where pa,k (z) = P(X = k | Z =
+
+z, A = a). We estimate pa(z) using a multiclass classifier, yielding bpa(z) ∈ S K .We then define a deterministic transport map TS : SK → S K as the opti-mal simplex transport under the squared Euclidean cost on SK (as in Fernandes Machado et al. (2025a)). In practice, TS may be computed via an entropically regularized OT solver (Sinkhorn) for numerical stability; the entropic term is a regularizer and the underlying cost remains quadratic. Finally, we obtain a categorical counterfactual assignment by 
+
+X⋆(z) = arg max 
+
+> k∈[K]
+
+TS (p0(z))  
+
+> k
+
+,
+
+and we apply the same construction conditionally on transported parent values in the sequential procedure. 
+
+Semi-discrete allocation to enforce category marginals. The argmax rule above yields a deterministic label, but it does not guarantee that the resulting empirical category frequencies match the target marginals under A = 1 . When we wish to enforce these marginals (conditionally on Z = z), we replace the argmax rounding by a semi-discrete OT allocation from transported simplex vectors to the simplex vertices. Concretely, let ˜pi = TS (ˆ p0(zi)) ∈ S K for the units in the source group, and let πk (z) = P(X = k | Z = z, A = 1) denote the target (category) proportions. Consider the semi-discrete OT problem between the empirical measure bν = 1
+
+> n
+
+Pni=1 δ˜pi on SK and the discrete measure νπ =
+
+PKk=1 πk (z) δek supported on the vertices {e1, . . . , e K }, with cost c(p, e k ) = 
+
+∥p − ek ∥2. The optimal transport induces a partition of SK into (weighted) Voronoi/Laguerre cells, yielding a deterministic map C : SK → { 1, . . . , K } such that the pushforward C# bν = νπ . We then set X⋆(zi) = C(˜ pi). This is the allocation step summarized in Algorithm 4 (Appendix C). 
+
+# B Proofs of theoretical results 
+
+This appendix provides detailed proofs for the theoretical results in Section 5. Throughout, j is a mediator with parent set Zj , and we write 
+
+(Tj (x | z0, z1) = Q1,j (F0,j (x | z0) | z1) ,
+
+bTj (x | z0, z1) = bQ1,j 
+
+ bF0,j (x | z0) | z1
+
+
+
+.
+
+When Zj = ∅, we omit conditioning on z0, z1. We use the shorthand op(1) for a sequence converging to 0 in probability. 
+
+# B.1 Proof of Lemma 5.1 
+
+Proof. Let Xj be a compact subset of the interior of supp( Xj | A = 0) . By continuity and strict monotonicity of F0,j on the support (Assumptions (A1)–(A2)), the image F0,j (Xj ) is a compact subset of (0 , 1) . Hence there exist 0 < u < u < 1
+
+such that F0,j (x) ∈ [u, u ] for all x ∈ X j .
+
+40 For any x ∈ X j , decompose 
+
+bTj (x) − Tj (x) = bQ1,j ( bF0,j (x)) − Q1,j (F0,j (x)) ≤ (I)x + ( II )x,
+
+where 
+
+(I)x := bQ1,j ( bF0,j (x)) −Q1,j ( bF0,j (x)) , (II )x := Q1,j ( bF0,j (x)) −Q1,j (F0,j (x)) .
+
+Taking suprema over x ∈ X j yields 
+
+sup 
+
+> x∈X j
+
+(I)x ≤ sup 
+
+> u∈(0 ,1)
+
+| bQ1,j (u) − Q1,j (u)| = op(1) 
+
+by Assumption (A3). Also, Assumption (A3) gives ∆n := sup x∈X j | bF0,j (x) −
+
+F0,j (x)| = op(1) . Since Q1,j is monotone and continuous on (0 , 1) (Assump-tions (A1)–(A2)), it is uniformly continuous on [u/ 2, 1 − u/ 2] ; thus 
+
+sup 
+
+> x∈X j
+
+(II )x ≤ ωQ1,j (∆ n) = op(1) ,
+
+where ωQ1,j (·) is a modulus of continuity of Q1,j on that compact interval. Com-bining the bounds proves sup 
+
+> x∈X j
+
+| bTj (x) − Tj (x)| p
+
+−→ 0.
+
+# B.2 Proof of Proposition 5.1 
+
+Proof. Fix (x, z0, z1) in the interior of the support. By Assumption (A3), bF0,j (x |
+
+z0) p
+
+−→ F0,j (x | z0) and sup 
+
+> u, z
+
+| bQ1,j (u | z) − Q1,j (u | z)| p
+
+−→ 0.Decompose 
+
+bTj (x | z0, z1) − Tj (x | z0, z1) = bQ1,j ( bF0,j (x | z0) | z1) − Q1,j (F0,j (x | z0) | z1)
+
+≤ (I) + ( II ),
+
+with 
+
+(I) := bQ1,j ( bF0,j (x | z0) | z1) − Q1,j ( bF0,j (x | z0) | z1)
+
+≤ sup 
+
+> u, z
+
+bQ1,j (u | z) − Q1,j (u | z) = op(1) ,
+
+and 
+
+(II ) := Q1,j ( bF0,j (x | z0) | z1) − Q1,j (F0,j (x | z0) | z1) .
+
+By Assumptions (A1)–(A2), for fixed z1, the map u 7 → Q1,j (u | z1) is continuous on (0 , 1) , hence Q1,j ( bF0,j (x | z0) | z1) p
+
+−→ Q1,j (F0,j (x | z0) | z1) by the continuous mapping theorem. Thus (II ) = op(1) , proving the claim. 
+
+# B.3 Proof of Corollary 5.1 
+
+Proof. This is an immediate consequence of Proposition 5.1 by evaluating it at the deterministic choice z1 = TZj (z0).
+
+41 B.4 Proof of Proposition 5.2 
+
+Proof. Fix z0 and write z1 = TZj (z0) and bz1 = bTZj (z0). From the induction hypothesis (H (j)), bz1
+
+> p
+
+−→ z1, and let u0 := F0,j (x | z0) ∈ [ε, 1 − ε].Decompose 
+
+bTj (x | z0, bz1) − Tj (x | z0, z1) ≤ (I) + ( II ),
+
+where 
+
+(I) := bTj (x | z0, bz1)−Tj (x | z0, bz1) , (II ) := Tj (x | z0, bz1)−Tj (x | z0, z1) .
+
+For (I), write, for bu0 := bF0,j (x | z0),
+
+(I) ≤ bQ1,j (bu0 | bz1) − Q1,j (bu0 | bz1)
+
+| {z }
+
+> (I.a )
+
++ Q1,j (bu0 | bz1) − Q1,j (u0 | bz1)
+
+| {z }
+
+> (I.b )
+
+,
+
+By Assumption (A3), (I.a ) ≤ sup 
+
+> u, z
+
+| bQ1,j (u | z) − Q1,j (u | z)| = op(1) . Also 
+
+bu0
+
+> p
+
+−→ u0 by Assumption (A3); moreover, since u0 ∈ [ε, 1 − ε], we have bu0 ∈
+
+[ε/ 2, 1−ε/ 2] with probability tending to 1. By continuity of u 7 → Q1,j (u | bz1) on 
+
+(0 , 1) (Assumptions (A1)–(A2)), this implies (I.b ) = op(1) . Hence (I) = op(1) .For (II ), note that 
+
+Tj (x | z0, z) = Q1,j (u0 | z)
+
+with u0 ∈ [ε, 1 − ε]. Therefore, by Assumption (A5) (uniform continuity in z
+
+uniformly over u ∈ [ε, 1 − ε]), 
+
+(II ) = Q1,j (u0 | bz1) − Q1,j (u0 | z1) p
+
+−→ 0 since bz1
+
+> p
+
+−→ z1.
+
+Combining (I) = op(1) and (II ) = op(1) proves the claim. 
+
+# B.5 Proof of Proposition 5.3 
+
+Proof. Fix (z0, z1) in the interior of supp( Zj ). In the categorical case, the condi-tional laws are probability vectors pa,j (· | z) on a finite support. Let bpa,j (· | z)
+
+be their estimators. By Assumption (A1) (finite support) together with the assumed consistency of the conditional probability estimators (e.g., (A7)), we have bpa,j (· | z) p
+
+−→ pa,j (· | z)
+
+(componentwise) at the fixed covariate values z0, z1. By stability/continuity of the simplex transport operator at interior points (e.g., (A6) or the corresponding result in Fernandes Machado et al. (2025a)), the plug-in simplex transport estimator satisfies bTj
+
+ p0,j (· | z0) | z0, z1
+
+ p
+
+−→ Tj
+
+ p0,j (· | z0) | z0, z1
+
+,
+
+which is the desired pointwise convergence. 
+
+# B.6 Proof of Corollary 5.2 
+
+Proof. Immediate from Proposition 5.3 by evaluating it at the deterministic choice 
+
+z1 = TZj (z0).
+
+42 B.7 Proof of Proposition 5.4 
+
+Proof. Fix z0 and write z1 = TZj (z0) and bz1 = bTZj (z0). Assume bz1
+
+> p
+
+−→ z1
+
+(induction hypothesis). Decompose 
+
+bTj
+
+ p0,j (· | z0) | z0, bz1
+
+ − Tj
+
+ p0,j (· | z0) | z0, z1
+
+
+
+> ∞
+
+≤ (I) + ( II ),
+
+where 
+
+(I) := bTj
+
+ p0,j (· | z0) | z0, bz1
+
+ − Tj
+
+ p0,j (· | z0) | z0, bz1
+
+
+
+> ∞
+
+,
+
+(II ) := Tj
+
+ p0,j (· | z0) | z0, bz1
+
+ − Tj
+
+ p0,j (· | z0) | z0, z1
+
+ 
+
+> ∞
+
+.
+
+Term (I) vanishes by the pointwise consistency of the simplex transport estima-tor at fixed covariates (Proposition 5.3) applied at (z0, bz1) together with a standard “random index” argument; a sufficient condition is local uniformity/stochastic equicontinuity of bTj (· | z0, z1) in z1 on compacts (which holds under the stability results for discrete OT on the simplex; see Fernandes Machado et al. (2025a)). For (II ), by continuity of the population simplex transport operator in the covariate argument (e.g., induced by continuity of z 7 → p1,j (· | z) and stability of the OT solution on the simplex, cf. (A6)), and since bz1
+
+> p
+
+−→ z1, we obtain 
+
+(II ) = op(1) .Hence (I) + ( II ) = op(1) , proving the claim. 
+
+# B.8 Proof of Theorem 5.1 
+
+Proof. We argue by induction along the chosen topological order π. Recall ( H(j))from Section 5.2 (applied here with j = π(m − 1) ), i.e., x⋆ 
+
+> 1,i,π (ℓ)
+
+→ x† 
+
+> 1,i,π (ℓ)
+
+for all ℓ ≤ m − 1.
+
+Base step. For the first node j = π(1) , which is necessarily a root of the DAG, the transported value is x⋆ 
+
+> 1,i,j
+
+= bTj (x0,i,j ). Consistency follows from Lemma 5.1 when Xj is numerical, and from the corresponding root-level plug-in consistency result for the simplex transport when Xj is categorical. 
+
+Induction step. Fix m ∈ { 2, . . . , d } and set j = π(m). Let 
+
+z0,i,j := x0,i, parents G (Xj ), z1,i,j := x†  
+
+> 1,i, parents G(Xj)
+
+, bz1,i,j := x⋆  
+
+> 1,i, parents G(Xj)
+
+.
+
+By the induction hypothesis, for every parent ℓ ∈ parents G (Xj ) we have x⋆
+
+> 1,i,ℓ p
+
+−→
+
+x†
+
+> 1,i,ℓ
+
+, and therefore 
+
+bz1,i,j = x⋆  
+
+> 1,i, parents G(Xj)
+> p
+
+−→ x†   
+
+> 1,i, parents G(Xj)
+
+= z1,i,j .
+
+We now apply the appropriate plug-in consistency result at node j. If Xj is numerical, Proposition 5.2 yields 
+
+x⋆ 
+
+> 1,i,j
+
+= bTj (x0,i,j | z0,i,j , bz1,i,j ) p
+
+−→ Tj (x0,i,j | z0,i,j , z1,i,j ) = x† 
+
+> 1,i,j
+
+.
+
+If Xj is categorical, Proposition 5.4 yields the same conclusion. Hence x⋆
+
+> 1,i,π (m)
+> p
+
+−→
+
+x†
+
+> 1,i,π (m)
+
+.Since m was arbitrary, the above holds for every coordinate along π, and thus 
+
+x⋆
+
+> 1,i p
+
+−→ x†
+
+> 1,i
+
+.
+
+43 B.9 Proof of Lemma 5.2 
+
+Proof. Let bpn ∈ S K be the estimated transported probability vector and p ∈ S K
+
+its population counterpart, with ∥bpn − p∥∞
+
+> p
+
+−→ 0 (as given by Proposition 5.4). Let g : SK → { 1, . . . , K } be a deterministic label mapping. Assume g is locally constant at p, i.e., there exists γ > 0 such that 
+
+∥q − p∥∞ < γ =⇒ g(q) = g(p).
+
+Then 
+
+P g(bpn)̸ = g(p) ≤ P ∥bpn − p∥∞ ≥ γ −→ 0,
+
+since ∥bpn − p∥∞
+
+> p
+
+−→ 0. Hence P(g(bpn) = g(p)) → 1.In the case of the argmax rule with a positive margin, let k⋆ = arg max  
+
+> k
+
+pk
+
+and assume the margin 
+
+m := pk⋆ − max  
+
+> ℓ̸=k⋆
+
+pℓ > 0.
+
+On the event ∥bpn−p∥∞ < m/ 2, we have bpn,k ⋆ > max  
+
+> ℓ̸=k⋆
+
+bpn,ℓ , hence arg max  
+
+> k
+
+bpn,k =
+
+k⋆ (and any fixed deterministic tie-break is irrelevant on this event). Therefore 
+
+P arg max  
+
+> k
+
+bpn,k = k⋆ ≥ P ∥bpn − p∥∞ < m/ 2 → 1.
+
+# B.10 Proof of Theorem 5.2 
+
+Proof. Fix a unit i with Ai = 0 . Let 
+
+Ei := {x† 
+
+> 1,i
+
+∈ X 0}.
+
+By Assumption (A0), P(Eci | Ai = 0) ≤ η.We prove that, for any ϵ > 0,
+
+P
+
+
+
+(bδi, bζi, bτi) − (δ† 
+
+> i
+
+, ζ † 
+
+> i
+
+, τ † 
+
+> i
+
+) > ϵ Ai = 0 
+
+
+
+≤ η + o(1) .
+
+Decompose 
+
+P(∥ · ∥ > ϵ | Ai = 0) ≤ P(∥ · ∥ > ϵ, E i | Ai = 0) + P(Eci | Ai = 0) 
+
+≤ P(∥ · ∥ > ϵ, E i | Ai = 0) + η. 
+
+It remains to show P(∥ · ∥ > ϵ, E i | Ai = 0) = o(1) .Assume (as stated in the corollary) that x⋆
+
+> 1,i p
+
+−→ x† 
+
+> 1,i
+
+(Theorem 5.1), and that the outcome regressions satisfy the following standard plug-in condition: 
+
+sup 
+
+> x∈Sa
+
+bμa(x) − μa(x) p
+
+−→ 0, a ∈ { 0, 1}, (8) and μa is continuous on Sa (or at least continuous at the relevant evaluation points). (Condition (8) can be replaced by stochastic equicontinuity plus pointwise consistency.) On the event Ei, both x† 
+
+> 1,i
+
+and, with probability tending to 1, x⋆ 
+
+> 1,i
+
+belong to 
+
+X0 (since x⋆ 
+
+> 1,i
+
+→ x† 
+
+> 1,i
+
+and X0 is a support set). Then 
+
+bμ0(x⋆
+
+> 1,i
+
+) − μ0(x†
+
+> 1,i
+
+) = bμ0(x⋆
+
+> 1,i
+
+) − μ0(x⋆
+
+> 1,i
+
+)| {z }
+
+> (A)
+
++ μ0(x⋆
+
+> 1,i
+
+) − μ0(x†
+
+> 1,i
+
+)| {z }
+
+> (B)
+
+.
+
+44 By (8) , (A) ≤ sup x∈X 0 |bμ0(x) − μ0(x)| = op(1) . By continuity of μ0 and 
+
+x⋆
+
+> 1,i p
+
+−→ x†
+
+> 1,i
+
+, (B) = op(1) . Hence 
+
+bμ0(x⋆
+
+> 1,i
+
+) p
+
+−→ μ0(x†
+
+> 1,i
+
+) on Ei.
+
+Similarly, bμ0(x0,i ) p
+
+−→ μ0(x0,i ) by consistency of bμ0 (at a fixed point, this follows from (8) or from pointwise consistency). Therefore, 
+
+bδi = bμ0(x⋆
+
+> 1,i
+
+) − bμ0(x0,i ) p
+
+−→ μ0(x†
+
+> 1,i
+
+) − μ0(x0,i ) = δ† 
+
+> i
+
+on Ei.
+
+The same argument gives bμ1(x⋆
+
+> 1,i
+
+) p
+
+−→ μ1(x†
+
+> 1,i
+
+) (on the appropriate support X1;for ST transports, x† 
+
+> 1,i
+
+lies in the target support by construction), and thus 
+
+bζi = bμ1(x⋆
+
+> 1,i
+
+) − bμ0(x⋆
+
+> 1,i
+
+) p
+
+−→ μ1(x†
+
+> 1,i
+
+) − μ0(x†
+
+> 1,i
+
+) = ζ† 
+
+> i
+
+on Ei.
+
+Finally, bτi = bδi + bζip
+
+−→ δ† 
+
+> i
+
++ ζ† 
+
+> i
+
+= τ † 
+
+> i
+
+on Ei by Slutsky’s theorem, hence 
+
+P(∥(bδi, bζi, bτi) − (δ† 
+
+> i
+
+, ζ † 
+
+> i
+
+, τ † 
+
+> i
+
+)∥ > ϵ, E i | Ai = 0) = o(1) .
+
+Plugging into the initial decomposition yields the claimed bound ≤ η + o(1) .When η = 0 , the bound implies the stated convergence in probability. 
+
+# C Algorithms 
+
+We summarize the computational components of the proposed framework through three algorithms. Algorithm 2 describes the (conditional) sequential transport (ST) procedure, which constructs mediator counterfactuals by transporting each medi-ator along a topological ordering of the mediator DAG. At each step, the algorithm applies either an unconditional or a conditional transport map, depending on the presence of parent mediators, and produces a deterministic counterfactual media-tor vector that respects both the observed distributions and the causal structure. Algorithm 3 details the estimation of the transport maps used within ST. It covers both numerical mediators, for which transport is implemented via conditional quantile mapping, and categorical mediators, for which transport is performed on the probability simplex. These maps constitute the core building blocks of the sequential procedure and are estimated once from the observed data under each treatment level. Finally, Algorithm 4 combines sequential transport with outcome regression to compute individual-level and aggregate causal decompo-sitions. Given fitted outcome models, it evaluates direct and indirect effects by contrasting factual and transported mediator profiles. Together, the three algo-rithms form a modular pipeline: Algorithm 3 estimates the transport primitives, Algorithm 2 constructs counterfactual mediators, and Algorithm 4 translates these counterfactuals into effect decompositions. 
+
+# D Toy examples with Gaussian data 
+
+# D.1 Toy example with 2 mediators 
+
+Consider the following simple example: treatment A is a binary variable, taking values in {0, 1} (untreated, treated) with probabilities p0 and p1. Then, conditional 
+
+45 Algorithm 2 Conditional transport for a numeric feature for x0,j , from Fernandes Machado et al. (2025b). 
+
+Require: observation x0,j ∈ R (numeric) 
+
+Require: sample χ0,j = {x0,j, 1, · · · , x 0,j,n 0 } ∈ Rn0
+
+Require: sample χ1,j = {x1,j, 1, · · · , x 1,j,n 1 } ∈ Rn1
+
+Require: weights w0 ∈ Rn0 
+
+> +
+
+and w1 ∈ Rn1
+
+> +
+
+F (·) ← smooth cdf from (χ0,j , w0)
+
+Q(·) ← smooth quantile function from (χ1,j , w1)
+
+return x⋆ 
+
+> 1,j
+
+← Q ◦ F (x0,j )
+
+Algorithm 3 Conditional transport on causal graph for a categorical feature, from Fernandes Machado et al. (2025a). 
+
+Require: observation x0,j ∈ { A1, · · · , A dj } (categorical) 
+
+Require: χ0,j = {bpj (x0,j, 1), · · · , bpj (x0,j,n 0)} ∈ S n0 
+
+> dj−1
+
+Require: χ1,j = {bpj (x1,j, 1), · · · , bpj (x1,j,n 1)} ∈ S n1 
+
+> dj−1
+
+Require: weights w0 ∈ Rn0 
+
+> +
+
+and w1 ∈ Rn1
+
+> +
+
+Require: categorical allocation Cj (Algorithm 4) 
+
+T ⋆ : Sdj −1 → S dj −1 optimal weighted transport 
+
+p⋆ 
+
+> 1,j
+
+← T ⋆(bpj (x0,j )) 
+
+return x⋆ 
+
+> 1,j
+
+← Cj (p⋆ 
+
+> 1,j
+
+) ∈ { 1, · · · , d j }
+
+on A, X = ( X1, X 2) is a bivariate Gaussian vector, X | A = a ∼ N (μa, Σa)
+
+X | A = a ∼ N 
+
+ μa
+
+μa
+
+
+
+,
+
+ 1 ra
+
+ra 1
+
+ 
+
+For numerical applications, we set μ0 = −1 and μ1 = 1 , and ra ∈ {− 0.5, +0 .7}.Then, Y is generated based on a simple linear model, 
+
+Y = 2 X1 − 1.5X2 + 3 A + ε
+
+where ε is N (0 , 1) . The two “potential outcomes” given by the SEM are: 
+
+(
+
+Y (1) = 2 X1 − 1.5X2 + 3 + εY (0) = 2 X1 − 1.5X2 + ε. 
+
+Under this setup, the expected values of the indirect effect ¯δ, the direct effect ¯ζ,and the total effect ¯τ are: 
+
+
+
+¯δ = 0 .5( μ1 − μ0) = 1 ¯ζ = 3 ¯τ = 0 .5( μ1 − μ0) + 3 = 4 .
+
+We generate a sample of size n = 500 from this data-generating process (DGP) and construct counterfactuals for the mediators X using OT, entropy regularized OT, and ST. For the latter, we consider two factorizations: (i) transport X1 first, then 
+
+46 Algorithm 4 From compositional to categorical feature, with marginal constraints. 
+
+Require: n observations on Sd−1, bp1, · · · , bpn
+
+Require: target proportions π1, · · · , π d
+
+Optimal mapping T ⋆ : Sd−1 → { 1, · · · , d }
+
+(from bp ∈ S d−1 to vertices of Sd−1, with masses π)
+
+return T ⋆ : Sd−1 → { 1, · · · , d } (Voronoi tesselation) 
+
+X1 → X2 (denoted ST(1)); and (ii) transport X2 first, then X2 → X1 (denoted ST(2)). Figure 5 displays the original untreated units (green), treated units (yellow), and the transported units from A = 0 to A = 1 (triangles). The transport mappings for each method are indicated by line segments. -3 -1 1 3
+
+> -3  -1  1 3
+
+X1 
+
+> X2
+
+OT 
+
+-3 -1 1 3
+
+X1 
+
+> X2
+
+ST(1) 
+
+-3 -1 1 3
+
+X1 
+
+> X2
+
+ST(2) 
+
+Figure 5: Untreated units (green dots), treated Units (yellow dots), and transported units (blue triangles) under optimal transport (OT), entropic regularization with Sinkhorn algorithm (SKH) and sequential transport: ST(1) (transporting X1 first and then X1 →
+
+X2) and ST(2) (transporting X2 first and then X2 → X1). Lines indicate the transport mappings. 
+
+For individual effects estimations, we focus on two individuals, xi1 = ( −1.5, −1.4) 
+
+and xi2 = ( −2.4, −3.8) (Figure 6). For each of them, we build counterfactuals using transport-based methods. Using these counterfactuals, we compute the indi-vidual direct, indirect and total causal effects. The resulting values are reported in Table 2. We repeat the procedure over 200 Monte Carlo replications to evaluate perfor-mance. In each replication, we generate a new sample of size n = 500 , estimate counterfactuals using OT and ST, and compute both individual and average causal effects. The results of the estimations are presented in Section 6. In addition to the example with the two untreated units showcased in the main analysis, we can complement the results by having a look at a generalization for the entire set of untreated units. To that end, the distribution of individual causal effects obtained using each of the counterfactual-based methods is plotted 
+
+47 -3 -2 -1 0 1 2 3
+
+> -3  -1  0 1 2 3
+
+# X1 
+
+> X2
+
+OT OT-M 
+
+SKH 
+
+ST(1) 
+
+ST(2) 
+
+-3 -2 -1 0 1 2 3
+
+# X1 
+
+> X2
+
+OT OT-M 
+
+SKH 
+
+ST(1) 
+
+ST(2) Figure 6: Estimated τi for the two untreated units (black squares), xi1 = ( −1.5, −1.4) 
+
+(left) and xi2 = ( −2.4, −3.8) (right), using different transport methods. Green dots: untreated; yellow dots: treated. Table 2: Estimated individual causal effects for two units, xi1 = ( −1.5, −1.4) and 
+
+xi2 = ( −2.4, −3.8) , based on counterfactuals build using optimal transport (OT), OT-Based matching (OT-M), penalized OT (SKH), and two sequential appoaches X1 → X2
+
+(ST(1)) and X2 → X1 (ST(2)). 
+
+Metric i OT OT-M SKH ST(1) ST(2) 
+
+δi
+
+1 1.3 0.4 0.5 -0.4 1.4 2 4.2 4.1 1.0 1.1 3.9 
+
+ζi
+
+1 2.7 3.2 3.2 3.7 3.5 2 4.5 7.7 3.4 3.3 7.6 
+
+τi
+
+1 4.0 3.5 3.7 3.3 4.9 2 8.8 11.8 4.4 4.4 11.9 
+
+in Figure 7. As shown, the distributions of estimated individual effects are centered around their corresponding theoretical expectations. 
+
+Varying the means 
+
+We change the distance between the means of the Gaussian distributions in groups 0 and 1. As this distance increases, the overlap between the two groups decreases. In the initial setup, with μ0 = −1 and μ1 = +1 , the Euclidean distance is equal to 2√2. We apply a scalar coefficient α ≥ 0 to the means to increase that distance: αμ0 and αμ1. We make α vary from 0 to 2 by steps of 0.2. When α = 0 ,the distance is equal to 0, when α = 2 , the distance is equal to 4√2. A visual representation of the samples that can be drawn from the DGP with α ∈ { 0, 1, 2}
+
+is shown in Figure 8. 
+
+48 0 40 
+
+OT 
+
+> δi
+> 0 40  80
+> ζi
+
+0 5 10 
+
+> 0 20  50
+> τi
+> 0 30  60
+
+SKH 
+
+> 0 40  80
+
+0 10 
+
+> 0 30  60
+> 0 30  60
+
+ST(1) 
+
+> 0 40  80
+
+0 10 
+
+> 0 20  50
+> 0 20  40
+
+ST(2) 
+
+> 0 20  40  60
+
+0 10 
+
+> 0 40
+
+Figure 7: Individual causal effects for the Gaussian toy example estimated with counterfactual-based methods using optimal transport (OT), penalized OT (SKH), and two sequential approaches X1 → X2 (ST(1)) and X2 → X1 (ST(2)). The red dashed line depicts theoretical expectations. α = 0    
+
+> -3 -1 13
+> -3  -1  0 1 2 3
+
+X1 
+
+> X2
+
+α = 1    
+
+> -3 -1 13
+> -3  -1  0 1 2 3
+
+X1 
+
+> X2
+
+α = 2    
+
+> -3 -1 13
+> -3  -1  0 1 2 3
+
+X1 
+
+> X2
+
+Figure 8: Example of simulated data for the toy example of section D.1 for various distances between the means of the Gaussian distributions in groups 0 and 1.     
+
+> We perform 200 Monte Carlo replications for each value of α. For each repli-cation, we compute the estimated average causal effects ( ˆ¯δ,ˆ¯ζ, and ˆ¯τ) and evaluate
+
+49 their estimation errors with respect to their theoretical values: 
+
+ˆ¯δ − ¯δ = ˆ¯δ − α, 
+
+ˆ¯ζ − ¯ζ = ˆ¯ζ − 3,
+
+ˆ¯τ − ¯τ = ˆ ¯τ − (α + 3) .
+
+The distributions of these estimation errors, obtained across the replications, are visualized as violin plots in Figure 9 for the indirect effect (top), the direct effect (middle), and the total effect (bottom). The methods to compute these quantities are shown in columns. For small values of α, corresponding to minimal separation between the two treatment groups, the indirect effect ˆ¯δ is slightly overestimated by transport-based methods. As α increases, the variance of the estimation error grows for the causal mediation (CM) method. Methods based on transport-based counterfactuals remain approximately unbiased for all values of α, though their estimation error variance also increases with the distance between group means. A similar pattern is observed for the direct effect ˆ¯ζ, where transport-based estimates exhibit increasing bias (under-estimation) and variance with larger values of α.Interestingly, the behavior of the total effect ˆ¯τ departs from this pattern. With the exception of the penalized transport approach (SKH), the variance of the estimation error for the total effect remains stable as α increases. This suggests that the opposing biases observed in the estimation of direct and indirect effects tend to cancel out, yielding robust total effect estimates. OT SKH ST(1) ST(2) 
+
+> ¯δ ¯ζ ¯τ
+
+0 1 2 0 1 2 0 1 2 0 1 2
+
+-4 
+
+-2 
+
+0
+
+2
+
+4
+
+-4 
+
+-2 
+
+0
+
+2
+
+4
+
+-4 
+
+-2 
+
+0
+
+2
+
+4
+
+α (distance = 2 α√2) 
+
+> Estimation error
+
+Figure 9: Estimation error of the average causal effects ( ¯δ, ¯ζ, ¯τ ) across 200 replicated samples ( n = 500 ), in the Gaussian case with two mediators (toy example of section D.1), for increasing values Of α.
+
+Varying the proportion of untreated 
+
+We now turn to the baseline parameter setting ( α = 1 ) and explore the impact of sample imbalance by varying the proportion of untreated individuals. Specifically, 
+
+50 we vary the proportion n0/n from 5% to 95% in increments of 5 percentage points. As in Section D.1, we conduct Monte Carlo simulations at each level of imbalance, computing the estimated average indirect, direct, and total causal effects ( ˆ¯δ, ˆ¯ζ, and 
+
+ˆ¯τ , respectively). It is important to note that changing the proportion of untreated individuals does not affect the theoretical values of these quantities, which remain the same as those defined in the balanced (baseline) setting. The distributions of estimation errors are shown in Figure 10 for the average indirect effect (top), the average direct effect (middle), and the total effect (bottom). Overall, across all methods and causal effects, the variances of the causal effect estimators tend to be higher when the proportion of n0 is either very low or very high (around 5% or 95%). This stems from the limited reliability of the outcome models ˆμ0 and ˆμ1 when one of the treatment groups is underrepresented. In the OT approach, the transport plan relies on theoretical means and covari-ances within the treated and untreated groups. Therefore, the observed changes in variance and bias of the estimation errors for the three causal effects stem solely from the estimation of the RF models in groups 0 and 1. For ˆ¯δ, only ˆμ0 is used, so increasing n0 reduces both variance and bias. For ˆ¯ζ, both ˆμ0 and ˆμ1 are required; as n0 increases, n1 decreases, leading to higher variance at extreme proportions (e.g., 5% or 95%). The same pattern holds for the total effect ˆ¯τ , which also depends on both models. However, the bias of ˆ¯τ remains close to zero across all proportions of n0 because the overestimation of ˆ¯δ and the underestimation of ˆ¯ζ cancel each other out. The entropic-regularized optimal transport approach (SKH) yield results similar to OT in terms of bias and variance of estimation errors across all three causal effects, with one exception: for ˆ¯τ , SKH exhibit the highest variance when the proportion of n0 is 95%, whereas OT shows the highest variance at 5%. Similar patterns are observed for the ST approaches (both ST(1) and ST(2)), where the behavior of biases and variances closely matches that of OT across all three causal effects. 
+
+# E Toy example with 3 mediators 
+
+We simulate a dataset consisting of a binary treatment indicator A ∈ { 0, 1},a binary outcome Y ∈ { 0, 1}, and three covariates: two continuous variables 
+
+X1, X 2 ∈ R, and one categorical variable X3 ∈ { A, B, C}. For individuals in group 0 ( A = 0 ), the continuous covariates (X1, X 2) are drawn from a bi-variate normal distribution with mean μ0 = ( −1, −1) and covariance Σ0 =1.22
+
+ 1 0.50.5 1
+
+
+
+. For individuals in group 1 ( A = 1 ), we use μ1 = (1 .5, 1.5) and 
+
+Σ1 = 0 .92
+
+ 1 −0.4
+
+−0.4 1
+
+
+
+, inducing differences in both location and correlation structure across groups. The categorical covariate X3 is generated conditionally on (A, X 1, X 2), fol-lowing a multinomial logistic model. Letting lA, l B, l C denote the unnormalized logits for each level of X3, we define: 
+
+
+
+lA = 0 .5 + 0 .3X1 − 0.4X2 + 0 .2A, lB = −0.3 + 0 .5X2 − 0.2X1 − 0.1A, lC = 0 ,
+
+51 OT SKH ST(1) ST(2) 
+
+> ¯δ ¯ζ ¯τ
+
+5 25 45 55 95 5 25 45 55 95 5 25 45 55 95 5 25 45 55 95 
+
+-2 
+
+-1 
+
+0
+
+1
+
+2
+
+-2 
+
+-1 
+
+0
+
+1
+
+2
+
+-2 
+
+-1 
+
+0
+
+1
+
+2
+
+Proportion of untreated (%) 
+
+> Estimation error
+
+Figure 10: Estimation error of the average causal effects ( ¯δ, ¯ζ, ¯τ ) across 200 replicated samples ( n = 500 ), in the Gaussian case with two mediators (toy example of section D.1), for increasing proportion of untreated. 
+
+with probabilities obtained via softmax normalization, for k in {A, B, C}:
+
+P(X3 = k) = exp( lk )exp( lA) + exp( lB) + exp( lC) .
+
+The outcome Y is simulated using logistic regression, with functional forms differing by treatment group. We define the logit model: 
+
+(
+
+η0 = −0.2 + 0 .6X1 − 0.6X2 + γ(X3), for A = 0 ,η1 = 0 .1 − 0.2X1 + 0 .8X2 + γ(X3), for A = 1 ,
+
+where the contribution of the categorical covariate is given by: 
+
+γ(X3, A ) = 
+
+(
+
+0.2 · 1{X3=B} − 0.3 · 1{X3=C}, for A = 0 ,
+
+−0.2 · 1{X3=B} − 0.1 · 1{X3=C} for A = 1 .
+
+The outcome is drawn from a Bernoulli distribution with success probability 
+
+P[Y = 1] = logit −1(ηA).We generate n0 = 400 observations in group 0 and n1 = 200 observations in group 1. 
+
+52

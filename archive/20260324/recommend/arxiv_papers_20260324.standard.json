@@ -1,0 +1,201 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-24T19:41:29.976192+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2603.21696v1",
+      "title": "MIND: Multi-agent inference for negotiation dialogue in travel planning",
+      "abstract": "While Multi-Agent Debate (MAD) research has advanced, its efficacy in coordinating complex stakeholder interests such as travel planning remains largely unexplored. To bridge this gap, we propose MIND (Multi-agent Inference for Negotiation Dialogue), a framework designed to simulate realistic consensus-building among travelers with heterogeneous preferences. Grounded in the Theory of Mind (ToM), MIND introduces a Strategic Appraisal phase that infers opponent willingness (w) from linguistic nuances with 90.2% accuracy. Experimental results demonstrate that MIND outperforms traditional MAD frameworks, achieving a 20.5% improvement in High-w Hit and a 30.7% increase in Debate Hit-Rate, effectively prioritizing high-stakes constraints. Furthermore, qualitative evaluations via LLM-as-a-Judge confirm that MIND surpasses baselines in Rationality (68.8%) and Fluency (72.4%), securing an overall win rate of 68.3%. These findings validate that MIND effectively models human negotiation dynamics to derive persuasive consensus.",
+      "authors": [
+        "Hunmin Do",
+        "Taejun Yoon",
+        "Kiyong Jung"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-03-23T08:31:15+00:00",
+      "link": "https://arxiv.org/pdf/2603.21696v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "negotiation dialogue and consensus-building in travel planning",
+      "llm_evidence_cn": "旅游规划中的谈判对话与共识建立",
+      "llm_evidence": "旅游规划中的谈判对话与共识建立",
+      "canonical_evidence": "旅游规划中的谈判对话与共识建立",
+      "llm_tldr_en": "A multi-agent framework for simulating negotiation and consensus-building in complex travel planning.",
+      "llm_tldr_cn": "一种用于模拟复杂旅游规划中谈判与共识建立的多智能体框架。",
+      "llm_tldr": "一种用于模拟复杂旅游规划中谈判与共识建立的多智能体框架。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 旅游学领域亲环境行为与框架效应相关的论文查找, especially work that connects or combines: framing effect in environmental psychology; T; pro-environmental behavior in tourism; Please help me find papers on pro environmental behavior and framing effects in the field of tourism; impact of framing effects on tourist pro environmental behavior; psychological mechanisms of framing in tourism environmental protection; effectiveness of different framing strategies for green travel.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.15182v2",
+      "title": "Sequential Transport for Causal Mediation Analysis",
+      "abstract": "We propose sequential transport (ST), a distributional framework for mediation analysis that combines optimal transport (OT) with a mediator directed acyclic graph (DAG). Instead of relying on cross-world counterfactual assumptions, ST constructs unit-level mediator counterfactuals by minimally transporting each mediator, either marginally or conditionally, toward its distribution under an alternative treatment while preserving the causal dependencies encoded by the DAG. For numerical mediators, ST uses monotone (conditional) OT maps based on conditional CDF/quantile estimators; for categorical mediators, it extends naturally via simplex-based transport. We establish consistency of the estimated transport maps and of the induced unit-level decompositions into mutatis mutandis direct and indirect effects under standard regularity and support conditions. When the treatment is randomized or ignorable (possibly conditional on covariates), these decompositions admit a causal interpretation; otherwise, they provide a principled distributional attribution of differences between groups aligned with the mediator structure. Gaussian examples show that ST recovers classical mediation formulas, while additional simulations confirm good performance in nonlinear and mixed-type settings. An application to the COMPAS dataset illustrates how ST yields deterministic, DAG-consistent counterfactual mediators and a fine-grained mediator-level attribution of disparities.",
+      "authors": [
+        "Agathe Fernandes Machado",
+        "Iryna Voitsitska",
+        "Arthur Charpentier",
+        "Ewen Gallic"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "cs.LG"
+      ],
+      "published": "2026-03-16T12:18:35+00:00",
+      "link": "https://arxiv.org/pdf/2603.15182v2",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "causal mediation analysis for psychological mechanisms",
+      "llm_evidence_cn": "用于心理机制分析的因果中介分析方法",
+      "llm_evidence": "用于心理机制分析的因果中介分析方法",
+      "canonical_evidence": "用于心理机制分析的因果中介分析方法",
+      "llm_tldr_en": "Proposes a causal mediation analysis framework that could be used to study psychological mechanisms of framing.",
+      "llm_tldr_cn": "提出了一种因果中介分析框架，可用于研究框架效应的心理机制。",
+      "llm_tldr": "提出了一种因果中介分析框架，可用于研究框架效应的心理机制。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "psychological mechanisms of framing in tourism environmental protection",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.21763v1",
+      "title": "Mapping Travel Experience in Public Transport: Real-Time Evidence and Spatial Analysis in Hamburg",
+      "abstract": "Shifting travel from private cars to public transport is critical for meeting climate and related mobility goals, yet passengers will only choose transit if it offers a consistently positive experience. Previous studies of passenger satisfaction have largely relied on retrospective surveys, which overlook the dynamic and spatially differentiated nature of travel experience. This paper introduces a novel combination of real-time experience sampling and spatial hot spot analysis to capture and map where public transport users report consistently positive or negative experiences.   Data were collected from 239 participants in Hamburg between March and September 2025. Using a smartphone application, travelers reported their momentary journey experience every five minutes during everyday trips, yielding over 21,000 in-situ evaluations. These geo-referenced data were analyzed with the Getis-Ord $Gi^{*}$ statistic to detect significant clusters of positive and negative travel experience. The analysis identified distinct hot and cold spots of travel experience across the network. Cold spots were shaped by heterogeneous problems, ranging from predominantly delay-dominated to overcrowding or socially stressful locations. In contrast, hot spots emerged through different pathways, including comfort-oriented, time-efficient or context-driven environments.   The findings highlight three contributions. First, cold spots are not uniform but reflect specific local constellations of problems, requiring targeted interventions. Second, hot spots illustrate multiple success models that can serve as benchmarks for replication. Third, this study demonstrates the value of combining dynamic high-resolution sampling with spatial statistics to guide more effective and place-specific improvements in public transport.",
+      "authors": [
+        "Esther Bosch",
+        "Michael Scholz",
+        "Anke Sauerländer-Biebl",
+        "Klas Ihme"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-03-23T09:57:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.21763v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "shifting travel from private cars to public transport for climate goals",
+      "llm_evidence_cn": "为了气候目标将出行方式从私家车转向公共交通",
+      "llm_evidence": "为了气候目标将出行方式从私家车转向公共交通",
+      "canonical_evidence": "为了气候目标将出行方式从私家车转向公共交通",
+      "llm_tldr_en": "Uses real-time sampling to map public transport experiences to encourage green travel shifts.",
+      "llm_tldr_cn": "利用实时抽样绘制公共交通体验地图，以鼓励向绿色出行转变。",
+      "llm_tldr": "利用实时抽样绘制公共交通体验地图，以鼓励向绿色出行转变。",
+      "llm_tags": [
+        "query:q7"
+      ],
+      "matched_query_tag": "query:q7",
+      "matched_query_text": "effectiveness of different framing strategies for green travel",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.17221v1",
+      "title": "A Multi-Level Data-driven Framework for Understanding Perceptions Towards Cycling Infrastructure Across Regions Leveraging Social Media Discourse",
+      "abstract": "Cycling plays an important role in sustainable urban mobility, yet how people perceive cycling infrastructure varies widely and remains challenging to assess at large spatial scales. Existing research has mainly relied on surveys or short-form social media data and has often focused on individual cities, leaving limited insight into how cycling discussions unfold across broader geographic contexts. This study proposes a multi-scale framework that examines how cycling infrastructure is discussed and evaluated in online public discourse and explores whether sentiment patterns differ between the United States (U.S.) and selected European countries included in the dataset. The analysis draws on a large collection of discussions on a social media platform, namely Reddit, including more than 30,000 posts and over 500,000 associated comments gathered from cycling-focused and geographically defined communities across multiple U.S. states and selected European countries. Using a combination of sentiment analysis, topic modeling, aspect-based classification, and hierarchical statistical modeling, the study evaluates the emotional tone and thematic structure of these discussions and how they vary spatially. Overall sentiment toward cycling is positive in both regions, with slightly higher values observed in the European sample, although differences remain modest. Sentiment tends to become more critical in comment discussions compared to original posts. Topic and aspect analyses show that sentiment is primarily associated with experience-based themes, with most variation occurring within cities rather than between regions. Together, these findings illustrate how discussion-based online data can complement traditional approaches to understanding public perceptions of cycling infrastructure in sustainable urban contexts.",
+      "authors": [
+        "Shiva Azimi",
+        "Arash Tavakoli"
+      ],
+      "primary_category": "cs.SI",
+      "categories": [
+        "cs.SI"
+      ],
+      "published": "2026-03-17T23:59:38+00:00",
+      "link": "https://arxiv.org/pdf/2603.17221v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "perceptions and discourse on green travel infrastructure",
+      "llm_evidence_cn": "对绿色出行基础设施的感知与讨论",
+      "llm_evidence": "对绿色出行基础设施的感知与讨论",
+      "canonical_evidence": "对绿色出行基础设施的感知与讨论",
+      "llm_tldr_en": "Analyzes social media discourse to understand regional perceptions of cycling as sustainable urban mobility.",
+      "llm_tldr_cn": "通过社交媒体话语分析，了解不同地区对自行车作为可持续出行方式的感知。",
+      "llm_tldr": "通过社交媒体话语分析，了解不同地区对自行车作为可持续出行方式的感知。",
+      "llm_tags": [
+        "query:q7"
+      ],
+      "matched_query_tag": "query:q7",
+      "matched_query_text": "effectiveness of different framing strategies for green travel",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.22015v1",
+      "title": "Retrieving Climate Change Disinformation by Narrative",
+      "abstract": "Detecting climate disinformation narratives typically relies on fixed taxonomies, which do not accommodate emerging narratives. Thus, we re-frame narrative detection as a retrieval task: given a narrative's core message as a query, rank texts from a corpus by alignment with that narrative. This formulation requires no predefined label set and can accommodate emerging narratives. We repurpose three climate disinformation datasets (CARDS, Climate Obstruction, climate change subset of PolyNarrative) for retrieval evaluation and propose SpecFi, a framework that generates hypothetical documents to bridge the gap between abstract narrative descriptions and their concrete textual instantiations. SpecFi uses community summaries from graph-based community detection as few-shot examples for generation, achieving a MAP of 0.505 on CARDS without access to narrative labels. We further introduce narrative variance, an embedding-based difficulty metric, and show via partial correlation analysis that standard retrieval degrades on high-variance narratives (BM25 loses 63.4% of MAP), while SpecFi-CS remains robust (32.7% loss). Our analysis also reveals that unsupervised community summaries converge on descriptions close to expert-crafted taxonomies, suggesting that graph-based methods can surface narrative structure from unlabeled text.",
+      "authors": [
+        "Max Upravitelev",
+        "Veronika Solopova",
+        "Charlott Jakob",
+        "Premtim Sahitaj",
+        "Vera Schmitt"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-03-23T14:26:18+00:00",
+      "link": "https://arxiv.org/pdf/2603.22015v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "narrative framing of climate change information",
+      "llm_evidence_cn": "气候变化信息的叙事框架",
+      "llm_evidence": "气候变化信息的叙事框架",
+      "canonical_evidence": "气候变化信息的叙事框架",
+      "llm_tldr_en": "Re-frames climate disinformation detection as a narrative retrieval task to accommodate emerging narratives.",
+      "llm_tldr_cn": "将气候虚假信息检测重新定义为叙事检索任务，以适应新兴叙事。",
+      "llm_tldr": "将气候虚假信息检测重新定义为叙事检索任务，以适应新兴叙事。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

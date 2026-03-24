@@ -1,0 +1,477 @@
+Title: Retrieving Climate Change Disinformation by Narrative
+
+URL Source: https://arxiv.org/pdf/2603.22015v1
+
+Published Time: Tue, 24 Mar 2026 02:49:17 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+# Retrieving Climate Change Disinformation by Narrative 
+
+## Max Upravitelev 1,2, Veronika Solopova 1,2, Charlott Jakob 1,2,Premtim Sahitaj 1,2 and Vera Schmitt 1,2,3,4
+
+> 1
+
+Technische Universität Berlin, 2German Research Center for Artificial Intelligence (DFKI) 
+
+> 3
+
+BIFOLD – Berlin Institute for the Foundations of Learning and Data 
+
+> 4
+
+Centre for European Research in Trusted AI (CERTAIN) max.upravitelev@tu-berlin.de 
+
+Abstract 
+
+Detecting climate disinformation narratives typically relies on fixed taxonomies, which do not accommodate emerging narratives. Thus, we re-frame narrative detection as a retrieval task: given a narrative’s core message as a query, rank texts from a corpus by alignment with that narrative. This formulation requires no predefined label set and can accommodate emerging narratives. We repurpose three climate disinformation datasets (CARDS, Climate Obstruction, climate change subset of PolyNarrative) for retrieval evaluation and propose SpecFi, a framework that generates hypothetical documents to bridge the gap between abstract narrative descriptions and their concrete textual instantiations. SpecFi uses community summaries from graph-based community detection as few-shot examples for generation, achieving a MAP of 0.505 on CARDS without access to narrative labels. We further introduce narrative variance, an embedding-based difficulty metric, and show via partial correlation analysis that standard retrieval degrades on high-variance narratives (BM25 loses 63.4% of MAP), while SpecFi-CS remains robust (32.7% loss). Our analysis also reveals that unsupervised community summaries converge on descriptions close to expert-crafted taxonomies, suggesting that graph-based methods can surface narrative structure from unlabeled text. 
+
+Keywords: information retrieval, disinformation detection, climate change denial 
+
+## 1. Introduction 
+
+Recent datasets on climate change disinformation (Coan et al., 2021), (Nikolaidis et al., 2025), (Row-lands et al., 2024) organize individual claims under narrative taxonomies defined by core messages. These taxonomies group together texts, sometimes with little lexical overlap: the claim “ Carbon dioxide is vital to all life on Earth because no vegetation can exist without it ” and a lengthy scientific rebuttal arguing that “ the historical increase in the atmo-sphere’s CO2 concentration has been good for the Amazon’s trees ” share near-zero Jaccard similar-ity, yet both serve the same narrative: that CO 2 is essentially plant food (a narrative from the CARDS taxonomy (Coan et al., 2021)). Framing narrative identification as classification enables the detection of known narratives but lim-its adaptability: classification assumes a fixed la-bel set, whereas disinformation narratives evolve. Re-framing the task as retrieval, where a narra-tive’s core message serves as a query to rank can-didate texts, enables a more flexible monitoring strategy that can target emerging, previously un-seen narratives. In practice, this means that when fact-checkers or journalists observe a potentially emerging narrative, they could formulate its core message as a query and search a corpus to assess how prevalent it already is without requiring a pre-defined label set or retraining a classifier. However, this flexibility comes at a cost: narrative retrieval poses its own challenges. Unlike standard seman-tic search, which matches surface-level meaning, narrative retrieval must identify texts by their under-lying core message, which may never be stated ex-plicitly. Prior work has shown that dense retrievers fail to respect implicit logical constraints in queries (Shen et al., 2025) and that text embedding models struggle with structural and relational understand-ing between concepts (Zhang et al., 2023). Nar-rative understanding specifically remains a known limitation of current language models (Zhu et al., 2023). These failures cascade in narrative retrieval, where queries express abstract core messages (e.g., “CO 2 is plant food”) that texts may support through implicit logical entailment or varied syntac-tic framings without stating the theme directly: the difficulty is the gap between narrative descriptions, which are abstract, and their textual instantiations, which are concrete and stylistically diverse. In this paper, we explore narrative retrieval in the domain of climate disinformation. Our primary contributions are analytical rather than architec-tural: the individual components of our pipeline, including dense retrieval, dynamic few-shot sam-pling, HyDE-style generation (Gao et al., 2023), and graph-based community detection via the frame-work NodeRAG (Xu et al., 2025), are drawn from existing work. Their combination serves as the experimental setup for three contributions: 1. Retrieval-based evaluation of narrative datasets. We repurpose three climate disin-formation narrative datasets (CARDS, Climate Obstruction, a climate change-related subset of PolyNarrative) for retrieval evaluation, using narrative labels as queries and associated texts 
+
+> arXiv:2603.22015v1 [cs.CL] 23 Mar 2026
+
+as relevance judgments. 2. SpecFi: Speculative Fiction generation for narrative retrieval. We propose a framework that bridges the gap between abstract narrative descriptions and concrete textual instantiations by generating hypothetical documents following the HyDE strategy (Gao et al., 2023). SpecFi 1
+
+operates in two variants: SpecFi-DR retrieves the nearest text from the reference corpus via dense retrieval as a few-shot example. SpecFi-CS retrieves high-level community summaries via graph-based search over a heterogeneous knowledge graph (Xu et al., 2025). Our eval-uation shows that the community summaries improve performance beyond what actual sam-ples from the training set achieve. Our analysis further reveals that these summaries can con-verge on descriptions close to expert-crafted narrative taxonomies like CARDS (Coan et al., 2021), suggesting that graph-based methods can extract narrative structure from unlabeled text; a property with application for monitoring emerging narratives. 3. Narrative variance as a predictor of retrieval difficulty. We propose narrative variance ( Vi), an embedding-based metric quantifying the in-ternal spread of texts within a narrative group, and show via partial correlation analysis (con-trolling for sample size) that it correlates with retrieval difficulty for standard sparse and dense baselines. SpecFi-CS shows the smallest sen-sitivity to this effect, maintaining stable perfor-mance across high-variance narratives. 
+
+## 2. Preliminaries and Related Work 
+
+2.1. Disinformation Narrative Classification and Retrieval 
+
+Several recently released works organize disinfor-mation texts under narrative taxonomies on differ-ent topics (Kotseva et al., 2023; Sosnowski et al., 2024; Haouari et al., 2025; Heinrich et al., 2024). Our focus in this paper is specific to climate change denial narrative datasets (CARDS (Coan et al., 2021)), climate obstruction in social media adver-tising (CO, (Rowlands et al., 2024)), and climate disinformation in news (PolyNarrative, (Nikolaidis et al., 2025), which consists of two topic splits: Cli-mate Change and War in Ukraine). Within related domains, the term “narrative re-trieval” is used mainly to describe claim retrieval in practice, focusing on individual claims, not over-arching elements like core messages, such as in Singh et al. (2024); Singh (2024). Akter and Santu (2024) identified the need for metrics that capture      
+
+> 1Reference code is available at: https: //anonymous.4open.science/r/SpecFi/
+
+narrative similarity beyond surface representations, and Hatzel and Biemann (2024) demonstrated the difficulty of narrative retrieval by showing that untai-lored dense retrieval substantially underperforms on the task of retrieving texts by their summaries. 
+
+Hypothetical Document Embeddings The re-trieval strategy of generating hypothetical docu-ments to bridge the gap between query and doc-ument representations was introduced as HyDE by Gao et al. (2023). Given a query, HyDE gener-ates n hypothetical documents, embeds them, and retrieves based on the aggregated embeddings. This effectively expands queries with vocabulary and semantic meaning which is representative for relevant documents, which is a valuable property for narrative retrieval, where narrative descriptions are abstract while their instantiations are concrete. This generation step can be understood as a com-putational analogue of what Roine (2020) calls the instrumental mode of speculation: generating pos-sible consequences from a given premise. We adopt this framing in our system name (SpecFi, Speculative Fiction). 
+
+Graph-Based Reasoning in Retrieval Narra-tives can often be understood as sets of narra-tive features and their interrelated structures (Piper et al., 2021; Hellman, 2024). Since embedding-based similarity can fail at capturing complex rela-tional structures (as discussed in the introduction) graph-based representations offer an alternative: they can explicitly model entities, relationships, and thematic co-occurrence patterns. Within current re-trieval research, several recent graph-based RAG frameworks construct knowledge graphs from un-structured corpora and apply community detection to identify thematic clusters. GraphRAG (Edge et al., 2025) introduced this paradigm: an LLM extracts entities and relationships, the Leiden al-gorithm (Traag et al., 2019) partitions the resulting graph into hierarchically nested communities, and a second LLM pass generates bottom-up summaries for each community. These summaries serve as coarse semantic layers for query-focused summa-rization at retrieval time. We build on NodeRAG (Xu et al., 2025), which refines this approach by op-erating over a heterogeneous graph with a search pipeline that propagates relevance through the graph structure; details are given in section 3.1. 
+
+## 3. Methodology 
+
+3.1. Retrieval Pipeline 
+
+The retrieval pipeline, illustrated in Figure 1, oper-ates in five steps. We model a narrative monitoring scenario in which an analyst queries a text corpus Figure 1: Overview: The SpecFi Retrieval Pipeline by core message to identify texts aligned with a given narrative. For each dataset, we use the train-ing split as a reference corpus and the test split as the evaluation set; narrative descriptions derived from each dataset’s taxonomy serve as query prox-ies (collected in our code repository). The reference corpus is used without access to narrative labels, simulating a realistic setting in which previously col-lected texts (including non-disinformation content) are available but lack narrative annotations. 
+
+Algorithm 1 SpecFi Narrative Retrieval Workflow 
+
+Require: Narrative taxonomy with labels used as queries {q1, . . . , q K }, reference corpus t,NodeRAG graph index G
+
+Ensure: Ranked list of candidate texts per narra-tive  
+
+> 1:
+
+Select target narrative qk 
+
+> 2:
+
+For each qk, retrieve one example via: (a) SpecFi-DR: nearest text from t by cosine similarity, or (b) SpecFi-CS: top-ranked high-level ele-ment from G via NodeRAG’s graph-based search and concatenate all K narrative-example pairs as few-shot examples  
+
+> 3:
+
+For target qk, generate n= 10 hypothetical doc-uments  
+
+> 4:
+
+Embed hypotheticals; retrieve top-k from test set via aggregated dense retrieval  
+
+> 5:
+
+Return ranked results NodeRAG (Xu et al., 2025) constructs a hetero-geneous graph from the input corpus comprising seven node types, including entities, relationships, semantic units, and text chunks. During the graph augmentation stage, the Leiden community detec-tion algorithm (Traag et al., 2019) is applied to seg-ment the graph into communities of closely related nodes. For each detected community, an LLM ana-lyzes the aggregated content of its member nodes and generates high-level element nodes which are represented by community summaries. These high-level elements are reintegrated into the graph, pro-viding a summarization layer that captures patterns beyond what is present in any individual text. At query time, NodeRAG’s search combines embed-ding similarity and entity matching to identify seed nodes, then propagates relevance scores through the heterogeneous graph via Personalized PageR-ank. This means that a high-level element can be surfaced not only through direct similarity to the query but also through structural connectivity to other relevant nodes. In our SpecFi-CS pipeline, we query this search pipeline with each narrative description and extract the top-ranked high-level element from the retrieval results, using it as a few-shot example for hypothetical document generation. This exploits the summaries’ abstracted nature to produce hypotheticals that span the interpretive range of a narrative rather than anchoring on a single text. For each narrative, we generate n= 10 
+
+hypothetical documents, selected based on prelim-inary experiments. 
+
+Illustrative Example Consider the CARDS narra-tive “Climate impacts / global warming is beneficial / not bad. CO 2 is beneficial / not a pollutant. CO 2
+
+is plant food” (narrative id: 3_3). 
+
+SpecFi-DR retrieves the nearest text from the ref-erence corpus as a few-shot example:  
+
+> “Idso pointed out that there is a huge body of literature on the biological impacts of ris-ing temperatures and atmospheric CO2 levels that the International Panel on Climate Change (IPCC) ignores. He emphatically stated that atmospheric CO2 is not a pollutant. In fact, increased levels of CO2 reduce the negative effects of a number of plant stresses [. . . ] and protects against herbivores.”
+
+SpecFi-CS instead retrieves community summary: 
+
+> “Some argue that the effects of CO2 increases and slight global warming may be harmless or even beneficial, challenging alarmist narra-tives about climate change.”
+
+Notably, the community summaries are gener-ated without access to narrative labels; we discuss their convergence with the expert-crafted taxonomy in section 6. 
+
+3.2. Datasets 
+
+CARDS The Computer-Assisted Recognition of (Climate Change) Denial and Skepticism dataset (Coan et al., 2021) contains climate change denial claims organized under a two-level taxonomy of 5 main narratives and 27 subnarratives, of which 17 are attested in the data. Each text is a short claim (mean 65 words) mapped to one narrative. With 2,904 texts in the test set and 21-225 texts per narrative, CARDS provides the densest evaluation setting and is the primary dataset for our statistical analysis. 
+
+Climate Obstruction (CO) The Climate Obstruc-tion dataset (Rowlands et al., 2024) contains social media advertisements from oil and gas companies, classified under 7 obstruction narratives such as corporate community engagement and clean en-ergy leadership. Here, the texts are shorter (mean 28 words), may carry multiple labels and are de-signed to reshape public perception of the fossil fuel industry. 
+
+PolyNarrative Climate Change Subset (PN-CC) 
+
+The PolyNarrative dataset (Nikolaidis et al., 2025) contains news articles annotated with fine-grained narrative labels across multiple topics. For bet-ter comparability, we use the English language cli-mate change related subset. Texts are substantially longer (mean 496 words) and frequently carry mul-tiple narrative labels. With only 56 climate-related texts in the development set (used as test set; la-bels were not released for the actual test split), PN-CC serves as a complementary low-resource evaluation but does not support reliable statistical analysis. The three datasets differ across several dimen-sions relevant to narrative retrieval evaluation, al-lowing us to test whether SpecFi generalizes across the heterogeneous landscape of climate disinfor-mation. Table 1 summarizes quantitative statistics of the datasets. Narrative descriptions used as queries are con-structed from each dataset’s taxonomy by concate-nating hierarchical labels (e.g., for CARDS: “Global warming is not happening. Ice/permafrost/snow cover isn’t melting”). 
+
+3.3. Metrics 
+
+Retrieval Performance We report Mean Aver-age Precision (MAP), which summarizes precision across all recall levels; normalized Discounted Cu-mulative Gain at cutoffs 10 and 100 (nDCG@10, nDCG@100), which measures ranking quality with position-based discounting; and average R-Precision, the precision at the rank equal to the number of relevant documents. All are standard information retrieval metrics (Manning et al., 2008). Each evaluation is performed over K narratives per dataset, yielding K per-narrative scores that we aggregate by macro-averaging. 
+
+Embedding-Based Narrative Metrics Let N =
+
+{n1, . . . , n K } be a set of narratives. Each nar-rative ni has an associated set of text embed-dings Ti = {ti1, . . . , tim i } ⊂ Rd with centroid 
+
+ci = 1
+
+> mi
+
+Pmi 
+
+> j=1
+
+tij . We define cosine distance as 
+
+dcos (a, b) = 1 − a·b 
+
+> ∥a∥ ∥ b∥
+
+.
+
+Narrative Distinctness , as proposed in Irani et al. (2025), measures how separable a narrative is from the others via inter-centroid distances dij =
+
+dcos (ci, cj ). The geometric mean balances global separation (mean distance) with local distinctive-ness (minimum distance): 
+
+Di =
+
+q ¯di · dmin  
+
+> i
+
+, (1) 
+
+¯di = 1
+
+> K−1
+
+P  
+
+> j̸=i
+
+dij , dmin  
+
+> i
+
+= min j̸ =i dij .
+
+Narrative Variance measures the overall spread of texts around the centroid: 
+
+Vi = 1
+
+mimiX
+
+> j=1
+
+∥tij − ci∥22. (2) The two metrics operationalize different aspects of the notion of measuring a narrative’s interpretation space: Di captures how separable this space is from neighboring narratives and Vi captures the overall spread of instantiations around the narra-tive’s center. We treat them as competing hypothe-ses about what drives retrieval difficulty: is it prox-imity to other narratives ( Di) or overall internal di-versity ( Vi)? We test this in section 5. 
+
+3.4. Model Choice 
+
+For hypothetical document generation, we use 
+
+gpt-4o (OpenAI et al., 2024) and gemma-3-27b-it (Team et al., 2025) (including an uncensored narratives mean texts std texts mean words std words mean words std words total disinfo % 
+
+n per n per n per n per n per text per text texts of all texts CARDS 17 67.65 57.49 7.61 3.96 65.35 57.60 2904 39.6 CO 7 38.29 27.20 20.50 3.56 28.27 11.95 255 73.3 PN 51 1.98 1.39 9.06 2.82 601.83 293.73 41 73.2 PN-UKR 27 2 1.47 9.32 3.30 740.62 382.17 13 100 PN-CC 23 2 1.32 8.77 2.12 495.71 120.74 17 100 PN-Neutral 0 - - - - 459.78 166.97 11 0
+
+Table 1: Quantitative statistics of the used datasets. NDCG NDCG Average s / Setup Models MAP @10 @100 R-Precision narrative zero 4o, OI-E 0.321 0.509 0.487 0.370 29.091 shot G,Q4B 0.313 0.469 0.456 0.371 18.867 G-a,Q4B 0.295 0.428 0.436 0.308 17.205 static* 4o, OI-E 0.488 0.713 0.649 0.487 16.006 G, Q4B 0.435 0.635 0.616 0.435 38.284 G-a, Q4B 0.464 0.679 0.637 0.468 40.739 SpecFi 4o, OI-E 0.421 0.682 0.600 0.440 17.19 -DR G, Q4B 0.424 0.630 0.581 0.432 39.321 G-a, Q4B 0.457 0.693 0.619 0.453 34.902 SpecFi 4o, OI-E 0.426 0.660 0.597 0.456 15.124            
+
+> -CS G, Q4B 0.468 0.709 0.631 0.492 27.033 G-a, Q4B 0.505 0.738 0.660 0.490 24.079
+
+Table 2: Results on the CARDS dataset. static* is included for reference only due to its reliance on labels. All metrics are averaged over 10 runs. We report a standard deviation of <0.01 for all per-formance metrics. Runtimes were measured on a system with a H100 GPU. The model abbrevi-ations are: 4o=gpt-4o, OI-E= text-embedding-3-large, G=gemma-3-27b-it, G-a=gemma-3-27b-it abliterated, Q4B=Qwen3-Embedding-4b. or “abliterated” variant with safety alignment re-moved in post-training to mitigate possible refusals when generating disinformation texts, denoted -a). The models are run as Q8_0 GGUF quanti-zations. For dense retrieval embeddings, we use Qwen3-Embedding- 4B(Yang et al., 2025) due to its strong performance on MTEB 2 and support for instruction prompts. For the embedding-based nar-rative metrics ( Di, Vi), we use gte-large (Li et al., 2023) ( d = 1024 ) to separate the analysis from the retrieval pipeline. NodeRAG graph construction follows the framework’s default configuration with OpenAI models for structured output generation. 
+
+## 4. Evaluation 
+
+Retrieval Performance We first evaluate our sys-tem on performance metrics to further analyze possible correlations with the narrative metrics in-troduced above. Table 2 documents our results, where averages of metrics over 10 runs are pre-sented due to randomized factors within HyDE. 
+
+> 2
+
+https://huggingface.co/spaces/mteb/ leaderboard 
+
+On CARDS, SpecFi-CS with the abliterated model achieves the highest MAP (0.505) among all label-free setups, outperforming both the dense baseline (0.299) and SpecFi-DR (0.457). On CO, SpecFi-DR outperforms SpecFi-CS (0.519 vs. 0.491), sug-gesting that the relative advantage of community summaries over retrieved texts depends on dataset characteristics. For comparison, we also include the setups labeled with “static” where few-shot ex-amples were statically retrieved by assessing the labels. NDCG Avg. s / Setup/Model MAP @10 R-Prec. narrative BM25 0.326 0.472 0.298 0.001 
+
+Qwen3-E-4B 0.499 0.607 0.491 0.113 SpecFi-DR 0.519 0.644 0.496 18.24 SpecFi-DR-a 0.482 0.604 0.494 17.217 SpecFi-CS 0.491 0.618 0.49 20.766 SpecFi-CS-a 0.495 0.627 0.486 19.424 Table 3: Evaluation on CO. Qwen3-E-4B=Qwen3-Embedding-4B NDCG Avg. s / Setup/Model MAP @10 R-Prec. narrative BM25 0.311 0.378 0.219 0.007 
+
+Qwen3-E-4B 0.502 0.598 0.374 0.233 SpecFi-DR 0.443 0.621 0.370 400.752 SpecFi-DR-a 0.386 0.536 0.275 330.915 SpecFi-CS 0.458 0.626 0.372 17.550 SpecFi-CS-a 0.471 0.640 0.386 66.383 Table 4: Evaluation on PN 
+
+Component Analysis To further analyze the in-fluence of the components of our system, we run different ablation studies documented in Table 5. Here, our main goal is to provide comparison be-tween the proposed SpecFi setups and results from sparse and dense retrieval only, since these perfor-mance metrics are also the base for our statistical analysis of correlation. We also include results for NodeRAG only, where we patched the framework to retrieve the full list of top k results directly. To isolate the contribution of hypothetical document generation, we evaluate CS-direct, which uses the community summary as a direct query expansion without any generation step. CS-direct achieves a MAP of 0.357, above the dense baseline (0.299) but substantially below SpecFi-CS-a (0.505), in-dicating that the community summaries provide modest retrieval benefit as query expansions but that the majority of SpecFi-CS’s performance gain is attributable to the speculative generation step. NDCG Avg. s / Setup/Model MAP @10 R-Prec. narrative NodeRAG only 0.259 0.506 0.323 1.931 BM25 0.080 0.125 0.119 0.011 thenlper/gte-large 0.215 0.394 0.272 2.092 OpenAI-E 0.262 0.507 0.323 0.452 Qwen3-E-4B 0.299 0.523 0.352 6.645 Qwen3-E-4B-p 0.316 0.536 0.370 6.593 CS-direct 0.357 0.536 0.370 1.3 Table 5: Retrieval performance of individual pipeline components on CARDS, serving as base-lines for the statistical analysis in §5. Mod-els: OpenAI-E=text-embedding-3-large, Qwen3-E-4B=Qwen3-Embedding-4b. 
+
+Exploratory Transfer to CO and PN-CC. We further compare performance metrics (Table 3 and Table 4) and possible correlations (Table 6) on two other datasets. 
+
+## 5. Statistical Analysis 
+
+For all tests, we compute Spearman’s ρ with FDR correction following the Benjamini–Hochberg pro-cedure. Table 6 reports correlations between MAP and both narrative metrics across datasets. We treat these metrics as competing operationaliza-tions of a narrative’s interpretive space and ask which, if any, is associated with retrieval difficulty. On CARDS, narrative variance shows consis-tent negative correlations with MAP across all four systems, reaching significance for BM25, QWEN-E-4B, and SpecFi-DR-a (Table 6). Narrative dis-tinctness does not reach significance on CARDS in the uncontrolled analysis, suggesting that retrieval difficulty is driven by the overall embedding spread within a narrative rather than by inter-narrative sep-aration ( Di). On CO, correlations should be in-terpreted with caution given the limited number of narratives ( K = 7 ); the only significant result is a negative correlation between narrative distinctness and SpecFi-CS-a ( ρ = −0.786 , p < 0.01 ). On PN, the positive correlations between MAP and narra-tive variance (e.g., BM25: ρ = +0 .319 ; SpecFi-DR-a: ρ = +0 .476 ) run opposite to the pattern observed on CARDS. We attribute this reversal to two proper-ties of the PN dataset: per-narrative sample sizes are very small (mean mi = 2 ), making variance estimates unreliable, and the multi-label annotation structure conflates intra-narrative spread with cross-narrative overlap. We therefore restrict our narra-tive metric analysis to CARDS, where per-narrative sample sizes ( mi ∈ [21 , 225] ) support reliable esti-mation. Leave-one-out analysis confirms that no single narrative, including those with the smallest sample sizes, drives the observed correlations on CARDS. Narrative Narrative Setup Dataset Distinct. Variance BM25 CARDS -0.240 -0.525 *
+
+CO -0.357 -0.071 PN 0.369 * 0.319 *
+
+QWEN-E-4B CARDS -0.066 -0.556 *
+
+CO -0.679 0.000 PN 0.197 0.151 SpecFi-DR-a CARDS 0.147 -0.578 *
+
+CO -0.964 0.214 PN -0.016 0.476 ** 
+
+SpecFi-CS-a CARDS 0.282 -0.324 CO -0.786 ** -0.286 PN -0.041 0.249 Table 6: Spearman’s ρ between MAP and narra-tive metrics. FDR-corrected significance: *p<0.05, 
+
+> **
+
+p<0.01.                      
+
+> DiVi
+> Setup orig. partial orig. partial BM25 -0.240 (0.530) -0.029 (0.978) -0.525 (0.123) -0.772 ( 0.003 )QWEN-E-4B -0.066 (0.874) -0.007 (0.978) -0.556 (0.122) -0.750 ( 0.003 )SpecFi-DR-a 0.147 (0.704) 0.125 (0.759) -0.578 (0.122) -0.581 (0.058) SpecFi-CS-a 0.282 (0.468) 0.387 (0.249) -0.324 (0.468) -0.333 (0.304)
+
+Table 7: Spearman’s ρ between MAP and narrative metrics on CARDS: original vs. partial (controlling for mi). FDR-corrected p-values; bold p < 0.05 .
+
+Controlling for Sample Size The number of texts per narrative ( mi) varies from 21 to 225 on CARDS and may itself correlate with both MAP and narrative metrics. We compute partial Spearman correlations by residualizing both MAP and each metric against mi via linear regression. Table 7 reports results for both metrics; Figure 2 visualizes the relationship for narrative variance. Here, the partial correlations strengthen relative to the uncon-trolled analysis: BM25 moves from ρ = −0.525 to 
+
+ρ = −0.772 and QWEN-E-4B from ρ = −0.556 to 
+
+ρ = −0.750 , both significant after FDR correction (p = 0 .003 ). SpecFi-DR-a shows a borderline effect 0.4                
+
+> 0.2
+> 0.0
+> 0.2
+> 0.4
+> 1_1
+> 1_2
+> 1_3
+> 1_4
+> 1_6
+> 1_7
+> 2_1 2_3 3_1
+> 3_2
+> 3_3
+> 4_1
+> 4_2 4_4
+> 4_5
+> 5_1
+> 5_2
+> BM25
+> = -0.772 (p = 0.003)*
+> 1_1
+> 1_2
+> 1_3
+> 1_4
+> 1_6
+> 1_7
+> 2_1
+> 2_3
+> 3_1
+> 3_2
+> 3_3
+> 4_1 4_2
+> 4_4 4_5
+> 5_1
+> 5_2
+> QWEN-E-4B
+> = -0.750 (p = 0.003)*
+> 0.04 0.03 0.02 0.01 0.00 0.01 0.02 0.03
+> 0.4
+> 0.2
+> 0.0
+> 0.2
+> 0.4
+> 1_1
+> 1_2
+> 1_3
+> 1_4
+> 1_6
+> 1_7
+> 2_1
+> 2_3
+> 3_1
+> 3_2
+> 3_3
+> 4_1
+> 4_2
+> 4_4
+> 4_5
+> 5_1
+> 5_2
+> SpecFi-CS-a
+> = -0.333 (p = 0.304)
+> 0.04 0.03 0.02 0.01 0.00 0.01 0.02 0.03
+> 1_1
+> 1_2
+> 1_3
+> 1_4
+> 1_6
+> 1_7
+> 2_1
+> 2_3
+> 3_1
+> 3_2
+> 3_3
+> 4_1
+> 4_2
+> 4_4
+> 4_5
+> 5_1
+> 5_2
+> SpecFi-DR-a
+> = -0.581 (p = 0.058)
+
+Narrative Variance (residualized, controlling for mi)
+
+> MAP (residualized, controlling for  mi)
+
+Partial Correlation: MAP vs. Narrative Variance on CARDS Figure 2: Partial correlation between MAP and narrative variance on CARDS, controlling for mi. Each point represents one narrative. BM25 and QWEN-E-4B show steep negative slopes; SpecFi-CS-a shows no significant trend. All p-values are FDR-corrected (Benjamini–Hochberg across all tests in Table 7). (ρ = −0.581 , pFDR = 0 .058 ; raw p = 0 .014 ), signifi-cant in all 17 LOO iterations but not after FDR cor-rection; while SpecFi-CS-a remains non-significant (ρ = −0.333 , pFDR = 0 .304 ). Two-tailed permuta-tion tests ( 10 ,000 iterations) confirm these results (pperm = 0 .0007 , 0.0011 , 0.014 , and 0.196 for BM25, QWEN-E-4B, SpecFi-DR-a, and SpecFi-CS-a, re-spectively). Narrative distinctness remains non-significant throughout. Together, these results indicate that between the two embedding-based narrative met-rics, it is the overall intra-narrative spread ( Vi), not inter-narrative separation ( Di), that correlates with retrieval difficulty. This is consistent with the inter-pretation that standard retrieval degrades when a narrative manifests through many diverse framings, rather than when it is merely close to neighboring narratives in embedding space. A median split on Vi (Figure 3) quantifies this effect: BM25 loses 63.4% of its MAP when moving from low- to high-variance narratives, QWEN-E-4B loses 51.8%, and SpecFi-DR-a loses 41.3%. SpecFi-CS-a shows the smallest degradation (32.7%) while maintaining the highest absolute MAP in both groups. Leave-one-out analysis confirms stability: partial correla-tions remain significant in all 17 iterations for BM25, QWEN-E-4B, and SpecFi-DR-a, with no single nar-rative acting as a leverage point (BM25 LOO range: 
+
+ρ ∈ [−0.83 , −0.73] ). 
+
+## 6. Discussion 
+
+Analysis of the community summaries retrieved for each CARDS narrative reveals a key insight: the community summaries are generated without ac-cess to narrative labels, NodeRAG constructs its knowledge graph and applies Leiden community detection exclusively on the textual content of the BM25 QWEN-E-4B SpecFi-CS-a SpecFi-DR-a 
+
+> 0.0
+> 0.1
+> 0.2
+> 0.3
+> 0.4
+> 0.5
+> 0.6
+> 0.7
+> Mean MAP
+> =+63.4%
+> =+51.8%
+> =+32.7%
+> =+41.3%
+> MAP by Narrative Variance Group (CARDS, median split)
+> Low variance
+> High variance
+
+Figure 3: Mean MAP for narratives above and be-low median Vi on CARDS. BM25 loses 63.4% of its MAP on high-variance narratives; SpecFi-CS-a loses 32.7%. training corpus. Of the 17 CARDS narratives, 11 receive summaries that align with the taxonomy la-bel at least at the super-claim level, 2 are collapsed with a sibling sub-narrative, and 4 exhibit drift or incoherence (full mapping will be provided in the appendix). For instance, the summary retrieved for narrative 1_2 (“heading into ice age / global cool-ing”) independently arrives at “the Earth may be en-tering a cooling cycle,” and narrative 5_1 (“science is uncertain / unreliable”) yields “skepticism about the reliability of climate models.” This convergence suggests that the CARDS narrative taxonomy re-flects genuine topical structure in the disinformation corpus rather than predefined classification, and that graph-based community detection can surface this structure from unlabeled text; a property with application for monitoring emerging narratives that lack predefined labels. Instances where the summaries fail reveal diag-nostic patterns that help explain the system’s be-havior. The collapse pattern (where sub-narratives such as 4_1/4_2 or 3_2/3_3 receive identical sum-maries) correlates directly with low per-narrative AP for SpecFi-CS and identifies Leiden resolution as a tunable parameter. The drift pattern reveals a subtler problem: narrative 4_4 (“clean energy won’t work”) receives a summary that argues for techno-logical solutions, inverting the narrative’s stance. This polarity inversion arises because community detection clusters texts by topic co-occurrence, which does not inherently distinguish argumenta-tive direction. Texts criticizing and texts promoting renewable energy share entities and relationships (solar panels, wind turbines, efficiency, cost), so Lei-den groups them together, and the LLM’s summary reflects the majority framing. This failure mode sug-gests that strategies like stance-aware community detection could address a class of errors that finer resolution alone would not resolve. These failure patterns are consistent with SpecFi-CS-a showing the lowest inter-system correlation with BM25 on CARDS ( ρ = 0 .365 , p = 0 .249 ), indi-cating that the community-summary-based system retrieves narratives through a qualitatively different mechanism than dense or lexical retrieval, produc-ing complementary errors. Where community sum-maries converge on the correct narrative premise, SpecFi-CS generates hypotheticals that span the narrative’s interpretive range—as illustrated by nar-rative 3_3 (“CO 2 is plant food”), where the abstract summary enables generation of diverse hypotheti-cal documents covering CO 2 fertilization, agricul-tural productivity, and pollutant classification argu-ments, rather than anchoring on a single text’s fram-ing. Where summaries collapse or drift, the gen-erated hypotheticals lose discriminative power or target the wrong stance entirely. 
+
+## 7. Future Work 
+
+While this study focuses on climate change denial, the SpecFi framework is domain-agnostic. Apply-ing it to other narrative datasets (such as European disinformation narratives (Sosnowski et al., 2024), COVID-19 conspiracy narratives (Heinrich et al., 2024), or propaganda taxonomies (Solopova et al., 2023; Sahitaj et al., 2025)) would test the gener-alizability of both the retrieval approach and the narrative variance metric. On the retrieval side, the final step still relies on dense cosine similar-ity. Following Hatzel and Biemann (2024) and Ak-ter and Santu (2024), more interpretive similarity measures that incorporate narrative features such as actors, localities, and argumentative structure could be explored. Similarly, aligning the graph representation more closely with narrative systems (Hellman, 2024) could improve both community summary quality and retrieval performance. 
+
+## 8. Conclusion 
+
+In this study, we re-framed climate disinformation detection as a narrative retrieval task and intro-duced SpecFi, a speculative-document genera-tion framework that bridges abstract narrative de-scriptions and their diverse textual realizations. Across three datasets, SpecFi, and especially the community-summary variant, improves robustness compared to sparse and dense baselines, remain-ing stable even for high-variance narratives. Our analysis further shows that narrative variance cor-relates with retrieval difficulty for standard base-lines, while graph-derived community summaries can recover narrative structure from unlabeled data. Together, these results highlight narrative retrieval as a flexible approach for tracking evolving disinfor-mation narratives beyond fixed taxonomies. Limitations 
+
+While we were able to provide a version of SpecFi-DR which only relies on open source models to en-sure reproducibility, the SpecFi-CS setups include one reliance on OpenAI models within NodeRAG. Recent studies have shown that OpenAI models still outperform on structured output generation (Geng et al., 2025), which is an essential step dur-ing graph construction. For this reason and due to NodeRAG’s own recommendation 3, we used the recommended proprietary model here. The number of hypothetical documents ( n = 10 ) was selected via preliminary testing and not systemati-cally ablated, which may affect the generalizability of our performance results and should be further in-vestigated, also specifically in regard its relation to high runtimes (see Table 2, for example, SpecFi-CS requires approximately 24 seconds per narrative on CARDS compared to <1 second for BM25.). An additional factor that could affect our results: the CARDS dataset is from 2021, making it likely to be part of the training data of LLMs. While this does not necessarily relate to our specific usage of this dataset, it is still possible that there is an influ-ence on the generation of hypothetical documents as well as community summaries. However, our results of the zero shot variants in Table 2 indicate that none of our tested LLMs is capable of generat-ing representative hypotheticals without examples and only based on the narrative by itself, but an influence in some kind of capacity cannot be ruled out. 
+
+## Ethical Considerations 
+
+The narrative retrieval approach proposed in this pa-per is dependent on LLMs that do not refuse to gen-erate disinformation. Although our goal is to identify disinformation to support counter-disinformation ef-forts, our method could also encourage enhanced fine-tuning of LLMs to improve generating disin-formation. Within this study, we only use models already available on huggingface. But this point needs to be taken into account further in future work, like the question whether models fine-tuned for generating disinformation should be released publicly and if so, how the release can be controlled while also indicating ethical considerations, e.g., in model cards. 
+
+> 3https://terry-xu-666.github. io/NodeRAG_web/blog/2025/03/16/ structure-output/
+
+## Acknowledgments 9. Bibliographical References 
+
+Mousumi Akter and Shubhra Kanti Karmaker Santu. 2024. Fans: a facet-based narrative similarity metric. Darren Edge, Ha Trinh, Newman Cheng, Joshua Bradley, Alex Chao, Apurva Mody, Steven Truitt, Dasha Metropolitansky, Robert Osazuwa Ness, and Jonathan Larson. 2025. From local to global: A graph rag approach to query-focused summa-rization. Luyu Gao, Xueguang Ma, Jimmy Lin, and Jamie Callan. 2023. Precise zero-shot dense retrieval without relevance labels. In Proceedings of the 61st Annual Meeting of the Association for Com-putational Linguistics (Volume 1: Long Papers) ,pages 1762–1777, Toronto, Canada. Association for Computational Linguistics. Saibo Geng, Hudson Cooper, Michał Moskal, Samuel Jenkins, Julian Berman, Nathan Ranchin, Robert West, Eric Horvitz, and Harsha Nori. 2025. Jsonschemabench: A rigorous benchmark of structured outputs for language models. Fatima Haouari, Carolina Scarton, Nicolò Faggiani, Nikolaos Nikolaidis, Bonka Kotseva, Ibrahim Abu Farha, Jens Linge, and Kalina Bontcheva. 2025. UKElectionNarratives: A Dataset of Misleading Narratives Surrounding Recent UK General Elec-tions. Proceedings of the International AAAI Conference on Web and Social Media , 19:2477– 2495. Hans Ole Hatzel and Chris Biemann. 2024. Story embeddings — narrative-focused representa-tions of fictional stories. In Proceedings of the 2024 Conference on Empirical Methods in Nat-ural Language Processing , pages 5931–5943, Miami, Florida, USA. Association for Computa-tional Linguistics. Philipp Heinrich, Andreas Blombach, Bao Minh Doan Dang, Leonardo Zilio, Linda Havenstein, Nathan Dykes, Stephanie Evert, and Fabian Schäfer. 2024. Automatic identification of COVID-19-related conspiracy narratives in German tele-gram channels and chats. In Proceedings of the 2024 Joint International Conference on Compu-tational Linguistics, Language Resources and Evaluation (LREC-COLING 2024) , pages 1932– 1943, Torino, Italia. ELRA and ICCL. Maria Hellman. 2024. Narrative Analysis and Fram-ing Analysis of Disinformation , pages 101–121. Springer Nature Switzerland, Cham. Arman Irani, Ju Yeon Park, Kevin Esterling, and Michalis Faloutsos. 2025. A discourse analysis framework for legislative and social media de-bates. In Proceedings of the 17th ACM Web Science Conference 2025 , Websci ’25, page 199–209, New York, NY, USA. Association for Computing Machinery. Bonka Kotseva, Irene Vianini, Nikolaos Nikolaidis, Nicolò Faggiani, Kristina Potapova, Caroline Gasparro, Yaniv Steiner, Jessica Scornavacche, Guillaume Jacquet, Vlad Dragu, Leonida della Rocca, Stefano Bucci, Aldo Podavini, Marco Verile, Charles Macmillan, and Jens P. Linge. 2023. Trend analysis of COVID-19 mis/disinfor-mation narratives–A 3-year study. PLOS ONE ,18(11):e0291423. Publisher: Public Library of Science. Zehan Li, Xin Zhang, Yanzhao Zhang, Dingkun Long, Pengjun Xie, and Meishan Zhang. 2023. Towards general text embeddings with multi-stage contrastive learning. Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schütze. 2008. Introduction to Informa-tion Retrieval . Cambridge University Press. OpenAI, :, Aaron Hurst, Adam Lerer, Adam P. Goucher, Adam Perelman, Aditya Ramesh, Aidan Clark, AJ Ostrow, Akila Welihinda, Alan Hayes, Alec Radford, Aleksander Mądry, Alex Baker-Whitcomb, Alex Beutel, Alex Borzunov, Alex Carney, Alex Chow, Alex Kirillov, Alex Nichol, Alex Paino, Alex Renzin, Alex Tachard Passos, Alexander Kirillov, Alexi Christakis, Alexis Conneau, Ali Kamali, Allan Jabri, Allison Moyer, Allison Tam, Amadou Crookes, Amin Tootoochian, Amin Tootoonchian, Ananya Ku-mar, Andrea Vallone, Andrej Karpathy, Andrew Braunstein, Andrew Cann, Andrew Codispoti, Andrew Galu, Andrew Kondrich, Andrew Tul-loch, Andrey Mishchenko, Angela Baek, An-gela Jiang, Antoine Pelisse, Antonia Woodford, Anuj Gosalia, Arka Dhar, Ashley Pantuliano, Avi Nayak, Avital Oliver, Barret Zoph, Behrooz Ghorbani, Ben Leimberger, Ben Rossen, Ben Sokolowsky, Ben Wang, Benjamin Zweig, Beth Hoover, Blake Samic, Bob McGrew, Bobby Spero, Bogo Giertler, Bowen Cheng, Brad Light-cap, Brandon Walkin, Brendan Quinn, Brian Guarraci, Brian Hsu, Bright Kellogg, Brydon Eastman, Camillo Lugaresi, Carroll Wainwright, Cary Bassin, Cary Hudson, Casey Chu, Chad Nelson, Chak Li, Chan Jun Shern, Channing Conger, Charlotte Barette, Chelsea Voss, Chen Ding, Cheng Lu, Chong Zhang, Chris Beau-mont, Chris Hallacy, Chris Koch, Christian Gib-son, Christina Kim, Christine Choi, Christine McLeavey, Christopher Hesse, Claudia Fischer, Clemens Winter, Coley Czarnecki, Colin Jarvis, Colin Wei, Constantin Koumouzelis, Dane Sher-burn, Daniel Kappler, Daniel Levin, Daniel Levy, David Carr, David Farhi, David Mely, David Robin-son, David Sasaki, Denny Jin, Dev Valladares, Dimitris Tsipras, Doug Li, Duc Phong Nguyen, Duncan Findlay, Edede Oiwoh, Edmund Wong, Ehsan Asdar, Elizabeth Proehl, Elizabeth Yang, Eric Antonow, Eric Kramer, Eric Peterson, Eric Sigler, Eric Wallace, Eugene Brevdo, Evan Mays, Farzad Khorasani, Felipe Petroski Such, Fil-ippo Raso, Francis Zhang, Fred von Lohmann, Freddie Sulit, Gabriel Goh, Gene Oden, Geoff Salmon, Giulio Starace, Greg Brockman, Hadi Salman, Haiming Bao, Haitang Hu, Hannah Wong, Haoyu Wang, Heather Schmidt, Heather Whitney, Heewoo Jun, Hendrik Kirchner, Hen-rique Ponde de Oliveira Pinto, Hongyu Ren, Hui-wen Chang, Hyung Won Chung, Ian Kivlichan, Ian O’Connell, Ian O’Connell, Ian Osband, Ian Silber, Ian Sohl, Ibrahim Okuyucu, Ikai Lan, Ilya Kostrikov, Ilya Sutskever, Ingmar Kanitscheider, Ishaan Gulrajani, Jacob Coxon, Jacob Menick, Jakub Pachocki, James Aung, James Betker, James Crooks, James Lennon, Jamie Kiros, Jan Leike, Jane Park, Jason Kwon, Jason Phang, Ja-son Teplitz, Jason Wei, Jason Wolfe, Jay Chen, Jeff Harris, Jenia Varavva, Jessica Gan Lee, Jes-sica Shieh, Ji Lin, Jiahui Yu, Jiayi Weng, Jie Tang, Jieqi Yu, Joanne Jang, Joaquin Quinonero Candela, Joe Beutler, Joe Landers, Joel Parish, Johannes Heidecke, John Schulman, Jonathan Lachman, Jonathan McKay, Jonathan Uesato, Jonathan Ward, Jong Wook Kim, Joost Huizinga, Jordan Sitkin, Jos Kraaijeveld, Josh Gross, Josh Kaplan, Josh Snyder, Joshua Achiam, Joy Jiao, Joyce Lee, Juntang Zhuang, Justyn Harriman, Kai Fricke, Kai Hayashi, Karan Singhal, Katy Shi, Kavin Karthik, Kayla Wood, Kendra Rim-bach, Kenny Hsu, Kenny Nguyen, Keren Gu-Lemberg, Kevin Button, Kevin Liu, Kiel Howe, Krithika Muthukumar, Kyle Luther, Lama Ahmad, Larry Kai, Lauren Itow, Lauren Workman, Leher Pathak, Leo Chen, Li Jing, Lia Guy, Liam Fe-dus, Liang Zhou, Lien Mamitsuka, Lilian Weng, Lindsay McCallum, Lindsey Held, Long Ouyang, Louis Feuvrier, Lu Zhang, Lukas Kondraciuk, Lukasz Kaiser, Luke Hewitt, Luke Metz, Lyric Doshi, Mada Aflak, Maddie Simens, Madelaine Boyd, Madeleine Thompson, Marat Dukhan, Mark Chen, Mark Gray, Mark Hudnall, Mar-vin Zhang, Marwan Aljubeh, Mateusz Litwin, Matthew Zeng, Max Johnson, Maya Shetty, Mayank Gupta, Meghan Shah, Mehmet Yat-baz, Meng Jia Yang, Mengchao Zhong, Mia Glaese, Mianna Chen, Michael Janner, Michael Lampe, Michael Petrov, Michael Wu, Michele Wang, Michelle Fradin, Michelle Pokrass, Miguel Castro, Miguel Oom Temudo de Castro, Mikhail Pavlov, Miles Brundage, Miles Wang, Minal Khan, Mira Murati, Mo Bavarian, Molly Lin, Murat Yesil-dal, Nacho Soto, Natalia Gimelshein, Natalie Cone, Natalie Staudacher, Natalie Summers, Natan LaFontaine, Neil Chowdhury, Nick Ryder, Nick Stathas, Nick Turley, Nik Tezak, Niko Felix, Nithanth Kudige, Nitish Keskar, Noah Deutsch, Noel Bundick, Nora Puckett, Ofir Nachum, Ola Okelola, Oleg Boiko, Oleg Murk, Oliver Jaffe, Olivia Watkins, Olivier Godement, Owen Campbell-Moore, Patrick Chao, Paul McMillan, Pavel Belov, Peng Su, Peter Bak, Peter Bakkum, Peter Deng, Peter Dolan, Peter Hoeschele, Pe-ter Welinder, Phil Tillet, Philip Pronin, Philippe Tillet, Prafulla Dhariwal, Qiming Yuan, Rachel Dias, Rachel Lim, Rahul Arora, Rajan Troll, Ran-dall Lin, Rapha Gontijo Lopes, Raul Puri, Reah Miyara, Reimar Leike, Renaud Gaubert, Reza Zamani, Ricky Wang, Rob Donnelly, Rob Honsby, Rocky Smith, Rohan Sahai, Rohit Ramchandani, Romain Huet, Rory Carmichael, Rowan Zellers, Roy Chen, Ruby Chen, Ruslan Nigmatullin, Ryan Cheu, Saachi Jain, Sam Altman, Sam Schoen-holz, Sam Toizer, Samuel Miserendino, Sandhini Agarwal, Sara Culver, Scott Ethersmith, Scott Gray, Sean Grove, Sean Metzger, Shamez Her-mani, Shantanu Jain, Shengjia Zhao, Sherwin Wu, Shino Jomoto, Shirong Wu, Shuaiqi, Xia, So-nia Phene, Spencer Papay, Srinivas Narayanan, Steve Coffey, Steve Lee, Stewart Hall, Suchir Bal-aji, Tal Broda, Tal Stramer, Tao Xu, Tarun Gogi-neni, Taya Christianson, Ted Sanders, Tejal Pat-wardhan, Thomas Cunninghman, Thomas De-gry, Thomas Dimson, Thomas Raoux, Thomas Shadwell, Tianhao Zheng, Todd Underwood, Todor Markov, Toki Sherbakov, Tom Rubin, Tom Stasi, Tomer Kaftan, Tristan Heywood, Troy Pe-terson, Tyce Walters, Tyna Eloundou, Valerie Qi, Veit Moeller, Vinnie Monaco, Vishal Kuo, Vlad Fomenko, Wayne Chang, Weiyi Zheng, Wenda Zhou, Wesam Manassra, Will Sheu, Wojciech Zaremba, Yash Patil, Yilei Qian, Yongjik Kim, Youlong Cheng, Yu Zhang, Yuchen He, Yuchen Zhang, Yujia Jin, Yunxing Dai, and Yury Malkov. 2024. Gpt-4o system card. Andrew Piper, Richard Jean So, and David Bam-man. 2021. Narrative theory for computational narrative understanding. In Proceedings of the 2021 Conference on Empirical Methods in Natu-ral Language Processing , pages 298–311, On-line and Punta Cana, Dominican Republic. As-sociation for Computational Linguistics. Hanna-Riikka Roine. 2020. On speculation as a strategy. Fafnir – Nordic Journal of Science Fic-tion and Fantasy Research , 7(2):8–15. Ariana Sahitaj, Premtim Sahitaj, Veronika Solopova, Jiaao Li, Sebastian Möller, and Vera Schmitt. 2025. Hybrid annotation for propaganda detection: Integrating LLM pre-annotations with human intelligence. In Proceedings of the Fourth Workshop on NLP for Positive Impact (NLP4PI) ,pages 215–228, Vienna, Austria. Association for Computational Linguistics. Yanzhen Shen, Sihao Chen, Xueqiang Xu, Yunyi Zhang, Chaitanya Malaviya, and Dan Roth. 2025. Logicol: Logically-informed contrastive learning for set-based dense retrieval. Iknoor Singh. 2024. Detecting and Tracking the Spread of Debunked Narratives Across Lan-guages . Phd thesis, University of Sheffield, Sheffield, UK. Supervisors: Carolina Scarton and Kalina Bontcheva. Iknoor Singh, Carolina Scarton, Xingyi Song, and Kalina Bontcheva. 2024. Breaking language bar-riers with mmtweets: Advancing cross-lingual debunked narrative retrieval for fact-checking. Veronika Solopova, Christoph Benzmüller, and Tim Landgraf. 2023. The evolution of pro-kremlin propaganda from a machine learning and linguis-tics perspective. In Proceedings of the Second Ukrainian Natural Language Processing Work-shop (UNLP) , pages 40–48, Dubrovnik, Croatia. Association for Computational Linguistics. Witold Sosnowski, Arkadiusz Modzelewski, Kinga Skorupska, Jahna Otterbacher, and Adam Wierzbicki. 2024. EU DisinfoTest: a benchmark for evaluating language models’ ability to detect disinformation narratives. In Findings of the As-sociation for Computational Linguistics: EMNLP 2024 , pages 14702–14723, Miami, Florida, USA. Association for Computational Linguistics. Gemma Team, Aishwarya Kamath, Johan Fer-ret, Shreya Pathak, Nino Vieillard, Ramona Merhej, Sarah Perrin, Tatiana Matejovicova, Alexandre Ramé, Morgane Rivière, Louis Rouil-lard, Thomas Mesnard, Geoffrey Cideron, Jean bastien Grill, Sabela Ramos, Edouard Yvinec, Michelle Casbon, Etienne Pot, Ivo Penchev, Gaël Liu, Francesco Visin, Kathleen Kenealy, Lucas Beyer, Xiaohai Zhai, Anton Tsitsulin, Robert Busa-Fekete, Alex Feng, Noveen Sachdeva, Benjamin Coleman, Yi Gao, Basil Mustafa, Iain Barr, Emilio Parisotto, David Tian, Matan Eyal, Colin Cherry, Jan-Thorsten Peter, Danila Sinopalnikov, Surya Bhupatiraju, Rishabh Agar-wal, Mehran Kazemi, Dan Malkin, Ravin Kumar, David Vilar, Idan Brusilovsky, Jiaming Luo, An-dreas Steiner, Abe Friesen, Abhanshu Sharma, Abheesht Sharma, Adi Mayrav Gilady, Adrian Goedeckemeyer, Alaa Saade, Alex Feng, Alexan-der Kolesnikov, Alexei Bendebury, Alvin Abdagic, Amit Vadi, András György, André Susano Pinto, Anil Das, Ankur Bapna, Antoine Miech, Antoine Yang, Antonia Paterson, Ashish Shenoy, Ayan Chakrabarti, Bilal Piot, Bo Wu, Bobak Shahri-ari, Bryce Petrini, Charlie Chen, Charline Le Lan, Christopher A. Choquette-Choo, CJ Carey, Cormac Brick, Daniel Deutsch, Danielle Eisen-bud, Dee Cattle, Derek Cheng, Dimitris Paparas, Divyashree Shivakumar Sreepathihalli, Doug Reid, Dustin Tran, Dustin Zelle, Eric Noland, Erwin Huizenga, Eugene Kharitonov, Freder-ick Liu, Gagik Amirkhanyan, Glenn Cameron, Hadi Hashemi, Hanna Klimczak-Plucińska, Har-man Singh, Harsh Mehta, Harshal Tushar Lehri, Hussein Hazimeh, Ian Ballantyne, Idan Szpek-tor, Ivan Nardini, Jean Pouget-Abadie, Jetha Chan, Joe Stanton, John Wieting, Jonathan Lai, Jordi Orbay, Joseph Fernandez, Josh Newlan, Ju yeong Ji, Jyotinder Singh, Kat Black, Kathy Yu, Kevin Hui, Kiran Vodrahalli, Klaus Greff, Linhai Qiu, Marcella Valentine, Marina Coelho, Marvin Ritter, Matt Hoffman, Matthew Watson, Mayank Chaturvedi, Michael Moynihan, Min Ma, Nabila Babar, Natasha Noy, Nathan Byrd, Nick Roy, Nikola Momchev, Nilay Chauhan, Noveen Sachdeva, Oskar Bunyan, Pankil Botarda, Paul Caron, Paul Kishan Rubenstein, Phil Culliton, Philipp Schmid, Pier Giuseppe Sessa, Pingmei Xu, Piotr Stanczyk, Pouya Tafti, Rakesh Shiv-anna, Renjie Wu, Renke Pan, Reza Rokni, Rob Willoughby, Rohith Vallu, Ryan Mullins, Sammy Jerome, Sara Smoot, Sertan Girgin, Shariq Iqbal, Shashir Reddy, Shruti Sheth, Siim Põder, Sijal Bhatnagar, Sindhu Raghuram Panyam, Sivan Eiger, Susan Zhang, Tianqi Liu, Trevor Ya-covone, Tyler Liechty, Uday Kalra, Utku Evci, Vedant Misra, Vincent Roseberry, Vlad Feinberg, Vlad Kolesnikov, Woohyun Han, Woosuk Kwon, Xi Chen, Yinlam Chow, Yuvein Zhu, Zichuan Wei, Zoltan Egyed, Victor Cotruta, Minh Giang, Phoebe Kirk, Anand Rao, Kat Black, Nabila Babar, Jessica Lo, Erica Moreira, Luiz Gus-tavo Martins, Omar Sanseviero, Lucas Gonza-lez, Zach Gleicher, Tris Warkentin, Vahab Mir-rokni, Evan Senter, Eli Collins, Joelle Barral, Zoubin Ghahramani, Raia Hadsell, Yossi Ma-tias, D. Sculley, Slav Petrov, Noah Fiedel, Noam Shazeer, Oriol Vinyals, Jeff Dean, Demis Has-sabis, Koray Kavukcuoglu, Clement Farabet, Elena Buchatskaya, Jean-Baptiste Alayrac, Ro-han Anil, Dmitry, Lepikhin, Sebastian Borgeaud, Olivier Bachem, Armand Joulin, Alek Andreev, Cassidy Hardin, Robert Dadashi, and Léonard Hussenot. 2025. Gemma 3 technical report. V. A. Traag, L. Waltman, and N. J. van Eck. 2019. From Louvain to Leiden: guaranteeing well-connected communities. Scientific Reports ,9(1):5233. Tianyang Xu, Haojie Zheng, Chengze Li, Haoxiang Chen, Yixin Liu, Ruoxi Chen, and Lichao Sun. 2025. Noderag: Structuring graph-based rag with heterogeneous nodes. An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, Chu-jie Zheng, Dayiheng Liu, Fan Zhou, Fei Huang, Feng Hu, Hao Ge, Haoran Wei, Huan Lin, Jialong Tang, Jian Yang, Jianhong Tu, Jianwei Zhang, Jianxin Yang, Jiaxi Yang, Jing Zhou, Jingren Zhou, Junyang Lin, Kai Dang, Keqin Bao, Kexin Yang, Le Yu, Lianghao Deng, Mei Li, Mingfeng Xue, Mingze Li, Pei Zhang, Peng Wang, Qin Zhu, Rui Men, Ruize Gao, Shixuan Liu, Shuang Luo, Tianhao Li, Tianyi Tang, Wenbiao Yin, Xingzhang Ren, Xinyu Wang, Xinyu Zhang, Xuancheng Ren, Yang Fan, Yang Su, Yichang Zhang, Yinger Zhang, Yu Wan, Yuqiong Liu, Zekun Wang, Zeyu Cui, Zhenru Zhang, Zhipeng Zhou, and Zihan Qiu. 2025. Qwen3 technical report. Yan Zhang, Zhaopeng Feng, Zhiyang Teng, Zuozhu Liu, and Haizhou Li. 2023. How well do text embedding models understand syntax? In Findings of the Association for Computational Linguistics: EMNLP 2023 , pages 9717–9728, Singapore. Association for Computational Lin-guistics. Lixing Zhu, Runcong Zhao, Lin Gui, and Yulan He. 2023. Are NLP models good at tracing thoughts: An overview of narrative understanding. In Find-ings of the Association for Computational Linguis-tics: EMNLP 2023 , pages 10098–10121, Singa-pore. Association for Computational Linguistics. 
+
+## 10. Language Resource References 
+
+Coan, Travis G. and Boussalis, Constantine and Cook, John and Nanko, Mirjam O. 2021. CARDS: Computer-Assisted Recognition of Denial and Skepticism – Climate Change Contrarian Claims Dataset . distributed with the article in Scien-tific Reports. PID https://doi.org/10.1038/s41598-021-01714-4. Dataset of climate change denial claims organized under a two-level taxonomy of super-claims and sub-claims. Nikolaidis, Nikolaos and Stefanovitch, Nicolas and Silvano, Purificação and Dimitrov, Dimitar Iliyanov and Yangarber, Roman and Guimarães, Nuno and Sartori, Elisa and Androutsopoulos, Ion and Nakov, Preslav and Da San Martino, Giovanni and Piskorski, Jakub. 2025. PolyNar-rative: A Multilingual, Multilabel, Multi-domain Dataset for Narrative Extraction from News Ar-ticles . Association for Computational Linguis-tics. PID https://doi.org/10.18653/v1/2025.acl-long.1513. Multilingual dataset of news arti-cles annotated with fine-grained narrative labels across multiple topics. Rowlands, Harri and Morio, Gaku and Tanner, Dylan and Manning, Christopher. 2024. Climate Obstruction in Social Media Advertising Dataset .Association for Computational Linguistics. PID https://doi.org/10.18653/v1/2024.findings-acl.330. Dataset of social media advertisements from oil and gas companies classified under obstruction narratives. 
+
+## A. Appendix 
+
+A.1. Evaluation Details 
+
+A.1.1. Experimental Setup 
+
+All experiments were run on a system with an NVIDIA H100 GPU. The runtimes for setups based on OpenAI models reflect the inference time behind the OpenAI API. 
+
+A.1.2. Performance per Narrative on CARDS and Statistical Analysis of Performance Correlation 
+
+Figure 4: AP results per narrative on the CARDS dataset As documented in Figure 4, although the retrieval performance differs per narrative when compared over the whole CARDS dataset, there are also sim-ilarities between the results across setups. For example, the two best results for all setups are the spikes at the narrative ids 1_6 and 3_3, while 4_1 and 4_2 are some of the lowest scores for all 4 setups, notably also including SpecFi-CS. Inspecting the community summaries retrieved as few-shot examples for each narrative reveals three distinct patterns: convergence, collapse, and drift (see Appendix A.2 for the full mapping). 
+
+Convergence. For the majority of narratives, the retrieved community summary closely mirrors the expert-crafted narrative label from the CARDS tax-onomy, despite the community detection operating without access to any labels. For example, the summary retrieved for narrative 1_2 (“heading into ice age / global cooling”) states that “the Earth may be entering a cooling cycle,” and the summary for 5_1 (“science is uncertain / unreliable”) expresses “skepticism about the reliability of climate models.” Similar convergence is observed for narratives 1_6, 2_1, 3_1, and 5_2. We verified in the NodeRAG source code that neither filenames nor any external metadata enter the graph construction or summary generation pipeline: the LLM operates exclusively on text content extracted from the corpus. 4 The convergence therefore reflects genuine bottom-up re-derivation of narrative structure from textual co-occurrence patterns in the knowledge graph. 
+
+Collapse. Where the Leiden resolution is too coarse, semantically adjacent sub-narratives merge into a single community. Narratives 4_1 (“climate policies are harmful”), 4_2 (“policies are ineffective”), and 4_3 (“too difficult to solve”) all receive an identical candidate summary (“Current climate policies are criticized for being ineffective, as they rely on unrealistic targets and fail to con-sider political and technological realities, leading to significant market failures.”), collapsing distinct argumentative strategies into a single description. Similarly, narratives 3_2 and 3_3 share a summary about CO 2 increases being “harmless or even ben-eficial.” These narratives show correspondingly low AP for SpecFi-CS-a, suggesting that the system’s few-shot examples lack the specificity needed to generate discriminative hypotheticals when sub-narratives share thematic structure. This points to community detection granularity as a key parameter for future optimization: finer-grained communities could preserve distinctions that the current Leiden resolution merges.                                                                                                                       
+
+> 4Specifically, Commu-nity_summary.get_normal_query() in the NodeRAG codebase aggregates the context field of semantic unit and attribute nodes within each Leiden partition; input filenames are stored only in a separate document tracking table and never appear in any LLM prompt. QWEN SpecFi SpecFi #Metric Setup BM25 -E-4B -DR-a -CS-a 1RHO BM25 1.000 0.824 0.544 0.365 QWEN-E-4B 0.824 1.000 0.679 0.520 SpecFi-DR-a 0.544 0.679 1.000 0.892 SpecFi-CS-a 0.365 0.520 0.892 1.000 FDR-p BM25 0.000 0.000 0.060 0.249 QWEN-E-4B 0.000 0.000 0.009 0.065 SpecFi-DR-a 0.060 0.009 0.000 0.000
+> SpecFi-CS-a 0.249 0.065 0.000 0.000 2RHO BM25 1.000 0.786 0.321 -0.071 QWEN-E-4B 0.786 1.000 0.536 0.321 SpecFi-DR-a 0.321 0.536 1.000 0.750 SpecFi-CS-a -0.071 0.321 0.750 1.000 FDR-p BM25 0.000 0.121 0.536 0.879 QWEN-E-4B 0.121 0.000 0.359 0.536 SpecFi-DR-a 0.536 0.359 0.000 0.130 SpecFi-CS-a 0.879 0.536 0.130 0.000 3RHO BM25 1.000 0.657 0.489 0.366 QWEN-E-4B 0.657 1.000 0.436 0.353 SpecFi-DR-a 0.489 0.436 1.000 0.558 SpecFi-CS-a 0.366 0.353 0.558 1.000 FDR-p BM25 0.000 0.000 0.001 0.014
+> QWEN-E-4B 0.000 0.000 0.004 0.016
+> SpecFi-DR-a 0.001 0.004 0.000 0.000
+> SpecFi-CS-a 0.014 0.016 0.000 0.000
+
+Table 8: Spearman’s rho and FDR-corrected p-values for correlation analysis of performances on the MAP metric. #1 documents the results on CARDS, #2 on CO and #3 on PN. 
+
+Drift. A third failure mode occurs when the com-munity captures the topic but not the stance . The summary retrieved for narrative 4_4 (“clean energy technology / biofuels won’t work”) instead describes “advancements in technology” that “can provide in-novative solutions”—effectively arguing for clean energy rather than against it. This polarity inver-sion likely arises because the community was dom-inated by texts discussing renewable energy tech-nology, and the LLM’s summarization defaulted to the majority framing within the cluster. As a re-sult, the generated hypotheticals are semantically opposed to the target narrative, representing a fun-damentally different failure from collapse: where collapse loses granularity, drift inverts argumenta-tive direction. In Table 8, we evaluate if the performance of the considered systems does indeed correlate. Sev-eral statistically significant correlations can be re-ported, especially within the results on CARDS and PN. For example, the comparison between BM25 and QWEN3-E-4B indicates the highest correlation with a rho value of 0.824 and a FDR-corrected p-value of 0.000 on CARDS. Both SpecFi variants behave more independently, especially in regard to the SpecFi-CS-a setup which, for example, yields the lowest rho values when compared to BM25 re-sults with a p-value of 0.249 on CARDS and thus with the highest value above the 0.05 significance threshold. 
+
+A.2. Community Summaries A.3. Prompts Collection 
+
+A.3.1. Embedding Models 
+
+The default model instruction prompt is:             
+
+> Instruct: Given aweb search query, retrieve relevant passages that answer the query Query: {query}
+
+The following prompt was used to enhance the retrieval results:                        
+
+> Instruct: Given anarrative description as aquery, retrieve passages that serve this narrative; can be entailed from the narrative; can be aligned logically with the narrative Query: {query}
+
+Within our HyDE-based setup, we use the follow-ing instruction prompt for embedding models:                 
+
+> Instruct: Given atext as aquery retrieve relevant passages that align with narratives similar to the query Query: {query}
+
+A.3.2. Generative Models 
+
+Our system prompt:                                  
+
+> You are adisinformation investigator. Your first step is to generate short disinformation texts that sound like actual ones. You get adisinformation narrative and return adisinformation text that aligns with that narrative. Return only 1single text!
+
+Each system prompt was followed by a user prompt:                                           
+
+> You are adisinformation investigator. Given adisinformation narrative, generate ashort, realistic text (such as anews excerpt, blog post, or social media post) that supports or aligns with that narrative. The text should sound plausible and could be found in the wild. Here are some examples: {examples} Narrative: {query} Text:
+
+A.4. Narrative Taxonomies Transformed to Search Queries 
+
+All datasets included predefined narrative tax-onomies. We constructed narrative descriptions from the narrative labels with the following strate-gies: 
+
+A.4.1. CARDS 
+
+The queries were constructed by following the CARDS taxonomy and the corresponding id la-beling with the dataset and concatenating “claim” Table 9: CARDS narrative taxonomy with community summaries generated within the NodeRAG framework. Pattern categories: convergence (summary aligns with taxonomy label), partial (aligns at super-claim level), collapse (identical summary shared with sibling sub-narrative), drift (correct topic, wrong stance or focus), incoherent (summary unrelated to narrative). 
+
+ID Narrative Label Pattern Community Summary 
+
+1: Global warming is not happening 
+
+1_1 Ice/permafrost/snow cover isn’t melting partial The text explores the concept of anthropogenic global warming as a myth, questioning its validity and the narratives surrounding it. 1_2 Heading into ice age/global cool-ing converg. There are emerging voices cautioning against the narrative of catastrophic global warming, suggesting that the Earth may be entering a cooling cycle. 1_3 Weather is cold/snowing drift Severe weather events, such as unexpected snowfall, significantly affect city operations and highlight the need for preparedness in urban planning. 1_4 Climate hasn’t warmed over the last decade(s) partial Maps generated by climate models, used by the IPCC, are criticized as ‘fantasy maps’ that do not accurately reflect Earth’s climate history or current state. 1_6 Sea level rise is exaggerated/not accelerating converg. Recent studies indicate that the rate of sea level rise has remained consis-tent, contradicting some climate model predictions, which raises questions about their reliability. 1_7 Extreme weather isn’t increas-ing/has happened before converg. The relationship between climate change and extreme weather events remains contentious. While some studies suggest that rising temperatures may lead to more severe weather patterns, others argue that evidence does not support a significant increase in the incidence or severity of such events. 
+
+2: Human greenhouse gases are not causing climate change 
+
+2_1 It’s natural cycles/variation converg. The debate over climate change often centers on the relative contributions of natural variability versus human-induced factors. While greenhouse gas emissions are acknowledged, many scientists emphasize the significant role of natural processes in shaping climate. 2_3 No evidence for greenhouse effect/CO 2 driving climate change drift Climate change poses significant challenges to agriculture, with erratic weather patterns threatening crop yields. However, rising CO 2 levels may enhance plant growth, presenting a complex scenario where adaptation strategies are essential. 
+
+3: Climate impacts/global warming is beneficial/not bad 
+
+3_1 Climate sensitivity is low/nega-tive feedbacks converg. Recent studies suggest that the negative impacts of warming may not be as severe as previously believed, indicating that CO 2 climate sensitivity is significantly lower than earlier estimates. 3_2 Species/plants/reefs benefiting from climate change converg. Some argue that the effects of CO 2 increases and slight global warming may be harmless or even beneficial, challenging alarmist narratives about climate change. 3_3 CO 2 is beneficial/plant food collapse (Same as 3_2) 
+
+4: Climate solutions won’t work 
+
+4_1 Climate policies are harmful converg. Current climate policies are criticized for being ineffective, as they rely on unrealistic targets and fail to consider political and technological realities, leading to significant market failures. 4_2 Climate policies are ineffec-tive/flawed collapse (Same as 4_1) 
+
+4_4 Clean energy/biofuels won’t work drift The text explores how advancements in technology can provide innovative solutions to combat climate change, including renewable energy sources and carbon capture methods. 4_5 People need energy (fossil fuel-s/nuclear) incoherent The presence of the Wolverine at the convention stage highlights how external factors can influence the performance and effectiveness of energy panels, suggesting a need for adaptive strategies in energy management. 
+
+5: Climate movement/science is unreliable 
+
+5_1 Science is uncertain/unsound/un-reliable converg. Many scientists express skepticism about the reliability of climate models, which have been criticized for failing to accurately predict temperature changes and for being overly reliant on theoretical calculations. 5_2 Movement is alarmist/political/bi-ased converg. The authors argue that the climate alarmism movement is losing credibility, with outdated predictions and ideological biases undermining its claims. 
+
+(=subnarrative) and “superclaim” (=narrative) de-scriptions from the code book. 
+
+"1_1": "Global warming is not happening. Ice/permafrost/snow cover isn’t melting", "1_2": "Global warming is not happening. We’re heading into an ice age/global cooling", "1_3": "Global warming is not happening. Weather is cold/snowing", ... "5_3": "Climate movement/science is unreliable. Climate change (science or policy) is aconspiracy (deception)", 
+
+Resulting in predefined 27 narratives in the tax-onomy, out of which 17 can be found in the dataset. 
+
+A.4.2. Climate Obstruction 
+
+Constructed by using the narrative ids from the dataset and descriptions of the narratives provided in the supplemental material of the paper. 
+
+"CA": "Community & Resilience. Emphasizes how the oil and gas sector contributes to local and national economies through tax revenues, charitable efforts, and support for local businesses", "CB": "Community & Resilience. Focuses on the creation and sustainability of jobs by the oil and gas industry." ... "SA": "Patriotic Energy mix. Stresses how domestic oil and gas production benefits the nation, including energy independence, energy leadership, and the idea of supporting American energy" 
+
+Resulting in 7 narratives, out of which all can be found in the dataset. 
+
+A.4.3. PolyNarrative 
+
+Similar to CARDS, the queries were constructed by following the PolyNarrative (PN) taxonomy and the corresponding id labeling with the dataset. 
+
+"1_1": "Blaming the war on others rather than the invader: Ukraine is the aggressor", "1_2": "Blaming the war on others rather than the invader: The West are the aggressors", ... "21_2": "Green policies are geopolitical instruments: Green activities are a form of neo-colonialism" 
+
+Resulting in predefined 88 narratives in the taxon-omy, out of which 51 can be found in the dataset.
