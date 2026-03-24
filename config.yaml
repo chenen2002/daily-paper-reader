@@ -25,4 +25,39 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
-  intent_profiles: []
+  intent_profiles:
+    - tag: 旅游亲环境
+      description: 旅游学领域亲环境行为与框架效应相关的论文查找
+      enabled: true
+      keywords:
+        - keyword: framing effect
+          keyword_cn: 框架效应
+          query: framing effect in environmental psychology
+        - keyword: Tourism
+          keyword_cn: 旅游
+          query: T
+        - keyword: pro-environmental behavior
+          keyword_cn: 亲环境行为
+          query: pro-environmental behavior in tourism
+      intent_queries:
+        - query: Please help me find papers on pro environmental behavior and framing effects in the field of tourism
+          query_cn: 请帮我查找旅游学领域亲环境行为与框架效应相关的论文
+          enabled: true
+          source: manual
+          note: ''
+        - query: impact of framing effects on tourist pro environmental behavior
+          query_cn: 框架效应对游客亲环境行为的影响
+          enabled: true
+          source: manual
+          note: ''
+        - query: psychological mechanisms of framing in tourism environmental protection
+          query_cn: 旅游环境保护中框架效应的心理机制
+          enabled: true
+          source: manual
+          note: ''
+        - query: effectiveness of different framing strategies for green travel
+          query_cn: 不同框架策略对绿色旅游的有效性研究
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-03-24T09:22:36.068Z'
