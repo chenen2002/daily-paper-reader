@@ -1,0 +1,162 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-25T19:29:38.398630+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2603.22730v1",
+      "title": "How Utilitarian Are OpenAI's Models Really? Replicating and Reinterpreting Pfeffer, Krügel, and Uhl (2025)",
+      "abstract": "Pfeffer, Krügel, and Uhl (2025) report that OpenAI's reasoning model o1-mini produces more utilitarian responses to the trolley problem and footbridge dilemma than the non-reasoning model GPT-4o. I replicate their study with four current OpenAI models and extend it with prompt variant testing. The trolley finding does not survive: GPT-4o's low utilitarian rate doesn't reflect a deontological commitment but safety refusals triggered by the prompt's advisory framing. When framed as \"Is it morally permissible...?\" instead of \"Should I...?\", GPT-4o gives 99% utilitarian responses. All models converge on utilitarian answers when prompt confounds are removed. The footbridge finding survives with blemishes. Reasoning models tend to give more utilitarian responses than non-reasoning models across prompt variations. But often they refuse to answer the dilemma or, when they answer, give a non-utilitarian rather than a utilitarian answer. These results demonstrate that single-prompt evaluations of LLM moral reasoning are unreliable: multi-prompt robustness testing should be standard practice for any empirical claim about LLM behavior.",
+      "authors": [
+        "Johannes Himmelreich"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.CY"
+      ],
+      "published": "2026-03-24T02:52:06+00:00",
+      "link": "https://arxiv.org/pdf/2603.22730v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "impact of advisory framing on moral decision making",
+      "llm_evidence_cn": "建议性框架对道德决策的影响",
+      "llm_evidence": "建议性框架对道德决策的影响",
+      "canonical_evidence": "建议性框架对道德决策的影响",
+      "llm_tldr_en": "Investigates how different prompt framings significantly alter moral responses in AI models.",
+      "llm_tldr_cn": "研究不同的提示词框架如何显著改变AI模型的道德响应。",
+      "llm_tldr": "研究不同的提示词框架如何显著改变AI模型的道德响应。",
+      "llm_tags": [
+        "query:q5"
+      ],
+      "matched_query_tag": "query:q5",
+      "matched_query_text": "impact of framing effects on tourist pro environmental behavior",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.18945v1",
+      "title": "A conceptual framework for ideology beyond the left and right",
+      "abstract": "NLP+CSS work has operationalized ideology almost exclusively on a left/right partisan axis. This approach obscures the fact that people hold interpretations of many different complex and more specific ideologies on issues like race, climate, and gender. We introduce a framework that understands ideology as an attributed, multi-level socio-cognitive concept network, and explains how ideology manifests in discourse in relation to other relevant social processes like framing. We demonstrate how this framework can clarifies overlaps between existing NLP tasks (e.g. stance detection and natural language inference) and also how it reveals new research directions. Our work provides a unique and important bridge between computational methods and ideology theory, enabling richer analysis of social discourse in a way that benefits both fields.",
+      "authors": [
+        "Kenneth Joseph",
+        "Kim Williams",
+        "David Lazer"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY",
+        "cs.CL"
+      ],
+      "published": "2026-03-19T14:20:38+00:00",
+      "link": "https://arxiv.org/pdf/2603.18945v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "ideology manifests in discourse in relation to framing on climate issues",
+      "llm_evidence_cn": "意识形态在气候问题的话语体系中通过框架效应体现",
+      "llm_evidence": "意识形态在气候问题的话语体系中通过框架效应体现",
+      "canonical_evidence": "意识形态在气候问题的话语体系中通过框架效应体现",
+      "llm_tldr_en": "Proposes a framework for understanding how specific ideologies like climate are manifested through framing.",
+      "llm_tldr_cn": "提出了一个理解气候等特定意识形态如何通过框架效应在话语中体现的理论框架。",
+      "llm_tldr": "提出了一个理解气候等特定意识形态如何通过框架效应在话语中体现的理论框架。",
+      "llm_tags": [
+        "query:q6"
+      ],
+      "matched_query_tag": "query:q6",
+      "matched_query_text": "psychological mechanisms of framing in tourism environmental protection",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.23075v1",
+      "title": "Good for the Planet, Bad for Me? Intended and Unintended Consequences of AI Energy Consumption Disclosure",
+      "abstract": "To address the high energy consumption of artificial intelligence, energy consumption disclosure (ECD) has been proposed to steer users toward more sustainable practices, such as choosing efficient small language models (SLMs) over large language models (LLMs). This presents a performance-sustainability trade-off for users. In an experiment with 365 participants, we explore the impact of ECD and the perceptual and behavioral consequences of choosing an SLM over an LLM. Our findings reveal that ECD is a highly effective measure to nudge individuals toward a pro-environmental choice, increasing the odds of choosing an energy efficient SLM over an LLM by more than 12. Interestingly, this choice did not significantly impact subsequent behavior, as individuals who selected an SLM and those who selected an LLM demonstrated similar prompt behavior. Nevertheless, the choice created a perceptual bias. A placebo effect emerged, with individuals who selected the \"eco-friendly\" SLM reporting significantly lower satisfaction and perceived quality. These results highlight the double-edged nature of ECD, which holds critical implications for the design of sustainable human-computer interactions.",
+      "authors": [
+        "Michael Klesel",
+        "Uwe Messer"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-03-24T11:09:08+00:00",
+      "link": "https://arxiv.org/pdf/2603.23075v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "nudge individuals toward a pro-environmental choice through information disclosure",
+      "llm_evidence_cn": "通过信息披露引导个人做出亲环境选择",
+      "llm_evidence": "通过信息披露引导个人做出亲环境选择",
+      "canonical_evidence": "通过信息披露引导个人做出亲环境选择",
+      "llm_tldr_en": "Explores how energy consumption disclosure acts as a nudge for pro-environmental behavior in AI usage.",
+      "llm_tldr_cn": "探讨了能源消耗披露如何作为一种助推手段，引导用户在AI使用中做出亲环境行为。",
+      "llm_tldr": "探讨了能源消耗披露如何作为一种助推手段，引导用户在AI使用中做出亲环境行为。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.19203v1",
+      "title": "Tinted Frames: Question Framing Blinds Vision-Language Models",
+      "abstract": "Vision-Language Models (VLMs) have been shown to be blind, often underutilizing their visual inputs even on tasks that require visual reasoning. In this work, we demonstrate that VLMs are selectively blind. They modulate the amount of attention applied to visual inputs based on linguistic framing even when alternative framings demand identical visual reasoning. Using visual attention as a probe, we quantify how framing alters both the amount and distribution of attention over the image. Constrained framings, such as multiple choice and yes/no, induce substantially lower attention to image context compared to open-ended, reduce focus on task-relevant regions, and shift attention towards uninformative tokens. We further demonstrate that this attention misallocation is the principal cause of degraded accuracy and cross-framing inconsistency. Building on this mechanistic insight, we introduce a lightweight prompt-tuning method using learnable tokens that encourages the robust, visually grounded attention patterns observed in open-ended settings, improving visual grounding and improving performance across framings.",
+      "authors": [
+        "Wan-Cyuan Fan",
+        "Jiayun Luo",
+        "Declan Kutscher",
+        "Leonid Sigal",
+        "Ritwik Gupta"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-19T17:53:09+00:00",
+      "link": "https://arxiv.org/pdf/2603.19203v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "impact of linguistic framing on attention and reasoning",
+      "llm_evidence_cn": "语言框架对注意力和推理的影响",
+      "llm_evidence": "语言框架对注意力和推理的影响",
+      "canonical_evidence": "语言框架对注意力和推理的影响",
+      "llm_tldr_en": "Demonstrates how linguistic framing alters attention and reasoning in vision-language models.",
+      "llm_tldr_cn": "展示了语言框架如何改变视觉语言模型的注意力和推理。",
+      "llm_tldr": "展示了语言框架如何改变视觉语言模型的注意力和推理。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "label": "2026-03-25",
+  "date": "2026-03-25",
+  "generated_at": "2026-03-25T19:30:08",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202603/25/2603.22730v1-how-utilitarian-are-openais-models-really-replicating-and-reinterpreting-pfeffer-krgel-and-uhl-2025",
+      "section": "quick",
+      "title_en": "How Utilitarian Are OpenAI's Models Really? Replicating and Reinterpreting Pfeffer, Krügel, and Uhl (2025)",
+      "authors": "Johannes Himmelreich",
+      "date": "2026-03-24",
+      "pdf": "https://arxiv.org/pdf/2603.22730v1",
+      "score": "7.0",
+      "evidence": "建议性框架对道德决策的影响",
+      "tldr": "本研究复现并重新评估了关于OpenAI模型功利主义倾向的既有结论。通过对GPT-4o和o1等模型进行多提示词变体测试，发现原研究中GPT-4o在电车难题中的非功利表现实为提示词诱发的安全拒绝，而非真正的道义论立场。研究证实推理模型在天桥难题中虽更具功利倾向，但表现仍不稳定。这表明单一提示词评估LLM道德推理并不可靠，强调了多提示词鲁棒性测试在模型行为研究中的重要性。",
+      "tags": "query:q5",
+      "abstract_en": "Pfeffer, Krügel, and Uhl (2025) report that OpenAI's reasoning model o1-mini produces more utilitarian responses to the trolley problem and footbridge dilemma than the non-reasoning model GPT-4o. I replicate their study with four current OpenAI models and extend it with prompt variant testing. The trolley finding does not survive: GPT-4o's low utilitarian rate doesn't reflect a deontological commitment but safety refusals triggered by the prompt's advisory framing. When framed as \"Is it morally permissible...?\" instead of \"Should I...?\", GPT-4o gives 99% utilitarian responses. All models converge on utilitarian answers when prompt confounds are removed. The footbridge finding survives with blemishes. Reasoning models tend to give more utilitarian responses than non-reasoning models across prompt variations. But often they refuse to answer the dilemma or, when they answer, give a non-utilitarian rather than a utilitarian answer. These results demonstrate that single-prompt evaluations of LLM moral reasoning are unreliable: multi-prompt robustness testing should be standard practice for any empirical claim about LLM behavior.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/25/2603.23075v1-good-for-the-planet-bad-for-me-intended-and-unintended-consequences-of-ai-energy-consumption-disclosure",
+      "section": "quick",
+      "title_en": "Good for the Planet, Bad for Me? Intended and Unintended Consequences of AI Energy Consumption Disclosure",
+      "authors": "Michael Klesel, Uwe Messer",
+      "date": "2026-03-24",
+      "pdf": "https://arxiv.org/pdf/2603.23075v1",
+      "score": "7.0",
+      "evidence": "通过信息披露引导个人做出亲环境选择",
+      "tldr": "本研究探讨了能源消耗披露（ECD）在应对AI高能耗问题中的作用。通过对365名参与者的实验，研究发现ECD能显著引导用户选择节能的小语言模型（SLM）而非大语言模型（LLM）。然而，这种环保选择会引发负面的“安慰剂效应”，导致用户主观上降低对模型质量和满意度的评价，尽管其实际使用行为并无显著差异。",
+      "tags": "query:q1",
+      "abstract_en": "To address the high energy consumption of artificial intelligence, energy consumption disclosure (ECD) has been proposed to steer users toward more sustainable practices, such as choosing efficient small language models (SLMs) over large language models (LLMs). This presents a performance-sustainability trade-off for users. In an experiment with 365 participants, we explore the impact of ECD and the perceptual and behavioral consequences of choosing an SLM over an LLM. Our findings reveal that ECD is a highly effective measure to nudge individuals toward a pro-environmental choice, increasing the odds of choosing an energy efficient SLM over an LLM by more than 12. Interestingly, this choice did not significantly impact subsequent behavior, as individuals who selected an SLM and those who selected an LLM demonstrated similar prompt behavior. Nevertheless, the choice created a perceptual bias. A placebo effect emerged, with individuals who selected the \"eco-friendly\" SLM reporting significantly lower satisfaction and perceived quality. These results highlight the double-edged nature of ECD, which holds critical implications for the design of sustainable human-computer interactions.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/25/2603.18945v1-a-conceptual-framework-for-ideology-beyond-the-left-and-right",
+      "section": "quick",
+      "title_en": "A conceptual framework for ideology beyond the left and right",
+      "authors": "Kenneth Joseph, Kim Williams, David Lazer",
+      "date": "2026-03-19",
+      "pdf": "https://arxiv.org/pdf/2603.18945v1",
+      "score": "6.0",
+      "evidence": "意识形态在气候问题的话语体系中通过框架效应体现",
+      "tldr": "传统的NLP和计算社会科学研究通常将意识形态简化为左右政治立场，忽略了种族、气候和性别等具体议题的复杂性。本文提出了一个新框架，将意识形态视为一种多层级的社会认知概念网络，并阐明了其在话语中如何通过框架等过程体现。该框架不仅统一了立场检测等现有NLP任务，还为社会话语分析提供了新的研究方向，有效桥接了计算方法与意识形态理论。",
+      "tags": "query:q6",
+      "abstract_en": "NLP+CSS work has operationalized ideology almost exclusively on a left/right partisan axis. This approach obscures the fact that people hold interpretations of many different complex and more specific ideologies on issues like race, climate, and gender. We introduce a framework that understands ideology as an attributed, multi-level socio-cognitive concept network, and explains how ideology manifests in discourse in relation to other relevant social processes like framing. We demonstrate how this framework can clarifies overlaps between existing NLP tasks (e.g. stance detection and natural language inference) and also how it reveals new research directions. Our work provides a unique and important bridge between computational methods and ideology theory, enabling richer analysis of social discourse in a way that benefits both fields.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/25/2603.19203v1-tinted-frames-question-framing-blinds-vision-language-models",
+      "section": "quick",
+      "title_en": "Tinted Frames: Question Framing Blinds Vision-Language Models",
+      "authors": "Wan-Cyuan Fan, Jiayun Luo, Declan Kutscher, Leonid Sigal, Ritwik Gupta",
+      "date": "2026-03-19",
+      "pdf": "https://arxiv.org/pdf/2603.19203v1",
+      "score": "6.0",
+      "evidence": "语言框架对注意力和推理的影响",
+      "tldr": "本研究揭示了多模态大模型（VLM）存在“选择性失明”现象，即问题的语言表述方式（如选择题与开放式问题）会显著影响模型对视觉输入的关注程度。研究发现，受限的提问方式会导致模型视觉注意力下降并错位，进而降低准确性。为此，作者提出了一种轻量级的提示微调方法，通过可学习令牌引导模型恢复稳健的视觉注意力，显著提升了模型在不同提问框架下的视觉对齐能力和任务表现。",
+      "tags": "query:q1",
+      "abstract_en": "Vision-Language Models (VLMs) have been shown to be blind, often underutilizing their visual inputs even on tasks that require visual reasoning. In this work, we demonstrate that VLMs are selectively blind. They modulate the amount of attention applied to visual inputs based on linguistic framing even when alternative framings demand identical visual reasoning. Using visual attention as a probe, we quantify how framing alters both the amount and distribution of attention over the image. Constrained framings, such as multiple choice and yes/no, induce substantially lower attention to image context compared to open-ended, reduce focus on task-relevant regions, and shift attention towards uninformative tokens. We further demonstrate that this attention misallocation is the principal cause of degraded accuracy and cross-framing inconsistency. Building on this mechanistic insight, we introduce a lightweight prompt-tuning method using learnable tokens that encourages the robust, visually grounded attention patterns observed in open-ended settings, improving visual grounding and improving performance across framings.",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

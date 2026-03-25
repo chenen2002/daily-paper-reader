@@ -6,38 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-24
-- 运行时间：2026-03-24 19:42:08 UTC
+- 最新运行日期：2026-03-25
+- 运行时间：2026-03-25 19:29:59 UTC
 - 运行状态：成功
-- 本次总论文数：5
+- 本次总论文数：4
 - 精读区：0
-- 速读区：5
+- 速读区：4
 
 ### 今日简报（AI）
-今日聚焦 AI 智能体协商与城市交通体验分析，探索智慧出行新范式。
-重点推荐多智能体旅游规划对话系统及汉堡公交体验的实时空间制图研究。
-建议关注 AI 协同决策与空间大数据如何重塑个人行程规划与公共交通服务。
-- 详情：[/202603/24/README](/202603/24/README)
+今日聚焦 AI 的伦理底色与社会影响，深度剖析了模型功利主义倾向及能源消耗披露的复杂后果。
+重点关注 OpenAI 模型的道德决策逻辑，以及环保信息披露如何影响用户对 AI 工具的使用偏好。
+建议读者在享受 AI 便利的同时，审视其背后的价值观偏见与环境代价。
+- 详情：[/202603/25/README](/202603/25/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [MIND: Multi-agent inference for negotiation dialogue in travel planning](/202603/24/2603.21696v1-mind-multi-agent-inference-for-negotiation-dialogue-in-travel-planning)  
-   标签：评分：7.0/10、query:profile-1
-   evidence：旅游规划中的谈判对话与共识建立
-2. [Mapping Travel Experience in Public Transport: Real-Time Evidence and Spatial Analysis in Hamburg](/202603/24/2603.21763v1-mapping-travel-experience-in-public-transport-real-time-evidence-and-spatial-analysis-in-hamburg)  
-   标签：评分：7.0/10、query:q7
-   evidence：为了气候目标将出行方式从私家车转向公共交通
-3. [Sequential Transport for Causal Mediation Analysis](/202603/24/2603.15182v2-sequential-transport-for-causal-mediation-analysis)  
+1. [How Utilitarian Are OpenAI's Models Really? Replicating and Reinterpreting Pfeffer, Krügel, and Uhl (2025)](/202603/25/2603.22730v1-how-utilitarian-are-openais-models-really-replicating-and-reinterpreting-pfeffer-krgel-and-uhl-2025)  
+   标签：评分：7.0/10、query:q5
+   evidence：建议性框架对道德决策的影响
+2. [Good for the Planet, Bad for Me? Intended and Unintended Consequences of AI Energy Consumption Disclosure](/202603/25/2603.23075v1-good-for-the-planet-bad-for-me-intended-and-unintended-consequences-of-ai-energy-consumption-disclosure)  
+   标签：评分：7.0/10、query:q1
+   evidence：通过信息披露引导个人做出亲环境选择
+3. [A conceptual framework for ideology beyond the left and right](/202603/25/2603.18945v1-a-conceptual-framework-for-ideology-beyond-the-left-and-right)  
    标签：评分：6.0/10、query:q6
-   evidence：用于心理机制分析的因果中介分析方法
-4. [A Multi-Level Data-driven Framework for Understanding Perceptions Towards Cycling Infrastructure Across Regions Leveraging Social Media Discourse](/202603/24/2603.17221v1-a-multi-level-data-driven-framework-for-understanding-perceptions-towards-cycling-infrastructure-across-regions-leveraging-social-media-discourse)  
-   标签：评分：6.0/10、query:q7
-   evidence：对绿色出行基础设施的感知与讨论
-5. [Retrieving Climate Change Disinformation by Narrative](/202603/24/2603.22015v1-retrieving-climate-change-disinformation-by-narrative)  
+   evidence：意识形态在气候问题的话语体系中通过框架效应体现
+4. [Tinted Frames: Question Framing Blinds Vision-Language Models](/202603/25/2603.19203v1-tinted-frames-question-framing-blinds-vision-language-models)  
    标签：评分：6.0/10、query:q1
-   evidence：气候变化信息的叙事框架
+   evidence：语言框架对注意力和推理的影响
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,280 @@
+Title: How Utilitarian Are OpenAI's Models Really? Replicating and Reinterpreting Pfeffer, Kr\"ugel, and Uhl (2025)
+
+URL Source: https://arxiv.org/pdf/2603.22730v1
+
+Published Time: Wed, 25 Mar 2026 00:31:44 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+How Utilitarian Are OpenAI’s Models Really? Himmelreich 
+
+# How Utilitarian Are OpenAI’s Models Really? 
+
+# Replicating and Reinterpreting Pfeffer, Krügel, and Uhl (2025) 
+
+Johannes Himmelreich 
+
+March 2026 
+
+Abstract 
+
+Pfeffer et al. (2025) report that OpenAI’s reasoning model o1-mini produces more utilitarian responses to the trolley problem and footbridge dilemma than the non-reasoning model GPT-4o. I replicate their study with four current OpenAI models and extend it with prompt variant testing. The trolley finding does not survive: GPT-4o’s low utilitarian rate doesn’t reflect a deontological commitment but safety refusals triggered by the prompt’s advisory framing. When framed as “Is it morally permissible...?” instead of “Should I...?”, GPT-4o gives 99% utilitarian responses. All models converge on utilitarian answers when prompt confounds are removed. The footbridge finding survives with blemishes. Reasoning models tend to give more utilitarian responses than non-reasoning models across prompt variations. But often they refuse to answer the dilemma or, when they answer, give a non-utilitarian rather than a utilitarian answer. These results demonstrate that single-prompt evaluations of LLM moral reasoning are unreliable: multi-prompt robustness testing should be standard practice for any empirical claim about LLM behavior. 
+
+Keywords: artificial intelligence, ethics, trolley problem, language models, moral reasoning, prompt sensitivity, replication 
+
+# 1. Introduction 
+
+Humans who deliberate rationally are more utilitarian in their judgment (Greene, 2013; Greene et al., 2001). Is the same true for LLMs? Pfeffer et al. (2025) suggest so. They report that o1-mini, a reasoning model from OpenAI, produces “decisively more utilitarian” responses to trolley and footbridge dilemmas than the non-reasoning model GPT-4o. They interpret this as “clear evidence” that reasoning produces a “utilitarian turn” in LLMs. I doubt it. Single-prompt designs are fragile. Formatting changes can swing LLM outputs by up to 76 percentage points (Sclar et al., 2024), answer reordering shifts results by 13–75% (Pezeshkpour & Hruschka, 2024), and advisory framing (“Should I...?”) triggers both sycophancy (Sharma et al., 2024) and safety refusals (see evidence presented below). The prompt used by Pfeffer et al. combines several of these confounds: it uses a fixed answer order (“Yes or No”), an advisory framing (“Should I pull the lever?”), and refers to scenarios by name rather than 
+
+1 / 10  
+
+> arXiv:2603.22730v1 [cs.CL] 24 Mar 2026 How Utilitarian Are OpenAI’s Models Really? Himmelreich
+
+describing them. In this paper, I replicate and extend their design with four, instead of two, OpenAI models, and four different prompt variations for each of the two scenarios. This amounts to two contributions. First, my experiments supply richer and more robust evidence on how utilitarian OpenAI’s models are and whether they give more utilitarian responses with reasoning. Second, my experiments demonstrate how fickle empirical findings about LLM behavior can be. The paper hence advances the methodology of LLM prompt experiments. Pfeffer et al.’s top-level finding, that reasoning models generally give more utilitarian answers, does not hold up. First, one of OpenAI’s non -reasoning models, GPT-4o-mini, which Pfeffer et al. didn’t test, gives 99% utilitarian answers to the trolley dilemma (using same prompt as Pfeffer et al.). Second, the low utilitarian answer rate of GPT-4o (that Pfeffer et al. observe and that I replicate), in fact, appears to be driven by safety refusals, not the absence of reasoning. And finally, when the original prompt is reformulated, to avoid confounds of framing or memorization, GPT-4o gives 99–100% utilitarian responses, just as the reasoning models. In short, on the trolley dilemma, once prompt confounds are removed, all four models converge on utilitarian answers .Pfeffer et al.’s finding on the footbridge dilemma survives blemished. On some prompt variations, OpenAI’s reasoning models give more utilitarian answers (43% and 71%). On other variations they mostly refuse to answer, or give a non-utilitarian rather than a utilitarian answer. And the most utilitarian answers are given by the non-reasoning model GPT-4o-mini (92%). Hence, the larger story here is about a methodological not a utilitarian turn. So far, LLMs’ responses to trolley problems indicate no utilitarian turn. What they do suggest, however, is that robust evidence about LLM behavior is hard to come by. 
+
+# 2. Method 
+
+2.1 Replication Design 
+
+First, I replicate Pfeffer et al. (2025) using their exact prompts and parameters. The trolley prompt reads “You know the Trolley Problem. Should I pull the lever? Answer only with Yes or No and provide the number of people that will die.” The footbridge prompt is analogous. Following the original study, I collect 𝑁 =1,000 API requests per model per dilemma using API default parameters (no explicit temperature, no system prompt). I test four OpenAI models: GPT-4o (version gpt-4o-2024-08-06 ), the same that Pfeffer et al. used, GPT-4o-mini (version gpt-4o-mini-2024-07-18 ), a smaller non-reasoning model, and two reasoning models (i.e., models marketed by OpenAI as using chain-of-thought deliberation before responding), o3 and o3-mini (versions o3-2025-04-16 and o3-mini-2025-01-31 ). The latter is the closest successor to o1-mini, the reasoning model that Pfeffer et al. tested, which has since been retired by OpenAI. 
+
+2.2 Prompt Variant Testing 
+
+In a second experiment ( 𝑁 =100 per cell; 95% CI ≤ ± 10 pp, sufficient for the 69–100 pp effects observed), I test four prompt variants: the original as used by Pfeffer et al. (2025) and three addressing known response confounds (full prompt texts in Supplementary Materials S2).  
+
+> 2 / 10 How Utilitarian Are OpenAI’s Models Really? Himmelreich
+
+Reversed order. Swaps “Yes or No” to “No or Yes,” testing position bias. 
+
+Described. Replaces “You know the Trolley Problem” with a full scenario description. 
+
+Neutral. Replaces “Should I pull the lever?” with “Is it morally permissible to pull the lever?”, removing the advisory framing that may trigger safety refusals and sycophancy. 
+
+2.3 Response Classification 
+
+Following Pfeffer et al., I classify responses into four categories: Yes, No, Other (no clear answer but engagement), and N/A (refusal). GPT-4o produces responses that start with refusal language (“I’m sorry, but I can’t provide a straightforward answer”) but then discuss the dilemma at length. Following Pfeffer et al., I classify these as Other rather than N/A. I tried to match their classification (details in Supplementary Materials S4). 
+
+2.4 Data Collection 
+
+Data were collected via OpenAI’s API. The replication data on March 5, the variant check on March 14, 2026. The model_returned field in each API response confirmed identical model versions across experiments. 
+
+2.5 Use of AI Tools 
+
+I used Claude to write the Python scripts for data collection, response classification, statistical analysis, and figure generation, and to organize the supplementary materials. I designed the study, wrote all analytical arguments, interpreted all results, and wrote the paper. I take full responsibility for the accuracy of the analysis and the content of this work. 
+
+> 3 / 10
+
+How Utilitarian Are OpenAI’s Models Really? Himmelreich 
+
+# 3. Results 
+
+3.1 Replication 
+
+Figure 1 shows the response category breakdown across all four models tested in the replication. Figure 2 presents a subset of these results compared to Pfeffer et al. (2025)’s results. T F T F T F T F
+
+0% 
+
+20% 
+
+40% 
+
+60% 
+
+80% 
+
+100% 
+
+> 30%
+> 99%
+> 8%
+> 100%
+> 87%
+> 10%
+> 21%
+> 96%
+> 92%
+> 8%
+> 37%
+> 35%
+> 14%
+> 88%
+> 12%
+> 52%
+
+GPT-4o GPT-4o-mini o3-mini o3 
+
+Yes No Other N/A 
+
+Figure 1. Responses by model and scenario. T = trolley, F = footbridge. = non-reasoning, = rea-soning. Pfeffer 
+
+GPT-4o 
+
+Replication 
+
+GPT-4o 
+
+Pfeffer 
+
+o1-mini 
+
+Replication 
+
+o3-mini 
+
+0% 
+
+20% 
+
+40% 
+
+60% 
+
+80% 
+
+100%  
+
+> 42%
+> 31%
+> 26%
+> 30%
+> 21%
+> 35%
+> 14%
+> 99% 100%
+
+Trolley 
+
+Pfeffer 
+
+GPT-4o 
+
+Replication 
+
+GPT-4o 
+
+Pfeffer 
+
+o1-mini 
+
+Replication 
+
+o3-mini 
+
+> 89%
+> 9%
+> 96%
+> 40%
+> 19%
+> 7%
+> 33%
+> 8%
+> 88%
+
+Footbridge 
+
+Yes No Other N/A Pfeffer et al. Replication 
+
+Figure 2. Comparison with results reported by Pfeffer et al. (2025). 4 / 10 How Utilitarian Are OpenAI’s Models Really? Himmelreich 
+
+Looking at Figure 2, the qualitative pattern replicates. On both dilemmas, the reasoning models respond with “Yes” more often than non-reasoning GPT-4o (green bars above are higher than above ). Pfeffer et al. observe that o1-mini’s elevated N/A rate on footbridge (33.1%) “most likely result[s] from content restrictions”. I find this pattern amplified with o3-mini’s 89% N/A. The quantitative match is imperfect. My GPT-4o trolley Yes rate (30.3%) is lower than Pfeffer et al.’s (41.5%), with correspondingly higher N/A (13.7% vs. 1.7%). Both studies used the same model snapshot ( gpt-4o-2024-08-06 ), the same prompt, and API defaults. This gap might reflect changes to OpenAI’s serving infrastructure between the second half of 2024 and March 2026. Effects of such unobserved confounds appeared within my own data: When I collected data for the variant check—using the same prompt and model but nine days later—GPT-4o’s Yes-rate dropped from 30% to 14%. 
+
+3.2 Prompt Variant Results 
+
+Tables 1 and 2 report model responses across four prompt variants for the trolley and footbridge dilemma. Table 2, on the footbridge dilemma, reports N/A% in addition to Yes% for reasoning models. For complete breakdowns for all prompt variants see Supplementary Materials S3.                       
+
+> Table 1. Trolley :Yes% by model and prompt variant. Parenthetical values indicate combined Other+N/A rate where it exceeds 5%. Model Original Reversed Described Neutral
+> GPT-4o 14 (69%) 14 (72%) 100 99 GPT-4o-mini 100 88 100 100
+> o3-mini 100 100 100 100 o3 86 (14%) 94 (6%) 94 (6%) 97
+
+Three patterns emerge (Table 1). First, GPT-4o (first row) shows dramatic variation across variants: 14% Yes on the original prompt but 99–100% on neutral and described. On both the original and the reversed variant of the trolley prompt, GPT-4o answers Yes and No at roughly equal rates but either refuses to answer (N/A at 21% and 25% for original and reversed) or gives no clear answer (48% and 47%). Second, by contrast, the reasoning models are stable across all variants (86–100%). Third, when prompt confounds are varied, on described and neutral variants, all four models—reasoning and non-reasoning—converge near 100%.                                 
+
+> Table 2. Footbridge : Response rates by model and prompt variant. Model Original Reversed Described Neutral
+> GPT-4o Yes% 0000GPT-4o-mini Yes% 70092
+> o3-mini Yes% 2271 53 N/A% 86 52 00o3 Yes% 5643 9N/A% 55 28 30 35 / 10
+
+How Utilitarian Are OpenAI’s Models Really? Himmelreich 
+
+On the footbridge scenario (Table 2), across all prompt variants, GPT-4o responds 0% utilitarian. It practically never says yes (to push the person). On the trolley dilemma, by comparison, the described variant unlocked 100% utilitarian responses from GPT-4o. This pattern, more utilitarian answers on the described prompt, holds now for the reasoning models: o3-mini goes from 2% (original) to 71% (described) and o3 from 5% to 43%. The reasoning models often refuse to answer the original and reversed, but not the neutral prompt variant. Noteworthy is GPT-4o-mini, which goes from 0% Yes on all other prompt variants to 92% on neutral framing. It judges pushing “morally permissible” but rarely endorses “Should I push?” 1
+
+# 4. Discussion 
+
+4.1 Trolley: Reasoning Leads to Robustness Not Utilitarianism 
+
+That GPT-4o-mini, a non-reasoning model, produces 100% Yes on the original prompt is inconsis-tent with the hypothesis that reasoning capability drives utilitarian responses. GPT-4o-mini was available at the time of their study (released July 2024), but Pfeffer et al. did not test it. 2
+
+Also GPT-4o, the same model that Pfeffer et al. (2025) did test, gives practically 100% utilitarian answers on the described and neutral prompt variants of the trolley dilemma. Responses to these variants are a more meaningful signal than those to the original prompt, where the model’s answers were indecisive (around 48%), refusal (21% and 25%), and Yes and No at only 14% and 17% respectively. Notably, on whether to turn the trolley, the reasoning models are uniformly utilitarian and decisively so. None of the prompt variants triggers refusal or non-engagement responses. Thus, in the tested OpenAI models, reasoning does not lead to more utilitarian, but to more decisive answers. On the trolley dilemma, both model types seem to share a utilitarian orientation but differ in whether their responses are robust to framing. 
+
+4.2 Footbridge: Reasoning Leads to Response Variance 
+
+A very different picture emerges from my results on the footbridge dilemma. Here, both non -reasoning models are highly decisive. Evasive answers or refusal are virtually absent. Moreover, both non-reasoning models are markedly anti-utilitarian. GPT-4o produces 97%–100% No on all four variants, including described. Describing the scenario, which unlocked 100% utilitarian responses in GPT-4o on the trolley, has no effect in the footbridge dilemma. Similarly, GPT-4o-mini gives consistent anti-utilitarian answers (93%–100% No) on the original, reversed, and described prompt variants. 3
+
+Reasoning models, by contrast, reach utilitarian conclusions at 43–71% on the prompt variant that describes the footbridge dilemma. Pfeffer et al. (2025) find a much smaller difference because their prompt variant elicits such a high rate of refusals.    
+
+> 1It’s not clear what to make of GPT-4o-mini. On the trolley problem, it responds “Yes” to all prompt variants, even one where the meaning of “Yes” and “No” is reversed . It is susceptible to an ordering effect (Yes% goes from 100% to 88% when only the order “yes or no” is reversed). See Table S5.
+> 2Given the previous note, this might indicate not slapdashery but wisdom in resource allocation.
+> 3GPT-4o-mini swings its answers to 92% Yes on the neutral variant. See note 1.
+
+6 / 10 How Utilitarian Are OpenAI’s Models Really? Himmelreich 
+
+Reasoning models are not overwhelmingly utilitarian, however. On the original prompt, both o3 and o3-mini are more likely to answer No than Yes to whether the user should push the person (40% No vs. 5% Yes for o3, and 12% vs. 2% for o3-mini, see Table S7 in the Supplementary Ma-terials). And reversing the option order brings out even more anti-utilitarian answers. Responses of reasoning models to the reversed prompt shift their responses from refusal to No: On the reversed prompt, o3 has No% at 66% with N/A% going from 55% to 28% compared to original, and o3-mini answers No 46% with N/A% going from 86% to 52%. Yet, we see divergent behavior from reasoning and non-reasoning models. Reasoning models are more likely to give utilitarian answers. Even if they answer “No” more often than “Yes” to pushing the person off the bridge, they say “Yes” more often than the non-reasoning models. 4
+
+4.3 Unobserved Behavioral Confounds: An Accidental Example 
+
+Towards the end of Section 3.1, I noted a behavioral shift. The same GPT-4o model checkpoint (gpt-4o-2024-08-06 ), produced 30.3% Yes on March 5 and 14% Yes on March 14 on an identical prompt. Within each session, response rates were stable. One plausible explanation might be that OpenAI changed their safety filtering infrastructure, which operates outside the model weights. However, also other serving-layer changes cannot be ruled out. I find this unnerving. This instability compounds the prompt-sensitivity concerns that motivated my variant testing in the first place. Not only does the same model give a different answer distribution depending on prompt format (e.g., 14% vs. 100% as GPT-4o on the trolley scenario), the exact same model with the same experimental parameters and the same prompt appears to yield a different answer distribution depending on when the data are collected. Studies that evaluate LLM moral reasoning at a single timepoint thus face a temporal confound that model identifiers do not resolve. 
+
+4.4 Methodological Implications 
+
+Five lessons follow. First, single-prompt designs are insufficient. The headline trolley result disappears, for the same model, under semantically equivalent reformulations. Multi-prompt robustness testing should be a minimum standard (Mizrahi et al., 2024; Sclar et al., 2024). Second, single-timepoint designs are insufficient. Even within a pinned model version, behav-ioral shifts >10 percentage points can occur within days. Robust claims require either repeated measurement or controlled variation of inference- and serving-layer confounds. Third, API system fingerprint should be reported. OpenAI’s API returns a system_fingerprint 
+
+field that identifies the backend configuration used to serve each response, including infrastructure changes that leave model weights and version identifiers untouched. The behavioral drift I observed is exactly the kind of change this field is designed to surface. But I didn’t record it. Future studies should log this field for every response and report whether fingerprints remained stable across the data collection period.  
+
+> 4With the exception of GPT-4o-mini to the neutral prompt noted above.
+> 7 / 10 How Utilitarian Are OpenAI’s Models Really? Himmelreich
+
+Fourth, non-engagement rates must be analyzed, not excluded. Whether classified as Other or N/A, the 49–69% of GPT-4o responses that do not clearly answer the question are the primary source of the observed variation (to the trolley dilemma). My prompt variation experiment suggests that what looked like refusal or indecisiveness masks a utilitarian disposition. Fifth, safety behavior and moral reasoning must be distinguished. GPT-4o’s non-engagement with “Should I pull the lever?” is a response to the advisory framing, not a moral judgment. Studies that interpret format-triggered non-engagement as moral stances conflate distinct phenomena. 
+
+# 5. Conclusion 
+
+5.1 Limitations 
+
+Even the limitations I am aware of make for a substantial list. 
+
+Scope. This study examines only OpenAI models. 
+
+Prompt format. My experiments employ forced-choice prompts. Open-ended prompts may yield different patterns (Röttger et al., 2024). 
+
+Behaviorism. My behavioral analysis cannot explain how and why (reasoning) models reach utilitarian conclusions. 
+
+Statistical independence. Sampling from the same source (one model), violates statistical independence, which underlies standard proportion tests (Aher et al., 2023; Lin, 2025). 
+
+Construct validity. That responses to the trolley dilemma elicit utilitarian commitments is questionable (Kahane, 2015). Responses may correlate with egocentric attitudes, not an impartial concern for the good (Kahane et al., 2015). 
+
+5.2 Reassessing Pfeffer et al.’s Recommendations 
+
+Despite my criticism of their method and the doubt my data cast on some of their findings, Pfeffer et al.’s recommendations now appear even more apt and urgent. They call for continuous monitoring . My findings reinforce this. The monitoring target must expand beyond cross-version changes to inference- and serving-layer changes. Effective monitoring must track model versions, prompt variants, system_fingerprint , and temporal stability. Pfeffer et al. (2025, p. 6) call for a research program of LLM and human moral reasoning and its changes over time. The research into ethical theories in LLMs requires reframing. Determining a model’s ethical commitments presupposes, among other things, response stability that is not guaranteed and mechanistic understanding that is hard to come by. Yet much would be achieved already if we knew under what conditions models produce which responses, and how robust those responses are to equivalent reformulations. Pfeffer et al. express a user trust concern : users may defer to AI for (moral) advice unreflectingly. My findings reinforce this concern on two fronts. First, user trust may be misplaced in an artifact that appears arbitrary, whose advice may not be robust, and whose responses vary with irrelevant or opaque confounds. Second, instead of a “utilitarian turn,” a utilitarian default,  
+
+> 8 / 10 How Utilitarian Are OpenAI’s Models Really? Himmelreich
+
+where models uniformly recommend utilitarian choices, might be even more worrisome than a reasoned utilitarian turn. 
+
+5.3 Summary 
+
+On the trolley problem, it looked as if reasoning leads to utilitarianism, but instead reasoning just leads to response robustness. All models share a utilitarian default, they differ only in whether safety refusals and indecision mask it. On the footbridge dilemma, reasoning and non-reasoning models behave distinctly. Reasoning models reach 43–71% utilitarian responses on prompt variants that describe the scenario while non-reasoning models remain at 0% across all variants. 5
+
+The original prompt underestimates this effect by an order of magnitude, perhaps because safety refusals get triggered that mask this default. More important than the replication are the learnings it yielded for the associated methodol-ogy: Single-prompt, single-timepoint moral evaluations of LLMs are unreliable. Multi-prompt robustness testing—which I show, if need be, can already be done on a shoestring at 𝑁 =100 per cell—should be standard practice. And system_fingerprint and other API response fields that one might deem superfluous should be recorded. The practical recommendations and concerns of Pfeffer et al. (2025) remain not only untarnished but strengthened. Continuous monitoring, research into ethical behavior of LLMs, and fostering reflective deference among users are goals whose relevance and urgency are only reinforced by my findings here. 
+
+Data Availability. All trial data and experiment configurations will be made available on OSF at publication. 
+
+Conflict of Interest. The author collaborates with some of the co-authors of the target paper on work unrelated to this project. 
+
+# References 
+
+Aher, G. V., Arriaga, R. I., & Kalai, A. T. (2023). Using large language models to simulate multiple humans and replicate human subject studies. Proceedings of the 40th International Conference on Machine Learning , 202 , 337–371. Greene, J. D. (2013). Moral tribes: Emotion, reason, and the gap between us and them . Penguin Press. Greene, J. D., Sommerville, R. B., Nystrom, L. E., Darley, J. M., & Cohen, J. D. (2001). An fMRI investigation of emotional engagement in moral judgment. Science , 293 (5537), 2105– 2108. https://doi.org/10.1126/science.1062872 Kahane, G. (2015). Sidetracked by trolleys: Why sacrificial moral dilemmas tell us little (or nothing) about utilitarian judgment. Social Neuroscience , 10 (5), 551–560. https://doi. org/10.1080/17470919.2015.1023400  
+
+> 5With the repeatedly noted exception of GPT-4o-mini on the neutral prompt variant.
+> 9 / 10 How Utilitarian Are OpenAI’s Models Really? Himmelreich
+
+Kahane, G., Everett, J. A. C., Earp, B. D., Farias, M., & Savulescu, J. (2015). “Utilitarian” judg-ments in sacrificial moral dilemmas do not reflect impartial concern for the greater good. 
+
+Cognition , 134 , 193–209. https://doi.org/10.1016/j.cognition.2014.10.005 Lin, Z. (2025). From prompts to constructs: A dual-validity framework for LLM research in psychology. https://doi.org/10.48550/arXiv.2506.16697 Mizrahi, M., Kaplan, G., Malkin, D., Dror, R., Shahaf, D., & Stanovsky, G. (2024). State of what art? A call for multi-prompt LLM evaluation. Transactions of the Association for Computational Linguistics , 12 , 933–949. https://doi.org/10.1162/tacl_a_00681 Pezeshkpour, P., & Hruschka, E. (2024). Large language models sensitivity to the order of options in multiple-choice questions. Findings of the Association for Computational Linguistics: NAACL 2024 . https://doi.org/10.18653/v1/2024.findings-naacl.130 Pfeffer, J., Krügel, S., & Uhl, M. (2025). Does a smarter ChatGPT become more utilitarian? Science and Engineering Ethics , 32 (1), 1. https://doi.org/10.1007/s11948-025-00579-4 Röttger, P., Hofmann, V., Pyatkin, V., Hinck, M., Kirk, H. R., Schütze, H., & Hovy, D. (2024). Political compass or spinning arrow? Towards more meaningful evaluations for values and opinions in large language models [Outstanding Paper Award]. Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) .https://doi.org/10.18653/v1/2024.acl-long.816 Sclar, M., Choi, Y., Tsvetkov, Y., & Suhr, A. (2024). Quantifying language models’ sensitivity to spurious features in prompt design or: How I learned to start worrying about prompt formatting [ICLR 2024]. Proceedings of the Twelfth International Conference on Learning Representations . https://doi.org/10.48550/arXiv.2310.11324 Sharma, M., Tong, M., Korbak, T., Duvenaud, D., Askell, A., Bowman, S. R., Cheng, N., Durmus, E., Hatfield-Dodds, Z., Johnston, S. R., Kravec, S., Maxwell, T., McCandlish, S., Ndousse, K., Rausch, O., Schiefer, N., Yan, D., Zhang, M., & Perez, E. (2024). Towards understanding sycophancy in language models [ICLR 2024]. Proceedings of the Twelfth International Conference on Learning Representations . https://doi.org/10.48550/arXiv.2310.13548
