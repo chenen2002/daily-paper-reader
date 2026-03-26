@@ -1,0 +1,93 @@
+{
+  "label": "2026-03-26",
+  "date": "2026-03-26",
+  "generated_at": "2026-03-26T19:48:08",
+  "count": 6,
+  "papers": [
+    {
+      "paper_id": "202603/26/2603.18594v1-beyond-the-main-mode-the-contribution-of-access-and-egress-trips-in-door-to-door-travel",
+      "section": "quick",
+      "title_en": "Beyond the Main Mode: The contribution of access and egress trips in door-to-door travel",
+      "authors": "Nejc Geržinič, Mark van Hagen, Hussein Al-Tamimi, Niels van Oort, Dorine Duives",
+      "date": "2026-03-19",
+      "pdf": "https://arxiv.org/pdf/2603.18594v1",
+      "score": "6.0",
+      "evidence": "旅行者选择与多模式出行负效用",
+      "tldr": "本研究探讨了门到门出行中接驳与疏散行程对多模式交通链的影响。利用荷兰出行面板数据，通过嵌套 Logit 模型分析了全行程选择。研究发现，尽管公共交通存在固有负效用，但其车内时间负面感知较低，适合长途出行。研究强调了步行接驳的重要性及车站密度与换乘次数间的权衡，为优化公共交通吸引力提供了政策建议。",
+      "tags": "query:q7",
+      "abstract_en": "Access and egress trips constitute a substantial part of a train trip in minds of travellers, often being the deciding factor whether to travel by train at all. Despite a host of studies analysing individual legs within a multimodal trip chain, the full chain within a multimodal trip - including access, main and egress - has seen very limited attention. To understand the importance of all these choices, we use travel diaries from the Dutch Mobility Panel to estimate a nested logit discrete choice model. Our results suggest that as a main mode, train and bus/tram/metro (BTM) seem to be associated with an inherent disutility compared to walking, cycling or car. The in-vehicle time in train and BTM, however, seems to be perceived significantly less negatively (60% lower) than in private modes, making them comparatively more attractive for longer journeys. These results imply that, given the strong preference for walking for both access and egress, train stations should be sufficiently dense to allow most people to walk to a station. This, however, should not come at the expense of additional transfers, as they inflict substantial disutility. Operators need to find a balance between accessibility and directness. Given the strong dispreference of travelling by car to dense urban areas, these trips should be the primary target of policymakers and operators for attracting additional travellers to take the train. Future studies could further enhance our understanding of multimodal trips by including additional attributes in the data, account for respondent heterogeneity and study how individuals build their consideration set when making multimodal trips.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/26/2603.19203v2-tinted-frames-question-framing-blinds-vision-language-models",
+      "section": "quick",
+      "title_en": "Tinted Frames: Question Framing Blinds Vision-Language Models",
+      "authors": "Wan-Cyuan Fan, Jiayun Luo, Declan Kutscher, Leonid Sigal, Ritwik Gupta",
+      "date": "2026-03-19",
+      "pdf": "https://arxiv.org/pdf/2603.19203v2",
+      "score": "6.0",
+      "evidence": "语言框架对注意力与推理的影响",
+      "tldr": "本研究揭示了视觉语言模型（VLM）存在“选择性失明”现象，即问题的语言表述方式（如多选题与开放式问题）会显著影响模型对视觉输入的关注程度。研究发现，受限的提问方式会导致模型减少对图像上下文及任务相关区域的注意力，从而降低准确性。为此，作者提出了一种轻量级提示微调方法，通过可学习令牌引导模型产生更稳健的视觉注意力，显著提升了模型在不同提问框架下的性能和一致性。",
+      "tags": "query:q1",
+      "abstract_en": "Vision-Language Models (VLMs) have been shown to be blind, often underutilizing their visual inputs even on tasks that require visual reasoning. In this work, we demonstrate that VLMs are selectively blind. They modulate the amount of attention applied to visual inputs based on linguistic framing even when alternative framings demand identical visual reasoning. Using visual attention as a probe, we quantify how framing alters both the amount and distribution of attention over the image. Constrained framings, such as multiple choice and yes/no, induce substantially lower attention to image context compared to open-ended, reduce focus on task-relevant regions, and shift attention towards uninformative tokens. We further demonstrate that this attention misallocation is the principal cause of degraded accuracy and cross-framing inconsistency. Building on this mechanistic insight, we introduce a lightweight prompt-tuning method using learnable tokens that encourages the robust, visually grounded attention patterns observed in open-ended settings, improving visual grounding and improving performance across framings.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/26/2603.20613v1-a-4r-supported-circular-product-service-system-for-luxury-branded-events",
+      "section": "quick",
+      "title_en": "A 4R-supported circular product-service system for luxury branded events",
+      "authors": "Ke Ma, Francesca Valsecchi, Yuchen Tan, Mingjia Ji, Junru Shen, Xiaoya Ma, Duan Wu, Jiao Mo, Shijian Zhao",
+      "date": "2026-03-21",
+      "pdf": "https://arxiv.org/pdf/2603.20613v1",
+      "score": "6.0",
+      "evidence": "奢侈品牌活动的循环经济4R框架与可持续材料",
+      "tldr": "针对奢侈品牌临时活动中材料周转快、浪费严重的问题，本研究提出了一种基于4R原则（拒绝、减量、复用、回收）的循环物理数字产品服务系统（PSS）。通过与一级承包商合作，该系统整合了可折叠周转箱等物理触点与实时数字仓库等数字化管理手段。研究实现了从仓库到活动现场的全流程优化，在不牺牲奢侈品牌审美和速度标准的前提下，将复用设为默认选项，为品牌环境的循环经济转型提供了可复制的实践路径。",
+      "tags": "query:profile-1",
+      "abstract_en": "Temporary luxury branded events run on short cycles and bespoke builds that accelerate material churn. We present a circular phygital product-service system that operationalises the circular economy (CE) through a 4R frame (Refuse, Reduce, Reuse, and Recycling) across warehouse-to-event journeys. Developed via a multi-method design inquiry with a tier-1 contractor, the system couples physical touchpoints (reusable fold-flat transit boxes, adjustable racking, standard labels) with digital orchestration (a live digital warehouse, list-based outbound/inbound workflow, and a sustainable materials library). The architecture aligns roles and decisions, protects and identifies assets, and makes reuse the default under luxury brand constraints. By embedding traceable actions and CE-aligned rules into everyday handoffs, the PSS shifts procurement, storage, dispatch, return, and redeployment toward value retention. The contribution is a replicable, practice-ready route from circular intent to operational change in branded environments, advancing responsible retail without compromising speed or aesthetic standards.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/26/2603.21637v1-physical-containers-as-framing-conditions-for-visualization-in-augmented-reality",
+      "section": "quick",
+      "title_en": "Physical Containers as Framing Conditions for Visualization in Augmented Reality",
+      "authors": "Jiyeon Bae, Mingyu An, Jeongin Park, Seokweon Jung, Kiroong Choe, Jinwook Seo",
+      "date": "2026-03-23",
+      "pdf": "https://arxiv.org/pdf/2603.21637v1",
+      "score": "6.0",
+      "evidence": "物理容器作为解释的隐性框架机制",
+      "tldr": "针对探索性数据分析中的“冷启动”难题，本文提出利用增强现实（AR）中的物理容器作为隐式框架机制。通过建立概念框架，研究了容器的几何和空间属性（如形状、比例、面数）如何引导用户对数据的感知倾向（如循环或对比分析）。该方法无需手动编码即可引导用户注意力，通过环境特征结构化数据探索过程，为AR可视化设计提供了新视角。",
+      "tags": "query:q1",
+      "abstract_en": "Exploratory data analysis (EDA) is often hindered by cold-start friction; when users lack specific analytic goals, they struggle to configure complex visualization parameters. While existing visualization tools mostly rely on explicit user input to frame data, we propose leveraging the physical environment as an implicit framing mechanism. We introduce a conceptual framework that uses the geometric and spatial properties of physical containers in Augmented Reality (AR) to guide data interpretation. We characterize how container attributes, such as number of faces, size, proportion, and shape, give rise to distinct perceptual tendencies. For example, a circular container may encourage cyclic interpretation, while juxtaposed planar faces may facilitate comparative analysis. By treating physical forms as environmental framing conditions, we show how AR can orient a user's attention and structure their exploration without requiring manual encoding or prescribing fixed conclusions. We demonstrate this framework through a series of AR design examples illustrating how container morphology foregrounds cyclic, comparative, and sequential analytic patterns.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/26/2603.21639v1-engineering-distributed-governance-for-regional-prosperity-a-socio-technical-framework-for-mitigating-under-vibrancy-via-human-data-engines",
+      "section": "quick",
+      "title_en": "Engineering Distributed Governance for Regional Prosperity: A Socio-Technical Framework for Mitigating Under-Vibrancy via Human Data Engines",
+      "authors": "Amil Khanzada, Takuji Takemoto",
+      "date": "2026-03-23",
+      "pdf": "https://arxiv.org/pdf/2603.21639v1",
+      "score": "6.0",
+      "evidence": "侧重于区域旅游管理和游客密度优化",
+      "tldr": "采用社会技术框架来优化旅游地区的游客流动和经济活动。",
+      "tags": "query:q3",
+      "abstract_en": "Most research in urban informatics and tourism focuses on mitigating overtourism in dense global cities. However, for regions experiencing demographic decline and structural stagnation, the primary risk is \"under-vibrancy\", a condition where low visitor density suppresses economic activity and diminishes satisfaction. This paper introduces the Distributed Human Data Engine (DHDE), a socio-technical framework previously validated in biological crisis management, and adapts it for regional economic flow optimization. Using high-granularity data from Japan's least-visited prefecture (Fukui), we utilize an AI-driven decision support system (DSS) to analyze two datasets: a raw Fukui spending database (90,350 records) and a regional standardized sentiment database (97,719 responses). The system achieves in-sample explanatory power of 81% (R^2 = 0.810) and out-of-sample predictive performance of 68% (R^2 = 0.683). We quantify an annual opportunity gap of 865,917 unrealized visits, equivalent to approximately 11.96 billion yen (USD 76.2 million) in lost revenue. We propose a dual-nudge governance architecture leveraging the DHDE to redistribute cross-prefectural flows and reduce economic leakage.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/26/2603.23433v1-mecha-nudges-for-machines",
+      "section": "quick",
+      "title_en": "Mecha-nudges for Machines",
+      "authors": "Giulio Frey, Kawin Ethayarajh",
+      "date": "2026-03-24",
+      "pdf": "https://arxiv.org/pdf/2603.23433v1",
+      "score": "6.0",
+      "evidence": "助推作为改变选择呈现方式以转变行为的手段",
+      "tldr": "引入机械助推，通过改变选择呈现方式影响决策，与框架效应研究相关。",
+      "tags": "query:q1",
+      "abstract_en": "Nudges are subtle changes to the way choices are presented to human decision-makers (e.g., opt-in vs. opt-out by default) that shift behavior without restricting options or changing incentives. As AI agents increasingly make decisions in the same environments as humans, the presentation of choices may be optimized for machines as well as people. We introduce mecha-nudges: changes to how choices are presented that systematically influence AI agents without degrading the decision environment for humans. To formalize mecha-nudges, we combine the Bayesian persuasion framework with V-usable information, a generalization of Shannon information that is observer-relative. This yields a common scale (bits of usable information) for comparing a wide range of interventions, contexts, and models. Applying our framework to product listings on Etsy -- a global marketplace for independent sellers -- we find that following ChatGPT's release, listings have significantly more machine-usable information about product selection, consistent with systematic mecha-nudging.",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

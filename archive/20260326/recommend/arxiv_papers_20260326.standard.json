@@ -1,0 +1,245 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-26T19:47:30.303903+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2603.18594v1",
+      "title": "Beyond the Main Mode: The contribution of access and egress trips in door-to-door travel",
+      "abstract": "Access and egress trips constitute a substantial part of a train trip in minds of travellers, often being the deciding factor whether to travel by train at all. Despite a host of studies analysing individual legs within a multimodal trip chain, the full chain within a multimodal trip - including access, main and egress - has seen very limited attention. To understand the importance of all these choices, we use travel diaries from the Dutch Mobility Panel to estimate a nested logit discrete choice model. Our results suggest that as a main mode, train and bus/tram/metro (BTM) seem to be associated with an inherent disutility compared to walking, cycling or car. The in-vehicle time in train and BTM, however, seems to be perceived significantly less negatively (60% lower) than in private modes, making them comparatively more attractive for longer journeys. These results imply that, given the strong preference for walking for both access and egress, train stations should be sufficiently dense to allow most people to walk to a station. This, however, should not come at the expense of additional transfers, as they inflict substantial disutility. Operators need to find a balance between accessibility and directness. Given the strong dispreference of travelling by car to dense urban areas, these trips should be the primary target of policymakers and operators for attracting additional travellers to take the train. Future studies could further enhance our understanding of multimodal trips by including additional attributes in the data, account for respondent heterogeneity and study how individuals build their consideration set when making multimodal trips.",
+      "authors": [
+        "Nejc Geržinič",
+        "Mark van Hagen",
+        "Hussein Al-Tamimi",
+        "Niels van Oort",
+        "Dorine Duives"
+      ],
+      "primary_category": "physics.soc-ph",
+      "categories": [
+        "physics.soc-ph"
+      ],
+      "published": "2026-03-19T08:04:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.18594v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "traveler choices and multimodal trip disutility",
+      "llm_evidence_cn": "旅行者选择与多模式出行负效用",
+      "llm_evidence": "旅行者选择与多模式出行负效用",
+      "canonical_evidence": "旅行者选择与多模式出行负效用",
+      "llm_tldr_en": "Analyzes traveler preferences for different transport modes using discrete choice models.",
+      "llm_tldr_cn": "使用离散选择模型分析旅行者对不同交通模式的偏好。",
+      "llm_tldr": "使用离散选择模型分析旅行者对不同交通模式的偏好。",
+      "llm_tags": [
+        "query:q7"
+      ],
+      "matched_query_tag": "query:q7",
+      "matched_query_text": "effectiveness of different framing strategies for green travel",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.19203v2",
+      "title": "Tinted Frames: Question Framing Blinds Vision-Language Models",
+      "abstract": "Vision-Language Models (VLMs) have been shown to be blind, often underutilizing their visual inputs even on tasks that require visual reasoning. In this work, we demonstrate that VLMs are selectively blind. They modulate the amount of attention applied to visual inputs based on linguistic framing even when alternative framings demand identical visual reasoning. Using visual attention as a probe, we quantify how framing alters both the amount and distribution of attention over the image. Constrained framings, such as multiple choice and yes/no, induce substantially lower attention to image context compared to open-ended, reduce focus on task-relevant regions, and shift attention towards uninformative tokens. We further demonstrate that this attention misallocation is the principal cause of degraded accuracy and cross-framing inconsistency. Building on this mechanistic insight, we introduce a lightweight prompt-tuning method using learnable tokens that encourages the robust, visually grounded attention patterns observed in open-ended settings, improving visual grounding and improving performance across framings.",
+      "authors": [
+        "Wan-Cyuan Fan",
+        "Jiayun Luo",
+        "Declan Kutscher",
+        "Leonid Sigal",
+        "Ritwik Gupta"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-19T17:53:09+00:00",
+      "link": "https://arxiv.org/pdf/2603.19203v2",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "impact of linguistic framing on attention and reasoning",
+      "llm_evidence_cn": "语言框架对注意力与推理的影响",
+      "llm_evidence": "语言框架对注意力与推理的影响",
+      "canonical_evidence": "语言框架对注意力与推理的影响",
+      "llm_tldr_en": "Demonstrates how linguistic framing modulates attention in vision-language models, relevant to framing theory.",
+      "llm_tldr_cn": "展示了语言框架如何调节视觉语言模型的注意力，与框架效应理论相关。",
+      "llm_tldr": "展示了语言框架如何调节视觉语言模型的注意力，与框架效应理论相关。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.20613v1",
+      "title": "A 4R-supported circular product-service system for luxury branded events",
+      "abstract": "Temporary luxury branded events run on short cycles and bespoke builds that accelerate material churn. We present a circular phygital product-service system that operationalises the circular economy (CE) through a 4R frame (Refuse, Reduce, Reuse, and Recycling) across warehouse-to-event journeys. Developed via a multi-method design inquiry with a tier-1 contractor, the system couples physical touchpoints (reusable fold-flat transit boxes, adjustable racking, standard labels) with digital orchestration (a live digital warehouse, list-based outbound/inbound workflow, and a sustainable materials library). The architecture aligns roles and decisions, protects and identifies assets, and makes reuse the default under luxury brand constraints. By embedding traceable actions and CE-aligned rules into everyday handoffs, the PSS shifts procurement, storage, dispatch, return, and redeployment toward value retention. The contribution is a replicable, practice-ready route from circular intent to operational change in branded environments, advancing responsible retail without compromising speed or aesthetic standards.",
+      "authors": [
+        "Ke Ma",
+        "Francesca Valsecchi",
+        "Yuchen Tan",
+        "Mingjia Ji",
+        "Junru Shen",
+        "Xiaoya Ma",
+        "Duan Wu",
+        "Jiao Mo",
+        "Shijian Zhao"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-03-21T03:14:53+00:00",
+      "link": "https://arxiv.org/pdf/2603.20613v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "circular economy 4R frame for luxury branded events and sustainable materials",
+      "llm_evidence_cn": "奢侈品牌活动的循环经济4R框架与可持续材料",
+      "llm_evidence": "奢侈品牌活动的循环经济4R框架与可持续材料",
+      "canonical_evidence": "奢侈品牌活动的循环经济4R框架与可持续材料",
+      "llm_tldr_en": "Presents a circular product-service system for events using a 4R framework to promote reuse and sustainability.",
+      "llm_tldr_cn": "提出一个针对品牌活动的循环产品服务系统，利用4R框架促进重复利用和可持续性。",
+      "llm_tldr": "提出一个针对品牌活动的循环产品服务系统，利用4R框架促进重复利用和可持续性。",
+      "llm_tags": [
+        "query:profile-1:composite"
+      ],
+      "matched_query_tag": "query:profile-1:composite",
+      "matched_query_text": "Papers central to 旅游学领域亲环境行为与框架效应相关的论文查找, especially work that connects or combines: framing effect in environmental psychology; T; pro-environmental behavior in tourism; Please help me find papers on pro environmental behavior and framing effects in the field of tourism; impact of framing effects on tourist pro environmental behavior; psychological mechanisms of framing in tourism environmental protection; effectiveness of different framing strategies for green travel.",
+      "matched_requirement_id": "req-composite-profile-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.21637v1",
+      "title": "Physical Containers as Framing Conditions for Visualization in Augmented Reality",
+      "abstract": "Exploratory data analysis (EDA) is often hindered by cold-start friction; when users lack specific analytic goals, they struggle to configure complex visualization parameters. While existing visualization tools mostly rely on explicit user input to frame data, we propose leveraging the physical environment as an implicit framing mechanism. We introduce a conceptual framework that uses the geometric and spatial properties of physical containers in Augmented Reality (AR) to guide data interpretation. We characterize how container attributes, such as number of faces, size, proportion, and shape, give rise to distinct perceptual tendencies. For example, a circular container may encourage cyclic interpretation, while juxtaposed planar faces may facilitate comparative analysis. By treating physical forms as environmental framing conditions, we show how AR can orient a user's attention and structure their exploration without requiring manual encoding or prescribing fixed conclusions. We demonstrate this framework through a series of AR design examples illustrating how container morphology foregrounds cyclic, comparative, and sequential analytic patterns.",
+      "authors": [
+        "Jiyeon Bae",
+        "Mingyu An",
+        "Jeongin Park",
+        "Seokweon Jung",
+        "Kiroong Choe",
+        "Jinwook Seo"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-03-23T07:04:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.21637v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "physical containers as implicit framing mechanisms for interpretation",
+      "llm_evidence_cn": "物理容器作为解释的隐性框架机制",
+      "llm_evidence": "物理容器作为解释的隐性框架机制",
+      "canonical_evidence": "物理容器作为解释的隐性框架机制",
+      "llm_tldr_en": "Proposes a framework for how physical environments act as framing conditions to guide data interpretation.",
+      "llm_tldr_cn": "提出了物理环境如何作为框架条件引导数据解释的框架。",
+      "llm_tldr": "提出了物理环境如何作为框架条件引导数据解释的框架。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.21639v1",
+      "title": "Engineering Distributed Governance for Regional Prosperity: A Socio-Technical Framework for Mitigating Under-Vibrancy via Human Data Engines",
+      "abstract": "Most research in urban informatics and tourism focuses on mitigating overtourism in dense global cities. However, for regions experiencing demographic decline and structural stagnation, the primary risk is \"under-vibrancy\", a condition where low visitor density suppresses economic activity and diminishes satisfaction. This paper introduces the Distributed Human Data Engine (DHDE), a socio-technical framework previously validated in biological crisis management, and adapts it for regional economic flow optimization. Using high-granularity data from Japan's least-visited prefecture (Fukui), we utilize an AI-driven decision support system (DSS) to analyze two datasets: a raw Fukui spending database (90,350 records) and a regional standardized sentiment database (97,719 responses). The system achieves in-sample explanatory power of 81% (R^2 = 0.810) and out-of-sample predictive performance of 68% (R^2 = 0.683). We quantify an annual opportunity gap of 865,917 unrealized visits, equivalent to approximately 11.96 billion yen (USD 76.2 million) in lost revenue. We propose a dual-nudge governance architecture leveraging the DHDE to redistribute cross-prefectural flows and reduce economic leakage.",
+      "authors": [
+        "Amil Khanzada",
+        "Takuji Takemoto"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY",
+        "cs.LG"
+      ],
+      "published": "2026-03-23T07:14:34+00:00",
+      "link": "https://arxiv.org/pdf/2603.21639v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "focuses on tourism management and visitor density optimization in regional areas",
+      "llm_evidence_cn": "侧重于区域旅游管理和游客密度优化",
+      "llm_evidence": "侧重于区域旅游管理和游客密度优化",
+      "canonical_evidence": "侧重于区域旅游管理和游客密度优化",
+      "llm_tldr_en": "Adapts a socio-technical framework to optimize visitor flows and economic activity in tourism regions.",
+      "llm_tldr_cn": "采用社会技术框架来优化旅游地区的游客流动和经济活动。",
+      "llm_tldr": "采用社会技术框架来优化旅游地区的游客流动和经济活动。",
+      "llm_tags": [
+        "query:q3"
+      ],
+      "matched_query_tag": "query:q3",
+      "matched_query_text": "pro-environmental behavior in tourism",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.23433v1",
+      "title": "Mecha-nudges for Machines",
+      "abstract": "Nudges are subtle changes to the way choices are presented to human decision-makers (e.g., opt-in vs. opt-out by default) that shift behavior without restricting options or changing incentives. As AI agents increasingly make decisions in the same environments as humans, the presentation of choices may be optimized for machines as well as people. We introduce mecha-nudges: changes to how choices are presented that systematically influence AI agents without degrading the decision environment for humans. To formalize mecha-nudges, we combine the Bayesian persuasion framework with V-usable information, a generalization of Shannon information that is observer-relative. This yields a common scale (bits of usable information) for comparing a wide range of interventions, contexts, and models. Applying our framework to product listings on Etsy -- a global marketplace for independent sellers -- we find that following ChatGPT's release, listings have significantly more machine-usable information about product selection, consistent with systematic mecha-nudging.",
+      "authors": [
+        "Giulio Frey",
+        "Kawin Ethayarajh"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-03-24T17:02:21+00:00",
+      "link": "https://arxiv.org/pdf/2603.23433v1",
+      "tags": [
+        "keyword:旅游亲环境",
+        "query:旅游亲环境"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "nudges as subtle changes to choice presentation to shift behavior",
+      "llm_evidence_cn": "助推作为改变选择呈现方式以转变行为的手段",
+      "llm_evidence": "助推作为改变选择呈现方式以转变行为的手段",
+      "canonical_evidence": "助推作为改变选择呈现方式以转变行为的手段",
+      "llm_tldr_en": "Introduces mecha-nudges to influence decision-making through choice presentation, relevant to framing effects.",
+      "llm_tldr_cn": "引入机械助推，通过改变选择呈现方式影响决策，与框架效应研究相关。",
+      "llm_tldr": "引入机械助推，通过改变选择呈现方式影响决策，与框架效应研究相关。",
+      "llm_tags": [
+        "query:q1"
+      ],
+      "matched_query_tag": "query:q1",
+      "matched_query_text": "framing effect in environmental psychology",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

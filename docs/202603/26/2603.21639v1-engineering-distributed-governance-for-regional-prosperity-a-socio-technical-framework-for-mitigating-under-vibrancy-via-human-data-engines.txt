@@ -1,0 +1,1042 @@
+Title: Paper - Fukui Sightseeing - Manuscript - arxiv
+
+URL Source: https://arxiv.org/pdf/2603.21639v1
+
+Published Time: Tue, 24 Mar 2026 01:54:04 GMT
+
+Number of Pages: 34
+
+Markdown Content:
+Engineering Distributed Governance for Regional Prosperity: A Socio-Technical Framework for Mitigating Under-Vibrancy via Human Data Engines 
+
+Authors: 
+
+Amil Khanzada¹*, Takuji Takemoto² 
+
+Affiliations: 
+
+¹ Specially Appointed Assistant Professor, Headquarters for Regional Revitalization, University 
+
+of Fukui, Japan.  amil.k@u-fukui.ac.jp 
+
+² Professor, Headquarters for Regional Revitalization, University of Fukui, Japan. 
+
+takemoto@u-fukui.ac.jp 
+
+*Corresponding Author: Amil Khanzada  amil.k@u-fukui.ac.jp 
+
+# Abstract 
+
+Most research in urban informatics and tourism focuses on mitigating overtourism in dense global cities. However, for regions experiencing demographic decline and structural stagnation, the primary risk is “under-vibrancy”, a condition where low visitor density suppresses economic activity and diminishes satisfaction. This paper introduces the Distributed Human Data Engine (DHDE), a socio-technical framework that integrates heterogeneous behavioral signals into a governance-oriented analytics pipeline, and applies it to regional economic flow optimization. Using high-granularity data from Japan's least-visited prefecture (Fukui), we analyze 90,350 spending records and 97,719 standardized survey responses across four tourism nodes. 
+
+The OLS inference engine achieves 81% in-sample explanatory power ( R² = 0.810 ) and 68% out-of-sample predictive performance ( R² = 0.683 ). Digital search intent is the dominant behavioral driver ( β = 0.456 ), while weather functions as a critical planning filter. Affective text analysis reveals an "Under-Vibrancy Paradox": visitor satisfaction is positively correlated with crowd density ( rs = +0.150, p = 0.002 ), and dissatisfied visitors are 11.5 times more likely to reference empty streets than overcrowding. We quantify an annual opportunity gap of 865,917 unrealized visits: approximately ¥11.96 billion (USD 76.2 million) in lost revenue attributable to weather-induced planning friction. Simulations show that demand recovery across four nodes closes 66% of the monthly shortfall needed to exit the bottom national ranking tier. We propose a dual-nudge governance architecture leveraging the DHDE to redistribute cross-prefectural flows and reduce economic leakage. 
+
+Keywords: Urban informatics, algorithmic governance, tourism demand forecasting, behavioral nudging, spatial load balancing 
+
+# 1. Introduction 
+
+The prevailing literature in urban informatics and tourism management disproportionately focuses on the negative externalities of high visitor density, a phenomenon widely characterized as "overtourism" in primary global destinations such as Kyoto and Venice (Oklevik et al., 2019; Seraphin et al., 2018). Conversely, the structural stagnation of secondary or peripheral municipalities remains critically underrepresented. These regions frequently suffer from under-vibrancy: a socio-economic condition defined by sub-optimal spatial utilization, diminished atmospheric vitality, and subsequent economic leakage. In such contexts, the primary threat to regional sustainability is not congestion, but severe planning friction that prevents latent digital demand from converting into physical visitation. 
+
+The failure to capture this latent demand is rarely a consequence of insufficient cultural or natural resources. Rather, it is driven by environmental stochasticity and static municipal governance frameworks. To investigate this dynamic, this study focuses on Fukui Prefecture, located in the central part of Japan along the Sea of Japan. Despite its adjacency to hyper-dense global hubs like Kyoto and close proximity to Osaka, Fukui remains Japan's least-visited prefecture and is characterized by harsh winter micro-climates, including heavy coastal winds and inland snowfall. In such environments, high digital intent, observable through search engine queries and map routing requests, often dissipates prior to physical arrival due to weather uncertainty. This cancellation behavior triggers a negative feedback loop: local merchants preemptively reduce operational hours, exacerbating the perceived emptiness of the destination, which in turn degrades the post-visit satisfaction of the remaining visitor cohort. Addressing this structural failure necessitates a transition from reactive policy formulation to proactive, data-driven algorithmic governance. 
+
+To mitigate these spatial inefficiencies, this study introduces the Distributed Human Data Engine (DHDE), a socio-technical framework that conceptualizes human populations as distributed sensors. Although the DHDE is novel in the context of regional tourism governance, it draws conceptual inspiration from prior public health research in which large-scale crowdsourced behavioral data were aggregated to generate actionable insights for AI-assisted diagnosis (Khanzada et al., 2025). Adopting an Input-Process-Output (IPO) architecture similar to that used in clinical data collection, the DHDE is generalized here to forecast spatial demand and support socio-economic load balancing. 
+
+Building on this framework, we implement a comprehensive DHDE ecosystem across four geographically saturated nodes (coastal, urban transit, mountainous, and scenic corridor) within Fukui Prefecture in Japan’s Hokuriku region. The system integrates high-granularity, multi-modal data streams, including digital intent signals from Google Business Profiles, hourly micro-climate observations from the Japan Meteorological Agency (JMA), physical ground-truth visitor counts from edge-AI cameras (supplemented by survey proxies), and behavioral metrics from a large-scale tourism survey database comprising 97,719 standardized responses. By applying Kansei (affective) information-science methodologies grounded in regionally developed affective analysis frameworks in Fukui (Inoue and Mitani, 2025), we examine how visitor satisfaction relates to spatial density and micro-level carrying capacities, empirically demonstrating the region's atmospheric resilience and its latent capacity to absorb rerouted visitor flows. 
+
+The primary contributions of this research are as follows: 1.  Predictive Modeling of Planning Friction: We present a multi-variable demand forecasting model that explains 81% of daily visitor variance ( R² = 0.810 ). Using out-of-sample backtesting, we demonstrate that digital intent signals, when filtered through high-resolution meteorological data, can predict physical visitor flows 48 to 72 hours in advance with 68% accuracy on unseen data. 
+
+2.  Identification of the Under-Vibrancy Paradox: We provide empirical evidence that in structurally weak regional economies, visitor satisfaction is positively correlated with crowd density, fundamentally challenging prevailing overtourism-centric models. 
+
+3.  Quantification of Economic Leakage: We define and quantify an annual "Opportunity Gap" of approximately ¥11.96 billion (USD 76.2 million at ¥157/$1) in unrealized regional revenue at four sites associated with weather-degraded intent-to-arrival conversion rates. 
+
+4.  The Socio-Technical Nudge Loop: We propose an actionable algorithmic governance framework that combines automated supply-side nudges, such as merchant vitality alerts, with demand-side nudges, including weather-resilient routing, to recover suppressed demand and enable cross-prefectural load balancing. 
+
+# 2. Related Work 
+
+The theoretical and methodological foundations of this study reside at the intersection of urban informatics, distributed governance, predictive demand analytics, behavioral economics, and Kansei information science. By reviewing the progression of these domains, we delineate the boundaries of existing research and establish the original scientific contributions of this paper. 
+
+2.1 Urban Informatics and the Smart Tourism Destination 
+
+The rapid digitalization of global travel has catalyzed the emergence of the Smart Tourism Destination (STD) paradigm. STDs are defined by their ability to integrate Internet of Things (IoT) infrastructure, cloud computing, and end-user mobile connectivity to enhance destination competitiveness and enrich visitor experiences (Buhalis and Amaranggana, 2015; Gretzel et al., 2015). A vast majority of recent STD literature is heavily weighted toward managing "overtourism," which occurs when visitor density surpasses physical or ecological carrying capacities, thereby degrading the quality of life for local residents and the quality of experience for tourists (Dodds and Butler, 2019; Milano et al., 2019). Consequently, spatial optimization literature prioritizes capacity restriction, congestion pricing, and demarketing strategies for hyper-dense global hubs such as Kyoto, Barcelona, and Venice (Oklevik et al., 2019; Seraphin et al., 2018). 
+
+However, this focus creates a distinct theoretical gap regarding peripheral or lower-ranked municipalities. For regions experiencing population decline and structural stagnation, the primary socio-economic threat is not congestion. Existing literature often diagnoses spatial emptiness in these areas as a fundamental lack of attractive resources, prescribing traditional destination marketing as the primary solution (Pike, 2018). To address this oversight, the present study introduces the novel concept of under-vibrancy. We mathematically frame spatial emptiness as an environmentally induced planning-friction problem that actively degrades the visitor experience and causes economic leakage, arguing that an optimal level of crowding is actually a prerequisite for satisfaction in structurally under-visited environments. 
+
+2.2 Distributed Governance and Human-as-a-Sensor Networks 
+
+The concept of utilizing distributed human populations as data-gathering nodes has its origins in participatory sensing and crowdsensing models, where mobile devices act as ubiquitous environmental monitors (Burke et al., 2006; Lane et al., 2010). In recent years, this socio-technical architecture has proven highly effective in rapid crisis management. For example, Khanzada et al. (2025) demonstrated that large-scale crowdsourced biological data could be aggregated using behavioral nudges to train diagnostic artificial intelligence models during the COVID-19 pandemic. This established the viability of an Input-Process-Output architecture where human behavior serves as a real-time sensor network, bypassing the latency of traditional bureaucratic reporting. 
+
+While the literature widely supports crowdsensing for disaster response and public health (Kankanamge et al., 2019), its continuous application for algorithmic governance of regional economic health remains underexplored. Economic governance still largely relies on lagging macroeconomic indicators rather than real-time behavioral signals (Meijer and Thaens, 2018). This paper contributes to the literature by generalizing the Distributed Human Data Engine (DHDE) framework. By shifting its application from biological crisis mitigation to economic prosperity optimization, we demonstrate that human-as-a-sensor networks can power evidence-based policy making (EBPM) in regional tourism. 
+
+2.3 Predictive Analytics and Environmental Friction 
+
+Predicting human mobility and tourism demand relies heavily on digital intent signals. Choi and Varian (2012) pioneered the use of search engine query data to forecast near-term economic indicators, establishing a method that has since become a standard in tourism demand forecasting (Bangwayo-Skeete and Skeete, 2015; Li et al., 2017). Advanced forecasting models have evolved from simple autoregressive integrated moving average (ARIMA) techniques to complex machine learning algorithms, including Random Forest and Long Short-Term Memory (LSTM) neural networks (Song et al., 2019). 
+
+Despite these algorithmic advancements, most predictive models treat exogenous environmental variables, such as precipitation and extreme temperatures, as secondary statistical noise rather than primary causal mechanisms. Day et al. (2013) noted that weather is a critical behavioral gatekeeper in tourism, yet few forecasting models dynamically integrate high-resolution meteorological data to quantify specific trip cancellation rates at the micro-destination level. This study advances the methodology of predictive analytics by proposing a novel approach that integrates Google Business Profile intent with Japan Meteorological Agency (JMA) micro-climate data. This allows us to isolate "planning friction" and calculate the exact economic opportunity gap caused by weather-driven travel cancellations. 
+
+2.4 Algorithmic Governance and Digital Nudging Behavioral economics, particularly Nudge theory as formalized by Thaler and Sunstein (2008), proposes that choice architecture can predictably alter human behavior without forbidding any options or significantly changing economic incentives. In public policy, frameworks such as EAST (Easy, Attractive, Social, and Timely) have been utilized to encourage tax compliance, organ donation, and public health adherence (Behavioural Insights Team, 2017). The migration of these concepts into digital interfaces has birthed the concept of "digital nudging" (Weinmann et al., 2016), which, when paired with artificial intelligence, enables "algorithmic governance" (Danaher, 2016). 
+
+In tourism research, nudging has primarily been applied to micro-level sustainability behaviors, such as encouraging towel reuse in hotels or reducing food waste, rather than to macro-level spatial load balancing. Similarly, most tourism routing and recommendation algorithms remain optimized for transit efficiency or congestion avoidance, with limited consideration of experiential or atmospheric conditions at the destination (Zheng et al., 2014; Gretzel et al., 2015). This research extends the literature by introducing an original dual-nudge feedback loop for spatial governance: a closed-loop system in which supply-side nudges alert merchants to adjust operating hours based on forecasted demand, while demand-side nudges dynamically reroute visitors toward weather-resilient locations under conditions of elevated environmental planning friction. 
+
+2.5 Kansei Information Science in Spatial Management 
+
+Kansei Engineering evaluates human psychological and emotional responses to external physical stimuli, translating subjective feelings into quantifiable design parameters (Nagamachi, 1995). Originally developed for industrial product design, recent advancements in regional informatics have expanded Kansei methodologies to evaluate affective responses to municipal environments and regional branding (Schütte et al., 2004). For example, Inoue and Mitani (2025) utilized semantic differential scales and factor analysis to quantify university students' emotional attachment and regional pride regarding Fukui Prefecture. Their work demonstrated how these internal Kansei evaluations directly influence concrete behaviors, such as employment location choices. 
+
+The present study builds upon this regionally grounded Kansei approach by applying rule-based affective keyword analysis to large-scale visitor satisfaction surveys. We extend these Kansei principles from static image evaluation to dynamic spatial capacity management. By correlating crowd density with subjective satisfaction scores, we empirically evaluate the atmospheric resilience of the region's diverse attractions. This establishes a framework to quantify latent carrying capacity, ensuring that future spatial load-balancing strategies can safely redistribute visitor flows without assuming premature congestion. 
+
+# 3. Methodology 
+
+This study operationalizes the Distributed Human Data Engine (DHDE) as an empirical measurement and forecasting system to examine planning friction and regional under-vibrancy. The methodology is structured into five phases: multi-source data harmonization, predictive feature engineering, statistical modeling and validation, Kansei information extraction, and economic opportunity quantification. The regional tourism system is treated as a continuous, distributed sensor network capturing the progression from digital intent to physical arrival and post-visit affective evaluation (see Figure 1). 
+
+Figure 1. The Distributed Human Data Engine (DHDE) decision support system architecture. The framework integrates four heterogeneous sensor streams into a multi-variable processing core. The architecture utilizes a robust suite of statistical validations to ensure predictive stability (R² = 0.810) as the underlying database scales. The resulting policy intelligence enables autonomous behavioral nudges to optimize regional prosperity. 
+
+3.1 Multi-Source Data Harmonization and Geographic Saturation 
+
+The DHDE integrates four heterogeneous data streams synchronized by date and geographic location. The observation period for physical-flow modeling spans 427 usable days over an approximately 15-month period from December 20, 2024 to March 11, 2026, after excluding sensor outage intervals. To ensure spatial representativeness across the prefecture's diverse topography, we achieved geographic saturation by selecting four structurally distinct monitoring nodes: Tojinbo as a weather-exposed coastal landmark, Fukui Station as a central urban transit hub, Katsuyama as a mountainous heritage and dinosaur museum node, and the Rainbow Line as a highly seasonal scenic drive corridor. In addition to the four primary governance nodes, the Eiheiji Zen temple was analyzed as a secondary heritage sub-site for survey-based Kansei analysis. This provides a culturally sensitive control case to test the atmospheric resilience of the region's most fragile spiritual landmarks. 
+
+The integrated data streams are defined as follows: 1.  Digital Intent Data: 
+
+Daily Google Business Profile metrics were collected for 47 tourism locations. The Google Maps "Directions" query volume was isolated as the primary proxy for latent travel demand, representing user commitment beyond passive information search. 
+
+2.  Environmental Filter Data: 
+
+High-resolution meteorological observations were obtained from four Japan Meteorological Agency (JMA) stations (Mikuni, Fukui City, Katsuyama, and Mihama). Local observatory data corresponding to each node were used to capture micro-climate variation. Hourly precipitation, temperature, sunshine duration, wind speed, and snow depth were aggregated into daily profiles. 
+
+3.  Ground-Truth Physical Data: 
+
+Edge-AI cameras equipped with human-shape detection recorded visitor counts at five-minute intervals for three of the locations. Node D (Rainbow Line) utilized a parking gate facial-detection sensor; because this represents a sub-sample of total vehicle occupancy rather than a total site count, it exhibits higher instrumental noise ( R² = 0.168 )compared to other nodes. Node C (Katsuyama) relied on a validated survey-response proxy. This proxy was validated by correlating daily survey volumes with ground-truth camera counts at the primary node ( r = 0.564, p < 0.001 ), confirming that survey response frequency is a reliable indicator of physical density in this regional context. Camera data was aggregated into daily totals, and an automated anomaly detection process removed 17 zero-count days associated with documented sensor outages. 
+
+4.  Data Integration and Ethics: 
+
+This study integrates two complementary data streams. Dataset 1 comprises 90,350 raw Fukui-specific records (spanning 576,127 physical CSV lines) utilized for spending analysis. Dataset 2 comprises 97,719 standardized responses from across the Hokuriku region (Fukui, Ishikawa, and Toyama) utilized for Kansei sentiment mining and predictive modeling. All datasets were de-identified and provided as secondary data by the Hokuriku Inbound Tourism DX and Data Consortium in accordance with regional privacy guidelines and institutional ethics standards. This study uses secondary, de-identified administrative data provided by a public-sector consortium; no primary human subjects research was conducted by the authors, and formal IRB review was not required under applicable institutional guidelines. 
+
+3.2 Predictive Feature Engineering 
+
+To model the temporal gap between planning and execution, digital intent variables were lagged from zero to seven days. A seven-day rolling average was also computed to mitigate weekday search volatility. 
+
+Environmental variables were treated as exogenous friction factors. To capture non-linear behavioral responses, we constructed a composite Weather Severity Index ranging from 0 to 3. Thresholds were defined using empirically grounded safety and accessibility cutoffs: precipitation exceeding 10 mm/day, wind speeds above 8 m/s, and accumulated snow depth constraining vehicular access, where available. Snow depth data was available only at Node B (Fukui City main observatory); the remaining three nodes rely on precipitation and wind as primary weather friction indicators. Calendar effects were controlled using binary indicators for weekends and Japanese national holidays, alongside interaction terms combining calendar and weather severity. 
+
+3.3 Statistical Modeling and Robustness Validation 
+
+The predictive objective is to estimate the relative contribution of psychological intent and environmental friction to physical arrivals. A multiple Ordinary Least Squares (OLS) regression model served as the primary explanatory framework. Standardized Beta coefficients (β) were computed to enable direct comparison of effect sizes. 
+
+To address time-series dependence, residuals were evaluated using the Durbin-Watson statistic. Identified autocorrelation was corrected using Newey-West heteroskedasticity and autocorrelation consistent estimators. Additional robustness checks included a First-Difference specification and a Lagged Dependent Variable (LDV) model, ensuring that explanatory power reflected signal extraction rather than trend persistence. 
+
+To capture non-linear interactions, a Random Forest Regressor with 500 estimators was implemented as a complementary predictive model. Stability was verified through five-fold cross-validation. Feature importance was assessed using permutation importance to avoid bias toward continuous variables. Out-of-sample validity was tested using a chronological split, training on 317 days and evaluating performance on an 80-day hold-out period using R² , MAE, and RMSE. 
+
+3.4 Kansei Information Extraction and Spatial Threshold Identification 
+
+To examine affective responses underlying the Under-Vibrancy Paradox, Kansei information science methodologies were applied. A total of 71,623 free-text survey responses were analyzed using rule-based keyword matching to identify affective terms associated with satisfaction and dissatisfaction. Comparative frequency analysis across low-satisfaction (1-2 star) and high-satisfaction (4-5 star) cohorts was used to identify dominant atmospheric drivers of visitor sentiment. 
+
+To evaluate daily micro-level carrying capacities, daily satisfaction scores were correlated with relative crowd density. This was conducted to determine whether current visitor volumes at monitored nodes have reached a congestion threshold that degrades the visitor experience. 
+
+3.5 Cross-Prefectural Signal Analysis and Opportunity Quantification 
+
+To assess regional interdependence, a cross-correlation function (CCF) analysis was conducted between tourism survey activity in the adjacent Ishikawa Prefecture and physical AI-camera arrivals in Fukui, identifying lagged spillover effects across administrative borders. Finally, the economic impact of weather deterrence was quantified using the "Opportunity Gap" metric. On days exhibiting high digital intent coupled with elevated weather severity, the negative residuals of the predictive model were interpreted as suppressed visitation associated with planning friction. These unrealized visits (865,917) were multiplied by the baseline mean per-capita expenditure of ¥13,811 to yield an estimated annual Opportunity Gap of ¥11.96 billion. This quantification establishes a concrete baseline for evidence-based policy making (EBPM) and justifies the subsequent deployment of algorithmic governance interventions. 
+
+# 4. Results 
+
+The application of the Distributed Human Data Engine (DHDE) produced statistically robust results across predictive modeling, affective text analysis, and economic quantification. The findings demonstrate that integrating digital intent with high-resolution environmental filters enables accurate forecasting of visitor flows, while also revealing structural limitations in prevailing capacity management assumptions for low-density regional destinations. 
+
+4.1 Predictive Performance and Statistical Robustness 
+
+The primary objective of the predictive module was to evaluate whether digital intent signals could reliably forecast physical arrivals at the primary coastal node, Tojinbo . The Ordinary Least Squares (OLS) regression model exhibited strong explanatory power, accounting for 81.0 percent of daily visitor variance ( R² = 0.810 , Adjusted R² = 0.802 , p < 0.001 ) across the 397-day effective observation period after merging with Google intent data (Table 1). 
+
+Table 1. Ordinary Least Squares (OLS) regression results predicting physical arrivals at the primary coastal node (Tojinbo). The model integrates digital intent signals, high-resolution micro-climate data, and temporal interaction terms, successfully explaining 81.0% of the daily visitor variance ( R² = 0.810 ). 
+
+Variable  Coefficient  p-value 
+
+const  −722.33  0.4482 
+
+directions  +0.9174 ***  0.0000 
+
+directions_lag1  +0.3048 *  0.0353 
+
+directions_lag2  −0.0230  0.8718 directions_lag3  −0.2662 *  0.0482 
+
+directions_roll7  +0.3872 *  0.0435 
+
+precip  −24.34  0.1709 
+
+temp  −29.33  0.0707 
+
+sun  +1,294.20 **  0.0057 
+
+wind  −12.65  0.8689 
+
+precip_lag1  −4.16  0.7126 
+
+is_weekend_or_holiday  +5,374.23 ***  0.0000 
+
+weather_severity  −283.40  0.2644 
+
+dow_mean_count  −0.0585  0.5923 
+
+weekend_x_severity  −1,194.52 ***  0.0000 
+
+weekend_x_intent  −0.2271 *  0.0367 
+
+month  +409.47 ***  0.0000 
+
+R²  0.8096 
+
+Adj. R²  0.8016 
+
+N 397 
+
+Note: * p < 0.05, ** p < 0.01, *** p < 0.001. Standardized Beta coefficients were computed to evaluate relative effect sizes. Google "Directions" search intent emerged as the dominant behavioral driver ( β = +0.456, p < 0.001 ), while the indicator for weekends and holidays remained the strongest overall predictor ( β = +0.547 ). This confirms that digital intent functions as the primary psychological driver of visitation, with weather acting as a conditional environmental constraint ( β = -0.050 ) rather than a competing determinant. The overall model yielded a Cohen’s f² of 4.25, indicating an extremely large effect size. 
+
+To validate the system's distributed reliability, the model was deployed across the 4-node network. While the primary coastal node (Node A) achieved R² = 0.482, predictive performance across other nodes remained robust given their differing noise profiles: Node B (Urban) R² = 0.436, Node C (Mountain) R² = 0.374, and Node D (Scenic) R² = 0.168. To capture non-linear interactions, the system utilized a Random Forest (RF) regressor, which yielded a training R² of 0.909 and a 5-fold cross-validation R² of 0.557 (± 0.131). Permutation importance confirmed digital search intent and month as the primary features driving the expert system's decision logic. While the RF cross-validation score (R² = 0.557) is lower than the OLS chronological hold-out (R² = 0.683), this reflects the inherent sensitivity of non-linear models to randomized fold splitting in time-series data. Consequently, the chronological hold-out results are interpreted as the primary measure of the system's real-world predictive validity. 
+
+To address potential time-series autocorrelation, a First-Difference specification (Δy ∼ΔX) was estimated. Predictive performance remained high ( R² = 0.708 ), and the Durbin-Watson statistic improved to 2.524, indicating that model performance was not driven by spurious trend persistence. 
+
+Out-of-sample predictive validity was evaluated using a chronological train-test split. Training on 317 days and testing on an 80-day hold-out set, the model achieved an unseen-data predictive performance ( R² = 0.683 ) with a Mean Absolute Error of 1,793 visitors per day. These results demonstrate that the DHDE operates as a forward-looking predictive system rather than a purely retrospective analytical model (Table 2). The high degree of alignment between the model-predicted demand and the physical ground-truth arrivals is visually illustrated in Figure 2. Notably, the model demonstrated high structural stability when validated against the region's living data stream, maintaining an R² of 0.810 as the dataset expanded through automated daily collection. 
+
+Table 2. Evaluation of statistical rigor, effect size, and out-of-sample predictive validity. 
+
+Panel A ranks standardized beta coefficients (β), mathematically confirming that digital search intent is the primary behavioral driver, while weather acts as a secondary environmental filter. Panel B demonstrates an exceptionally large global effect size (Cohen’s f² = 4.25). Panel C validates out-of-sample predictive accuracy ( R² = 0.683) using an 80-day unseen hold-out set, demonstrating the model’s forward-looking utility for algorithmic governance. 
+
+Feature / Metric  Value  |β| Rank / Note Panel A: Standardised Coefficients (β) 
+
+is_weekend_or_holiday  +0.5471  1
+
+directions  +0.4559  2
+
+month  +0.3307  3
+
+weekend_x_intent  −0.1658  4
+
+weekend_x_severity  −0.1592  5
+
+directions_roll7  +0.1584  6
+
+directions_lag1  +0.1510  7
+
+directions_lag3  −0.1326  8
+
+sun  +0.0856  9
+
+temp  −0.0601  10 
+
+precip  −0.0507  11 
+
+weather_severity  −0.0503  12 
+
+dow_mean_count  −0.0291  13 
+
+directions_lag2  −0.0114  14 
+
+precip_lag1  −0.0087  15 wind  −0.0043  16 
+
+Panel B: Global Effect Size 
+
+Cohen's f² 4.2519  large (≥ 0.35) 
+
+Panel C: Out-of-Sample Predictive Validity 
+
+Training N  317 
+
+Hold-out N  80 
+
+Hold-out MAE  1,793.2  visitors/day 
+
+Hold-out RMSE  2,461.0  visitors/day 
+
+Hold-out R²  0.6834 
+
+Figure 2: Comparison of actual arrivals vs. Random Forest predictions. The high degree of alignment (Train R² = 0.909, CV R² = 0.557) demonstrates the expert system's ability to model complex behavioral patterns. The chronological hold-out accuracy (R² = 0.683) confirms the model's validity for real-world demand forecasting. The lower cross-validated R² relative to in-sample training reflects the strict chronological split used, which prevents information leakage across temporally adjacent observations. 
+
+4.2 Affective Keyword Analysis and the Under-Vibrancy Paradox 
+
+Kansei analysis was conducted using 71,623 free-text visitor responses with valid affective content, drawn from the full set of 97,719 standardized survey records. At the macro-regional level, a Spearman rank-order correlation revealed a positive association between visitor satisfaction and monthly visitor density ( rs = +0.150 , p = 0.0019 ). This relationship runs counter to dominant overtourism assumptions and supports the existence of an Under-Vibrancy Paradox, where human presence generates necessary atmospheric vitality. 
+
+Rule-based analysis of free-text visitor reviews indicates that dissatisfied visitors disproportionately referenced affective terms associated with emptiness, including “lonely,” “deserted,” and “closed shops.” These expressions were observed predominantly in low-satisfaction (one-star and two-star) reviews and were rare or absent in high-satisfaction (five-star) reviews. This qualitative asymmetry (occurring at an 11.5× higher rate) provides empirical support for an Under-Vibrancy Paradox, in which insufficient human presence and inactive commercial environments degrade perceived visitor experience in structurally low-density regions. A formal test of proportions confirms that the prevalence of under-vibrancy keywords is significantly higher in dissatisfied reviews (6.1%) compared to high-satisfaction reviews (~0.5%; χ² = 514.7, p < 0.001). 
+
+Conversely, at the daily micro-level, site-specific carrying capacities exhibited high atmospheric resilience. Daily satisfaction remained essentially constant regardless of density fluctuations at both the natural node and the heritage node ( r = +0.047, p = 0.251 at Eiheiji temple). This indicates that current visitor volumes remain far below the threshold necessary to trigger negative congestion effects, confirming that the region possesses significant latent capacity to absorb rerouted visitor flows without degrading the individual experience. 
+
+Qualitative validation at the heritage node (Eiheiji) further supports this resilience. Text mining of 4,504 area-specific responses revealed that while 93.7% of visitors reported high satisfaction (4-5 stars), congestion-related complaints accounted for a mere 0.2% of total feedback. Notably, zero instances of dissatisfaction were attributed to the degradation of the site's spiritual atmosphere by crowds, with the few recorded complaints focused exclusively on peripheral infrastructure such as parking and transit schedules. This confirms that the region's most sensitive cultural landmarks possess the latent capacity to absorb significantly higher visitor volumes. 
+
+4.3 Quantification of the Economic Opportunity Gap Discrepancies between predicted arrivals and observed visitor counts enabled direct measurement of planning friction. The model identified 42 days characterized by high digital intent but suppressed physical arrivals due to severe environmental conditions. 
+
+Aggregating model residuals across all four monitoring nodes, the DHDE estimates an annual loss of 865,917 potential visitors. Using the mean per-capita expenditure of ¥13,811 derived from survey data, the resulting economic leakage associated with planning friction is estimated at ¥11.96 billion (approximately USD 76.2 million) per year (Table 3). To assess the macroeconomic impact of demand recovery, we simulated the effect of the opportunity gap on the prefecture's national tourism ranking (overnight-stay metric, JTA 2025). As illustrated in Figure 3, recovering the 865,917 annual unrealized visits from the four monitored nodes alone closes between 8.4% and 66.2% of the monthly visitor shortfall required to exit the bottom tier of national rankings. While the four nodes provide modest direct rank improvements (e.g. January improving from 46th to 39th), the data suggests a significant scaling effect. Extrapolating the DHDE governance model to the prefecture's remaining tourism sites would realistically close the total regional opportunity gap, projecting a peak monthly improvement into the 35th-rank range nationally. 
+
+Table 3. Summary of key economic and spatial governance metrics. This table quantifies the regional “Opportunity Gap,” representing approximately ¥11.96 billion in leaked tourism revenue across the monitored nodes. It highlights the severe susceptibility of winter tourism to weather friction , which is 6.26 times higher than in summer , and confirms a statistically significant cross-prefectural demand spillover from Ishikawa Prefecture (r = 0.549 at lag 0). 
+
+Metric  Value 
+
+Lost Visitors (single-node)  85,522 
+
+Lost Visitors (4-node)  865,917 
+
+Opportunity Gap Value (¥)  ¥11,959,183,083 
+
+Ishikawa CCF r 0.5490 
+
+Best lag (days)  0
+
+Weather Sensitivity Ratio (W/S)  6.26× Seasonal sensitivity analysis further showed that the predictive contribution of weather data increased substantially during winter. The incremental explanatory gain ( ΔR² ) reached 0.135 in winter compared to 0.021 in summer, yielding a 6.26-fold difference. This indicates that winter tourism economies are disproportionately exposed to weather-driven planning friction. 
+
+Figure 3. National ranking recovery potential under AI-driven governance. Panel (A) compares Fukui Prefecture's current monthly ranking (overnight-stay metric, JTA 2025) against the projected improvement assuming visitor recovery at the four monitored nodes. Panel (B) shows the monthly distribution of the 865,917 recovered visitors using seasonal weights. While recovery at these four nodes alone closes up to 66% of the monthly shortfall to the next ranking tier (e.g. January improving from 46th to 39th), prefecture-wide extrapolation of the DHDE framework suggests a realistic path toward a top-35 national ranking. 
+
+4.4 Spatial Generalization and Inter-Prefectural Flow 
+
+To assess regional interdependence, a Cross-Correlation Function analysis was conducted between digital tourism activity in Ishikawa Prefecture and physical arrivals at Fukui’s coastal node Tojinbo. A strong same-day correlation was observed ( r = 0.549 ), indicating that visitors perceive the Hokuriku region as a single integrated travel system rather than isolated administrative units (Figure 4). To test spatial generalizability, the predictive framework was applied to the Fukui Station urban transit hub. Despite the presence of commuter-related noise, the model retained substantial explanatory power ( R² = 0.436 ). This confirms that digital intent signals can forecast human flow in both destination-focused tourism sites and mixed-use urban infrastructure. 
+
+Figure 4. Cross-prefectural demand spillover signal. Digital tourism activity in Ishikawa Prefecture serves as a statistically significant, same-day leading indicator (r = 0.549 at Lag 0) for physical arrivals in Fukui Prefecture. 
+
+# 5. Discussion 
+
+The results of this study carry significant theoretical and practical implications for the fields of urban informatics, behavioral economics, and regional governance. By applying the Distributed Human Data Engine (DHDE) to a regional tourism economy, we demonstrate that data architectures originally developed for public health crisis management can be recalibrated to address structural economic stagnation. 
+
+5.1 Theoretical Implications: The Under-Vibrancy Paradox 
+
+The central theoretical contribution of this research is the empirical identification of the 
+
+Under-Vibrancy Paradox . The dominant paradigm in smart tourism and urban management literature focuses primarily on overtourism, operating under the assumption that increased visitor density necessarily degrades visitor experience. In contrast, our Kansei-based text analysis and statistical results indicate that for peripheral or structurally under-visited regions, the inverse relationship frequently holds. Visitor satisfaction at natural and commercial nodes is positively correlated with crowd density ( rs = +0.150, p = 0.0019 ). Moreover, dissatisfied visitors are 11.5 times more likely to reference loneliness, empty streets, or closed shops than overcrowding. This pattern suggests that spatial emptiness constitutes a substantial form of psychological planning friction. In such regions, human presence itself functions as a positive environmental attribute. Under these conditions, moderate crowding should be interpreted not as a negative externality, but as a prerequisite for perceived vitality. 
+
+This study further refines the concept of carrying capacity by demonstrating that spatial emptiness constitutes a substantial form of psychological planning friction. In such regions, human presence itself functions as a positive environmental attribute. Under these conditions, moderate crowding should be interpreted not as a negative externality, but as a prerequisite for perceived vitality. The mathematical flatness of daily satisfaction scores ( r ≈ 0.00 ) across the monitored nodes confirms that these structurally under-visited regions are operating well below their carrying capacities, providing a wide buffer for the safe redistribution of cross-prefectural visitor flows. 
+
+5.2 Practical Implications: The Socio-Technical Nudge Loop 
+
+The estimation of a ¥11.96 billion (USD 76.2 million) annual opportunity gap establishes a clear economic rationale for algorithmic intervention. The results show that high digital intent frequently exists in advance of travel but is suppressed by environmental uncertainty, particularly during winter periods. Because winter demand is 6.26 times more sensitive to weather-related friction than summer demand, merchants often preemptively reduce operating hours, unintentionally reinforcing under-vibrancy for visitors who do arrive. 
+
+To address this coordination failure, we propose a Socio-Technical Nudge Loop governed by the DHDE. Given that the system predicts physical arrivals with 68 percent out-of-sample accuracy up to 72 hours in advance, local governments can deploy anticipatory, data-driven interventions through a dual-nudge architecture: 
+
+1.  Supply-Side Nudges (Merchant Vitality Alerts): When the DHDE detects an impending surge in digital intent, automated alerts are dispatched to local business operators. This advance signal allows merchants to adjust staffing and operating hours, increasing the likelihood that visitors encounter an active and vibrant destination. 
+
+2.  Demand-Side Nudges (Weather-Resilient Routing): When elevated digital intent coincides with adverse meteorological forecasts, the DHDE generates adaptive routing recommendations. These nudges redirect visitors from highly exposed outdoor nodes (i.e. Tojinbo) toward sheltered or indoor destinations (i.e. Katsuyama dinosaur museum), preserving trip continuity and retaining economic activity within the region (Figure 5). 
+
+Together, these mechanisms convert predictive insight into coordinated action, reducing the probability that intent dissipates before physical arrival. Figure 5. The Hokuriku Weather Shield spatial governance architecture. The map illustrates the geographic distribution of the four monitoring nodes. Arrows denote the algorithmic rerouting logic, which redirects visitor flows from weather-exposed coastal environments to sheltered inland buffers during adverse meteorological events. Map lines delineate study areas and do not necessarily depict accepted national boundaries. 
+
+5.3 The Necessity of Cross-Prefectural Governance 
+
+The cross-correlation analysis revealing a strong same-day association ( r = 0.549 ) between digital activity in Ishikawa Prefecture and physical arrivals in Fukui Prefecture challenges the prevailing logic of municipal-level optimization. Tourist behavior is not constrained by administrative borders. Instead, the data indicates that the Hokuriku region operates as a single, contiguous impression space. 
+
+Digital surges in primary hubs act as leading indicators for downstream physical flows into adjacent prefectures. As a result, isolated policy interventions are structurally inefficient. Effective governance therefore requires cross-prefectural data sharing agreements and coordinated algorithmic management frameworks capable of responding to region-wide demand signals. 
+
+# 6. Conclusion 
+
+This study validates the Distributed Human Data Engine (DHDE) as a generalized framework for managing complex human mobility systems. By integrating digital intent signals, high-resolution meteorological data, and AI-based physical flow measurements with a 97,719-record behavioral survey database, we developed a robust predictive model of regional visitation dynamics ( R² = 0.810 ). 
+
+The findings reframe regional economic stagnation not as a deficiency of resources, but as a quantifiable problem of planning friction arising from the misalignment of intent and execution. We empirically identify the Under-Vibrancy Paradox and estimate an annual opportunity gap of 865,917 unrealized visits, corresponding to approximately ¥11.96 billion in lost regional revenue. Our simulation indicates that while recovery at the four monitored nodes closes up to 66% of the shortfall required for rank improvement, a full-scale deployment of the DHDE offers a viable mechanism for regional economic resurrection. To address this gap, we propose an algorithmic governance architecture based on coordinated supply-side and demand-side nudges, enabling dynamic redistribution of visitor flows while ensuring that visitor volumes remain well within the region's latent carrying capacities. 
+
+The primary limitation of this research lies in its geographic focus on a single regional context, which may reflect localized travel norms and climatic conditions. Future research should deploy the DHDE framework across diverse international settings, including mega-events and globally significant heritage sites where visitor density pressures are extreme. By transitioning from static administrative control to dynamic, data-driven governance, policymakers can more effectively balance economic vitality, environmental constraints, and cultural integrity. 
+
+# 7. Declaration of generative AI and AI-assisted technologies in the manuscript preparation process 
+
+During the preparation of this work, the authors used generative AI technologies (Google Gemini and ChatGPT) in order to assist with language polishing, structural organization, and the mapping of technical terminology to enhance the overall clarity and readability of the manuscript. After using these tools, the authors reviewed, validated, and edited the content as needed and take full responsibility for the integrity and accuracy of the final publication. 8. Data Availability Statement 
+
+The datasets generated and analyzed during the current study will be deposited in a public repository on GitHub and will be made accessible via a persistent DOI upon publication. The analytical pipeline and source code used for the Distributed Human Data Engine (DHDE) will be deposited in a public GitHub repository with a persistent Zenodo DOI upon publication. 
+
+# 9. Declaration of Competing Interests 
+
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper. 
+
+# 10. CRediT Authorship Contribution Statement: 
+
+A.K.: Conceptualization, Methodology, Software, Data curation, Formal analysis, Investigation, Writing - original draft. T.T.: Supervision, Project administration, Writing - review & editing. 
+
+# 11. Acknowledgments: 
+
+The authors would like to express their sincere gratitude to Masanori Satake of the Fukui Tourism Federation and Taisuke Fukuno of Code for FUKUI for their strategic insights into regional tourism management and for establishing the practical foundations of the economic opportunity gap analysis. 
+
+We thank Professor Hiroyuki Inoue of the University of Fukui for his expert guidance on Kansei information science and cross-university collaboration. We also acknowledge Professor Makoto Fujiu and Assistant Professor Kosuke Koike of Kanazawa University, and Professor Yoichi Kanayama of Toyama University for their contributions to the data integration framework via the Hokuriku Inbound Tourism DX and Data Consortium. 
+
+We thank Bunto Hanyuda of the Ishikawa Prefectural Government for his technical stewardship of the regional open data ecosystem. We further acknowledge the Fukui Prefectural Government for provision of the AI-camera people-flow datasets, and the Japan Meteorological Agency (JMA) for the high-resolution meteorological data underpinning the environmental filtering models. 
+
+Finally, the authors thank the local merchants and tourism associations across the Hokuriku region for their contribution to the open datasets used for this study, in addition to the tens of thousands of tourists who contributed to the survey datasets. 12. References 
+
+Bangwayo-Skeete, P. F., & Skeete, R. W. (2015). Can Google data improve the forecasting performance of tourist arrivals? Mixed-data sampling approach. Tourism Management , 46, 
+
+454-464.  https://doi.org/10.1016/j.tourman.2014.07.014 
+
+Buhalis, D., & Amaranggana, A. (2015). Smart tourism destinations: Enhancing tourism experience through personalisation of services. In I. Tussyadiah & A. Inversini (Eds.), 
+
+Information and Communication Technologies in Tourism 2015 (pp. 377-389). Springer. 
+
+https://doi.org/10.1007/978-3-319-14343-9_28 
+
+Burke, J. A, Estrin, D., Hansen, M., Parker, A., Ramanathan, N., Reddy, S., & Srivastava, M. B. (2006). Participatory sensing. UCLA: Center for Embedded Network Sensing . Retrieved from 
+
+https://escholarship.org/uc/item/19h777qd 
+
+Choi, H., & Varian, H. (2012). Predicting the present with Google Trends. Economic Record ,
+
+88(s1), 2-9.  https://doi.org/10.1111/j.1475-4932.2012.00809.x 
+
+Danaher, J. (2016). The threat of algocracy: Reality, resistance and accommodation. Philosophy 
+
+& Technology , 29(3), 245-268.  https://doi.org/10.1007/s13347-015-0211-1 
+
+Day, J., Chin, N., Sydnor, S., & Cherkauer, K. (2013). Weather, climate and tourism performance: A quantitative analysis. Tourism Management Perspectives , 5, 51-56. 
+
+https://doi.org/10.1016/j.tmp.2012.11.001 
+
+Dodds, R., & Butler, R. (Eds.). (2019). Overtourism: Issues, realities and solutions . De Gruyter 
+
+Oldenbourg.  https://doi.org/10.1515/9783110607369 
+
+Gretzel, U., Sigala, M., Xiang, Z., & Koo, C. (2015). Smart tourism: Foundations and 
+
+developments. Electronic Markets , 25(3), 179-188.  https://doi.org/10.1007/s12525-015-0196-8 
+
+Inoue, H., & Mitani, Y. (2025). The relationship between university students' emotional attachment to Fukui Prefecture and their employment locations through Kansei analysis. Nature and Environment of The Sea of Japan Districts , 32, 51-62. Retrieved from 
+
+http://hdl.handle.net/10098/0002000666 
+
+Kankanamge, N., Yigitcanlar, T., Goonetilleke, A., & Kamruzzaman, M. (2019). Can Volunteer Crowdsourcing Reduce Disaster Risk? A Systematic Review of the Literature. International 
+
+Journal of Disaster Risk Reduction , 35, 101097.  https://doi.org/10.1016/j.ijdrr.2019.101097 
+
+Khanzada, A., Cheema, F. H., & Takemoto, T. (2025). Improving clinical trial enrollment for smartphone-based AI data collection: A methodological analysis of nudge-based interventions. 
+
+Journal of Behavioral Economics for Policy , 9(1), 41-50. 
+
+https://sabeconomics.org/ojs/index.php/jbep/article/view/232 Lane, N. D., Miluzzo, E., Lu, H., Peebles, D., Choudhury, T., & Campbell, A. T. (2010). A survey of mobile phone sensing. IEEE Communications Magazine , 48(9), 140-150. 
+
+https://doi.org/10.1109/MCOM.2010.5560598 
+
+Li, X., Pan, B., Law, R., & Huang, X. (2017). Forecasting tourism demand with composite search 
+
+index. Tourism Management , 59, 57-66.  https://doi.org/10.1016/j.tourman.2016.07.005 
+
+Meijer, A. J., & Thaens, M. (2018). Urban Technological Innovation: Developing and Testing a Sociotechnical Framework for Studying Smart City Projects. Urban Affairs Review , 54(2), 
+
+363-387.  https://doi.org/10.1177/1078087416670274 
+
+Milano, C., Cheer, J. M., & Novelli, M. (Eds.). (2019). Overtourism: Excesses, discontents and 
+
+measures in travel and tourism . CABI.  https://doi.org/10.1079/9781786399823.0000 
+
+Nagamachi, M. (1995). Kansei engineering: A new ergonomic consumer-oriented technology for product development. International Journal of Industrial Ergonomics , 15(1), 3-11. 
+
+https://doi.org/10.1016/0169-8141(94)00052-5 
+
+Oklevik, O., Gössling, S., Hall, C. M., Steen Jacobsen, J. K., Grøger, H. I., & McCabe, S. (2019). Overtourism, optimisation, and destination performance indicators: A case study of activities in Fjord Norway. Journal of Sustainable Tourism , 27(12), 1804-1824. 
+
+https://doi.org/10.1080/09669582.2018.1533020 
+
+Pike, S. (2018). Destination marketing: Essentials (2nd ed.). Routledge. 
+
+https://doi.org/10.4324/9781003032205 
+
+Schütte, S., Eklund, J., Axelsson, J., & Nagamachi, M. (2004). Concepts, methods and tools in Kansei engineering. Theoretical Issues in Ergonomics Science , 5(3), 214-231. 
+
+https://doi.org/10.1080/1463922021000049980 
+
+Seraphin, H., Sheeran, P., & Pilato, M. (2018). Over-tourism and the fall of Venice as a destination. Journal of Destination Marketing & Management , 9, 374-376. 
+
+https://doi.org/10.1016/j.jdmm.2018.01.011 
+
+Behavioural Insights Team (2017). EAST: Four simple ways to apply behavioural insights. 
+
+Annual Review of Policy Design , 5(1), 1-53. Retrieved from 
+
+https://ojs.unbc.ca/index.php/design/article/view/1658 
+
+Song, H., Qiu, R. T. R., & Park, J. (2019). A review of research on tourism demand forecasting. 
+
+Annals of Tourism Research , 75, 338-362.  https://doi.org/10.1016/j.annals.2018.12.001 
+
+Thaler, R. H., & Sunstein, C. R. (2008). Nudge: Improving decisions about health, wealth, and happiness . Yale University Press. 
+
+Weinmann, M., Schneider, C., & vom Brocke, J. (2016). Digital nudging. Business & Information 
+
+Systems Engineering , 58(6), 433-436.  https://doi.org/10.1007/s12599-016-0453-1 Zheng, Y., Capra, L., Wolfson, O., & Yang, H. (2014). Urban computing: Concepts, methodologies, and applications. ACM Transactions on Intelligent Systems and Technology ,
+
+5(3), Article 38.  https://doi.org/10.1145/2629592 Appendices 
+
+# Appendix A: Data Dictionary and Data Provenance 
+
+This appendix delineates the data provenance for the raw records processed by the Distributed Human Data Engine (DHDE) pipeline. It provides the mapping of Japanese source-field terminology to the corresponding English variable names utilized throughout the analytical framework. 
+
+A.1 AI-Camera People-Flow (Primary Ground Truth) 
+
+Camera data were sourced as 5-minute interval CSV files from the Fukui Prefecture AI camera people-flow sensor network, maintained within the fukui-kanko-people-flow-data repository. These intervals were subsequently aggregated to yield daily visitor totals. 
+
+Daily Aggregation Formula: The daily visitor arrival metric is computed as the sum of all 5-minute intervals i within a 24-hour period d:
+
+count_day = Σ count_5min(i) 
+
+Days with a zero count were excluded from the analysis as they indicated documented sensor outages. 
+
+Source CSV 
+
+Column 
+
+Pipeline 
+
+Variable 
+
+Unit  Notes 
+
+aggregate from  — Timestamp  Interval start; utilized for 
+
+deduplication. 
+
+total count  count  Persons/da 
+
+y
+
+Summation across all 5-minute 
+
+intervals. 
+
+Geographic Node-to-Sensor Mapping 
+
+Node  Designation  Environment  Camera Source Path 
+
+A Tojinbo / Mikuni  Coastal (North)  tojinbo-shotaro/Person/**/*.csv 
+
+B Fukui Station  Urban Transit 
+
+(Central) 
+
+fukui-station-east-entrance/Person/**/*.cs 
+
+v
+
+C Katsuyama / 
+
+Dinosaur Museum 
+
+Mountainous 
+
+(East) 
+
+Survey-response proxy (see note) 
+
+D Rainbow Line / 
+
+Wakasa 
+
+Scenic Drive 
+
+(South) 
+
+rainbow-line-parking-lot-1-gate/Face/**/*.c 
+
+sv 
+
+Note on Measurement Limitations: Node C utilized a survey-response proxy to estimate visitor counts due to an absence of camera coverage during the observation period. This proxy was validated by correlating daily survey volumes with ground-truth camera counts at the primary node (r = 0.564, p < 0.001), confirming that survey response frequency is a reliable indicator of physical density in this regional context. Node D relied on facial-detection counts from a primary parking gate camera; because this represents a sub-sample of total vehicle occupancy rather than a total site count, it exhibits higher instrumental noise (R² = 0.168) compared to other nodes. 
+
+A.2 Japan Meteorological Agency (JMA) Meteorological Data 
+
+Hourly meteorological observations were obtained from four JMA automated weather stations (Mikuni, Fukui City, Katsuyama, and Mihama). Hourly records were aggregated into daily statistics: precipitation (precip) was summed; all other variables were averaged to derive daily means. 
+
+Source CSV Column  Pipeline 
+
+Variable 
+
+Aggregation  Unit 
+
+timestamp  date  Normalized to 
+
+midnight 
+
+—
+
+temp_c  temp  Mean  °C 
+
+precip_1h_mm  precip  Sum  mm/day 
+
+sun_1h_h  sun  Mean  Hours/day 
+
+wind_speed_ms  wind  Mean  m/s 
+
+snow_depth_cm  snow_depth  Mean  cm (Node B only) 
+
+humidity_pct  humidity  Mean  %
+
+A.3 Google Business Profile (Digital Intent Signal) 
+
+Daily route-search metrics from the Tojinbo Google Business Profile were extracted from the 
+
+fukui-kanko-trend-report repository to serve as the primary proxy for latent travel demand. 
+
+Source CSV 
+
+Column 
+
+Pipeline 
+
+Variable 
+
+Unit  Notes 
+
+directions  directions  Searches/d 
+
+ay 
+
+Count of route-to-location searches; 
+
+primary digital intent proxy. 
+
+A.4 Hokuriku Visitor Survey 
+
+Two complementary survey datasets are used by the pipeline; they serve distinct analytical purposes. Dataset 2 is a standardized subset of Dataset 1, augmented with Ishikawa and Toyama records. Dataset 1: Fukui-specific raw survey (fukui-kanko-survey/all.csv): Contains 90,350 individual responses collected at Fukui Prefecture tourism sites. Used exclusively for spending analysis ( 県内消費額 → ¥ midpoints). Note: 都道府県 in this file records the visitor’s home prefecture, not the collection site. 
+
+Dataset 2: Hokuriku three-prefecture merged survey (opendata/output_merge/merged_survey_*.csv): Contains 97,719 standardized responses drawn from four survey exports spanning April 2023 to March 2026. The survey was administered at tourism sites within the three Hokuriku prefectures: Fukui (71,623 responses), Ishikawa (20,990), and Toyama (5,106). This dataset supplies satisfaction scores, NPS, site-prefecture data, and the 71,623-response Fukui free-text corpus used for under-vibrancy text mining (Appendix D). 
+
+Relationship between datasets: The 71,623 Fukui-site responses in Dataset 2 are a standardized subset of Dataset 1’s 90,350 responses (those records that passed the merged export’s completeness criteria). The remaining ~18,727 Dataset 1 records are available only in all.csv. Dataset 2 adds Ishikawa and Toyama responses not present in Dataset 1. 
+
+Dataset 2 Column Mapping (merged_survey_*.csv) 
+
+Source CSV Column  Pipeline 
+
+Variable 
+
+Data Type  Notes 
+
+対象県（富山 /石川 /福井） 
+
+(col 0) 
+
+prefecture  String  Survey collection site's 
+
+prefecture ( 富山 , 石川 , or 福井 ). 
+
+アンケート回答日 (col 1)  survey_date  Date  Date of the recorded visit. 
+
+満足度（旅行全体）  satisfaction  Integer 
+
+(1-5) 
+
+Overall trip satisfaction. 
+
+おすすめ度  nps_raw  Integer 
+
+(0-10) 
+
+Raw Net Promoter Score. 
+
+満足度（商品・サービス）  satisfaction_se 
+
+rvice 
+
+Integer 
+
+(1-5) 
+
+Service satisfaction. 
+
+満足度理由  reason  String  Free-text: reason for visiting. 
+
+不便 (partial match)  inconvenience  String  Free-text: reported 
+
+inconveniences. 
+
+自由意見 (partial match)  freetext  String  General free-text commentary. 
+
+回答場所  location  String  Specific site of survey 
+
+collection. Satisfaction Scale Mapping 
+
+Japanese Label  English Translation  Integer Score 
+
+とても不満  Very dissatisfied  1
+
+不満  Dissatisfied  2
+
+どちらでもない  Neutral  3
+
+満足  Satisfied  4
+
+とても満足  Very satisfied  5
+
+# Appendix B: Feature Engineering and Derived Variables 
+
+B.1 Temporal Intent Features 
+
+To model the temporal gap between planning and execution, the following features were engineered from the Google Business Profile “Directions” query volume (intent): 
+
+3.  Lagged Intent: intent_lag_k = intent_(t-k), where k ∈ {1, 2, 3} days 
+
+4.  Rolling Mean: intent_roll_7 = (1/7) × Σ intent_(t-i) for i = 0 to 6 
+
+5.  Weekend Interaction: weekend_x_intent = intent_t × is_weekend_or_holiday 
+
+B.2 Weather Severity Algorithm 
+
+A composite ordinal index (0-3) was developed to standardize meteorological friction across different topographies: 
+
+Severity 
+
+Score 
+
+Category  Precipitation 
+
+Threshold 
+
+Wind Speed Threshold 
+
+0 Fine  0 mm/day  ≤ 8 m/s 
+
+1 Marginal  > 0 and ≤ 10 mm/day  ≤ 8 m/s 
+
+2 Hostile  > 10 mm/day  ≤ 8 m/s 
+
+3 Severe  > 10 mm/day  > 8 m/s 
+
+B.3 Full Engineered Feature Set 
+
+Engineered Feature  Derivation  Description 
+
+directions  Raw  Same-day Google route search volume. Engineered Feature Derivation Description 
+
+directions_lag1 to 
+
+lag3 
+
+Time-shifted (1-3 
+
+days) 
+
+Lagged digital intent to capture planning 
+
+horizons. 
+
+directions_roll7  7-day rolling 
+
+mean 
+
+Smoothed trend of digital intent. 
+
+precip  JMA daily sum  Total daily precipitation (mm). 
+
+temp  JMA daily mean  Average daily temperature (°C). 
+
+sun  JMA daily mean  Average daily sunshine duration. 
+
+wind  JMA daily mean  Average daily wind speed (m/s). 
+
+precip_lag1  Time-shifted (1 
+
+day) 
+
+Prior-day precipitation accumulation. 
+
+is_weekend_or_holida 
+
+y
+
+Calendar logic  Binary indicator (1 = weekend or national 
+
+holiday). 
+
+weather_severity  Threshold-based  Ordinal scale (0-3) reflecting meteorological 
+
+hostility. 
+
+dow_mean_count  Grouped mean  Historical average visitor count by day of 
+
+week. 
+
+weekend_x_severity  Interaction term  Peak calendar days × adverse weather. 
+
+weekend_x_intent  Interaction term  Amplification of digital intent on peak 
+
+calendar days. 
+
+month  Extracted from 
+
+date 
+
+Calendar month (1-12) for macroeconomic 
+
+seasonality. 
+
+# Appendix C: Statistical Robustness and Diagnostics 
+
+C.1 Augmented Dickey-Fuller (ADF) Stationarity Tests 
+
+ADF tests were applied to the two primary time series over the 427-day analysis window (December 20, 2024 to March 11, 2026), using statsmodels.tsa.stattools.adfuller with automatic lag selection based on the Akaike Information Criterion (AIC). Time Series  ADF 
+
+Statistic 
+
+p-value  Optimal 
+
+Lag (AIC) 
+
+Stationarity Decision 
+
+count (Daily visitor 
+
+arrivals) 
+
+-2.916  0.0435  14  Stationary (Reject H ₀ at 
+
+5%) 
+
+directions (Google 
+
+route searches) 
+
+-2.480  0.1204  15  Non-Stationary (Fail to 
+
+reject H ₀)
+
+Interpretation: This mixed I(0)/I(1) structure accounts for the positive autocorrelation observed in the baseline OLS residuals (Durbin-Watson = 1.005) and necessitates the robust specifications detailed in C.3. Because the dependent variable is stationary while key predictors exhibit mild trend behavior, robust Newey-West standard errors and first-difference specifications were employed to ensure consistent inference. 
+
+C.2 Variance Inflation Factors (VIF) 
+
+VIF analysis was performed on all 16 model features using statsmodels.stats.outliers_influence.variance_inflation_factor to assess multicollinearity. 
+
+Feature  VIF  Classification 
+
+is_weekend_or_holiday  15.0  High (calendar baseline) 
+
+weekend_x_intent  12.5  High (interaction term) 
+
+directions_roll7  12.2  High (autocorrelated trend) 
+
+directions  9.8  Moderate 
+
+weather_severity  4.0  Low 
+
+precip  2.7  Low 
+
+temp  2.2  Low 
+
+Interpretation: While VIF values for intent-related features are elevated due to temporal overlap, this does not invalidate coefficient significance. Model-agnostic permutation importance confirms directions as the dominant predictor independent of collinearity artifacts. Newey-West standard error corrections maintain valid t-statistics under heteroskedasticity and autocorrelation. 
+
+C.3 Model Specification Comparison 
+
+Model Specification  R²  Durbin-Wat 
+
+son 
+
+Diagnostic Status 
+
+Baseline OLS  0.8096  1.005  Positive autocorrelation detected 
+
+OLS + Newey-West HAC  0.8096  1.005  Robust standard errors applied 
+
+First-Difference (Δy ~ ΔX)  0.7083  2.525  Autocorrelation removed Model Specification R² Durbin-Wat 
+
+son 
+
+Diagnostic Status 
+
+Lagged Dependent Variable 
+
+(LDV) 
+
+0.8485  1.899  Preferred specification 
+
+The LDV model is defined as: 
+
+count_t = β₀ + β₁ × count_(t-1) + β_k × X_t + ε_t 
+
+Interpretation: The LDV specification successfully absorbed the autoregressive component of visitor arrivals, yielding an optimal Durbin-Watson statistic of 1.899. The first-difference model (R² = 0.7083) confirms that predictive signal remains robust after removing trend persistence. 
+
+Value of Weather Integration: Excluding the five JMA meteorological features reduced the baseline OLS R² from 0.8096 to 0.7537 ( ΔR² = 0.0559 ). Seasonal analysis indicates weather sensitivity is 6.26 times more pronounced during winter months ( ΔR² = 0.1349 ) than in summer months ( ΔR² = 0.0215 ). 
+
+# Appendix D: Text Mining Methodology and Under-Vibrancy Lexicon 
+
+D.1 Preprocessing Pipeline 
+
+A total of 71,623 free-text survey responses from Fukui tourism sites were processed using the following steps: 
+
+1.  UTF-8 normalization of Japanese characters 
+
+2.  Removal of null or blank entries 
+
+3.  Concatenation of satisfaction reason ( 満足度理由 ), inconvenience ( 不便 ), and general opinion ( 自由意見 ) fields 
+
+4.  Trimming of leading/trailing whitespace 
+
+5.  Normalization of Roman and Katakana characters to half-width equivalents 
+
+D.2 Keyword Detection Logic 
+
+Keyword detection used exact root-form substring matching (str.contains) across concatenated free-text fields. A morphological tokenizer was not applied; root-form matching successfully captures conjugated variants (e.g., matching 「寂し」 captures 「寂しい」 and 「寂しかった」 ). 
+
+D.3 Under-Vibrancy Keyword Lexicon 
+
+# Japanese 
+
+Keyword 
+
+Romanization  Category  English Gloss 
+
+1 静か  shizuka  Atmosphere  Quiet / Silent 
+
+2 寂し  sabishi  Atmosphere  Lonely / Desolate 
+
+3 さびし  sabishi  Atmosphere  Lonely (hiragana) # Japanese 
+
+Keyword 
+
+Romanization Category English Gloss 
+
+4 さみし  samishi  Atmosphere  Lonely (phonetic variant) 
+
+5 人が少な  hito ga suku-na  Density  Few people around 
+
+6 人がいな  hito ga i-na  Density  Nobody around 
+
+7 活気  kakki  Atmosphere  Vitality (absence of) 
+
+8 賑わ  nigiwai  Atmosphere  Lively (absence of) 
+
+9 にぎわ  nigiwai  Atmosphere  Lively (hiragana) 
+
+10  閑散  kansan  Atmosphere  Deserted / Sparse 
+
+11  寂れ  sabie  Decline  Run-down 
+
+12  さびれ  sabie  Decline  Run-down (hiragana) 
+
+13  閉まっ  shimatte  Commerce  Closed facilities 
+
+14  店がな  mise ga na  Commerce  No shops present 
+
+15  営業し  eigyo shi  Commerce  Operating (negative constructions) 
+
+16  何もな  nani mo na  Experience  Nothing to do 
+
+17  つまらな  tsumarana  Experience  Boring / Dull 
+
+18  退屈  taikutsu  Experience  Boredom 
+
+19  物足りな  monotari-na  Experience  Unsatisfying 
+
+20  盛り上が  moriagari  Atmosphere  Excitement (absence of) 
+
+21  人通り  hitodori  Density  Foot traffic 
+
+D.4 Sentiment Analysis Summary 
+
+Metric  Value 
+
+Total low-satisfaction (1-2 star) responses analyzed  1,066 
+
+Under-vibrancy keyword occurrences in 
+
+low-satisfaction responses 
+
+65 
+
+Prevalence rate in low-satisfaction responses  6.1% 
+
+Prevalence rate in high-satisfaction (4-5 star) 
+
+responses 
+
+~0.5% 
+
+Comparative ratio (low vs. high satisfaction)  11.5× 
+
+Chi-square statistic  514.7 Metric Value 
+
+p-value  < 0.001 
+
+# Appendix E: Meteorological Station Metadata 
+
+Stations were selected based on proximity to the designated analytical nodes. Three stations are from the Automated Meteorological Data Acquisition System (AMeDAS); one is a main observatory. 
+
+Station  Type  block 
+
+_no 
+
+Latitud 
+
+e (N) 
+
+Longitud 
+
+e (E) 
+
+Elevat 
+
+ion 
+
+Assigned 
+
+Node 
+
+Distance 
+
+Mikuni ( 三
+
+国)
+
+AMeD 
+
+AS 
+
+1071  36°13.3’  136°08.9’  5 m  Node A 
+
+(Tojinbo) 
+
+~3 km 
+
+Fukui City 
+
+(福井 )
+
+Main 
+
+Obs. 
+
+4761 
+
+6
+
+36°03.4’  136°13.3’  9 m  Node B (Fukui 
+
+Station) 
+
+~1 km 
+
+Katsuyama 
+
+(勝山 )
+
+AMeD 
+
+AS 
+
+1226  36°03.6’  136°30.0’  160 m  Node C 
+
+(Katsuyama) 
+
+~2 km 
+
+Mihama 
+
+(美浜 )
+
+AMeD 
+
+AS 
+
+1010  35°35.8’  135°57.3’  5 m  Node D 
+
+(Rainbow 
+
+Line) 
+
+~5 km 
+
+Climatological context by station: 
+
+● Mikuni: Coastal Sea of Japan exposure; primary friction from sea-effect wind and precipitation. Snow depth is not recorded at this AMeDAS station. 
+
+● Fukui City: Urban lowland basin (9 m elevation). Only station providing validated snow depth data (β = -0.0056 standardized), making it the most snow-sensitive node. 
+
+● Katsuyama: Highland mountain basin (160 m elevation); highest-elevation monitored zone. Snow depth not recorded by this AMeDAS instrument; notable diurnal temperature variation (±8-12°C). 
+
+● Mihama: Coastal Wakasa Bay; oceanic thermal moderation with moderate rainfall. Node D achieves a weather lift of ΔR² = +0.039 with Mihama data. 
+
+# Appendix F: Reproducibility 
+
+All data processing, Kansei text mining, and econometric modeling were implemented in Python 3.10 using the following core libraries: Library  Version  Purpose 
+
+Pandas  2.1  Data harmonization and cleaning 
+
+Statsmodels  0.14  OLS regression, ADF tests, Durbin-Watson diagnostics 
+
+Scikit-learn  1.4  Random Forest Regressor and Permutation Importance 
+
+jpholiday  — Japanese national holiday calendar logic

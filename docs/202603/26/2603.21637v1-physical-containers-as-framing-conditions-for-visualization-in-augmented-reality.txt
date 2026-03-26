@@ -1,0 +1,101 @@
+Title: Physical Containers as Framing Conditions for Visualization in Augmented Reality
+
+URL Source: https://arxiv.org/pdf/2603.21637v1
+
+Published Time: Tue, 24 Mar 2026 02:18:03 GMT
+
+Number of Pages: 2
+
+Markdown Content:
+# Physical Containers as Framing Conditions for Visualization in Augmented Reality 
+
+Jiyeon Bae 1* Mingyu An 1† Jeongin Park 1‡ Seokweon Jung 2§ Kiroong Choe 1 Jinwook Seo 1¶ 1Seoul National University, Republic of Korea 
+
+> 2
+
+KAIST, Republic of Korea 
+
+Figure 1: Physical containers classified by the number of embeddable faces (single vs. multi) and form (planar vs. volumetric), with associated perceptual framing tendencies for visualization in Augmented Reality (AR). 
+
+ABSTRACT 
+
+Exploratory data analysis (EDA) is often hindered by cold-start friction; when users lack specific analytic goals, they struggle to configure complex visualization parameters. While existing visual-ization tools mostly rely on explicit user input to frame data, we propose leveraging the physical environment as an implicit fram-ing mechanism. We introduce a conceptual framework that uses the geometric and spatial properties of physical containers in Aug-mented Reality (AR) to guide data interpretation. We character-ize how container attributes, such as number of faces, size, pro-portion, and shape, give rise to distinct perceptual tendencies. For example, a circular container may encourage cyclic interpretation, while juxtaposed planar faces may facilitate comparative analysis. By treating physical forms as environmental framing conditions, we show how AR can orient a user’s attention and structure their exploration without requiring manual encoding or prescribing fixed conclusions. We demonstrate this framework through a series of AR design examples illustrating how container morphology fore-grounds cyclic, comparative, and sequential analytic patterns. 
+
+Index Terms: Exploratory Data Analysis, Immersive Analytics, Augmented Reality, Physical Affordances 
+
+1 INTRODUCTION 
+
+Exploratory data analysis (EDA) involves the discovery of patterns and anomalies prior to the formulation of specific analytic ques-tions [6]. It often begins before users know what to look for, relying on open-ended visual inspection to form initial impressions. In the absence of explicit guidance, users tend to focus on visually salient features—such as prominent trends or peaks—that may not align with the visualization’s intended analytic goals [5]. We define framing as the perceptual conditions that orient at-tention and structure interpretation before explicit analytic intent 
+
+> *
+
+e-mail: jybae@hcil.snu.ac.kr 
+
+> †
+
+e-mail: mgahn0706@snu.ac.kr 
+
+> ‡
+
+e-mail: jipark@hcil.snu.ac.kr 
+
+> §
+
+e-mail: skwnjung@kaist.ac.kr 
+
+> ¶
+
+e-mail: jseo@snu.ac.kr 
+
+is formed. Under this definition, most visualization systems treat framing as an explicit configuration: users specify axes, encodings, or filters upfront to structure their analysis. While effective when users already have clear analytic goals, this workflow presumes that they know how to look—creating a circular dependency that can stall exploration before interpretive framing begins. To address this issue, we treat framing not as a user-specified configuration but as an environmental condition. Augmented real-ity (AR) is particularly well suited to this problem because it allows visualizations to be embedded within physical environments whose geometry can shape interpretation. Prior work suggests that spatial layout and embodied interaction can influence perception and re-call [2, 3]. Whereas prior studies have examined these effects as consequences of immersive presentation, we elevate them into an explicit design perspective by relating physical container proper-ties—such as number of faces, size, proportion, and shape—to dis-tinct interpretive tendencies. These tendencies influence how many views are encountered concurrently, at what level of granularity data is interpreted, and whether linear or cyclic schemas are acti-vated. This work shifts the unit of analysis in immersive analytics from the visualization itself to the physical structures that frame it. 
+
+2 BACKGROUND AND RELATED WORK 
+
+2.1 Visualization Interpretation Beyond Guided Tasks 
+
+Prior work has shown that, in the absence of explicit analytic tasks or instructions, viewers’ interpretations of visualizations can di-verge from designers’ intended messages, as attention is drawn to salient features shaped by perceptual cues such as size, posi-tion, and contrast [5]. Cibulski et al. [1] further suggest that early encounters with visual information occur before analytic goals or evaluative criteria are fully specified. Together, these findings high-light the importance of framing in early-stage exploration, where interpretation emerges before users know what to look for. 
+
+2.2 Spatial Extensions of Visualization 
+
+Prior work suggests that spatial extensions of visualization are per-ceptually consequential rather than merely representational. Im-mersive environments can provide perceptual cues that influence how spatial encodings are perceived [7], and mixed reality condi-tions have been shown to enhance users’ recall of content and spa-tial arrangement compared to traditional 2D and virtual reality set-
+
+> arXiv:2603.21637v1 [cs.HC] 23 Mar 2026 Figure 2: Container size can influence data granularity across spatial, temporal, and categorical examples: larger containers afford finer de-tail, while smaller containers encourage aggregation.
+
+tings [3]. Patnaik et al. [4] show that users appropriate physical ob-jects and surfaces as semantic proxies for organizing and recalling analytic information, even when the data itself is not inherently sit-uated. However, these studies do not treat the geometric properties of physical containers as framing conditions for visualization. Our work builds on this line of research by characterizing how container properties—face count, size, proportion, and shape—can guide in-terpretation during early-stage AR exploration. 
+
+3 CONTAINERS AS PERCEPTUAL FRAMING CONDITIONS 
+
+3.1 Physical Properties as Given Conditions 
+
+In AR environments where physical objects serve as containers for embedding visualizations, framing can emerge from the geometric properties of those objects rather than from user-specified configu-ration. Physical containers differ along several fundamental proper-ties, including the number and configuration of faces, size and pro-portion, and shape. These properties are not specified during anal-ysis, but are already in place when a visualization is encountered, shaping how it can be viewed before analytic intent is formed. The number and configuration of faces constrain how many vi-sual surfaces can be perceived simultaneously, influencing whether visual elements are encountered in isolation or in relation to one another. Whether a container can be repositioned or rotated fur-ther affects how many of its faces are practically accessible. Size and proportion regulate the spatial extent available for rendering visual marks, implicitly setting limits on granularity, aggregation, and density (Figure 2). Shape further conditions perceptual framing by influencing the directionality and continuity with which visual elements are scanned. Unlike traditional interfaces, where framing results from deliberate layout or encoding choices, container geom-etry establishes framing prior to analysis. 
+
+3.2 From Conditions to Framing Tendencies 
+
+We focus on three ways in which physical container properties shape perceptual framing: (1) whether a single view or multiple views are perceived concurrently, (2) at what level of granularity data is interpreted, and (3) whether linear or cyclic schemas are ac-tivated. While these framing conditions do not prescribe specific analytic goals or conclusions, they shape how data is encountered and interpreted, increasing the salience of certain patterns or rela-tionships. Figure 1 summarizes representative container types and their associated framing tendencies. These framings should be understood not as fixed design rules, but as tendencies that arise from the interaction between container properties and human perception. The same data can support differ-ent framings when embedded in different containers. 
+
+4 DESIGN EXAMPLES 
+
+We use a single dataset—monthly movie release counts over three decades—across examples, allowing framing differences to be at-tributed to container form rather than the underlying data (Figure 3).  
+
+> 1
+
+Single-Face · Landscape Rectangle · Overlaid Lines. An overlaid line chart embedded on a single rectangular face facilitates comparison across decades, making decade-level growth recogniz-able at a glance.  
+
+> Figure 3: Four AR design examples embedding the monthly movie release counts over three decades into different physical containers. Each activates a different perceptual framing tendency.
+> 2
+
+Multi-Face · Planar · Juxtaposed Line Charts. By separat-ing line charts into juxtaposed views, the design shifts comparison from cross-series overlay to within-series temporal structure, en-abling clearer identification of peaks, troughs, and local variation within each decade as an independent series.  
+
+> 3
+
+Single-Face · Circle · Polar Line Chart. The circular con-tainer provides twelve angular positions, one per month, which shapes the representation toward aggregation of monthly values across years. Mapped onto a polar line chart, this geometry fore-grounds the cyclic structure, making seasonal patterns and relative peak months more salient than absolute magnitude differences.  
+
+> 4
+
+Multi-Face · Volumetric · Helical Time-Series. Mapping 30 years of monthly data onto a spiral trajectory on a cylindri-cal surface separates seasonal cycles from long-term accumulation, enabling viewers to perceive recurring monthly patterns alongside gradual growth across years as a sequential temporal flow. 
+
+5 LIMITATIONS AND FUTURE WORK 
+
+The taxonomy in Figure 1 covers container types but is not exhaus-tive. Containers whose surfaces would require warping a planar visualization may introduce representational distortion and were therefore beyond the scope of this work. Extending the framework to accommodate composite and asymmetric objects and to map them to framing tendencies remains an important direction for fu-ture work. While the present work offers a conceptual account of how con-tainer properties shape perceptual framing, controlled user studies are needed both to examine whether the proposed framing tenden-cies are consistently activated in practice and to isolate the percep-tual contribution of container geometry from that of the encoding itself. Ultimately, grounding these effects empirically may enable the design of AR systems that reduce exploratory friction by lever-aging environmental cues rather than explicit configuration. 
+
+REFERENCES
